@@ -19,60 +19,184 @@
   </el-row>
 
   <el-row class="tabMain">
-    <el-col class="tabBox" :span="24">
-      <el-tabs class="" type="card" :class="{'tabClass':hasBorder}" v-model="activeName" @tab-click="handleClick">
+    <el-col class="tabBox" :span="24" ref="tabs">
+      <el-tabs class="" :type="hasBorder?'card':''" :class="{'tabClass':!hasBorder}" v-model="activeName" @tab-click="handleClick">
+        
         <el-tab-pane>
           <span slot="label"><i class="el-icon-star-on"></i> 自选</span>
-          <el-row class="tabTitle">
-            <el-col :span="4"><div class="title">市场</div></el-col>
-            <el-col :span="4"><div class="title">最新价</div></el-col>
-            <el-col :span="4"><div class="title">24h涨跌幅</div></el-col>
-            <el-col :span="4"><div class="title">24h最高价</div></el-col>
-            <el-col :span="4"><div class="title">24h最低价</div></el-col>
-            <el-col :span="4"><div class="title">24h成交量</div></el-col>
+          <el-row class="tabContent">
+            <el-table
+            :data="BTCList"
+            stripe
+            @row-click="linkToGoods"
+            style="width: 100%">
+            <el-table-column
+              align="center"
+              width="80">
+              <template slot-scope="scope">
+                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="name"
+              label="市场"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              label="最新价"
+              width="188">
+              <template slot-scope="scope">
+                <span class="newPriceL">{{scope.row.newPrice1}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;{{scope.row.newPrice2}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="scope"
+              align="right"
+              label="24h涨跌">
+              <template slot-scope="scope">
+                <span :class="parseFloat(scope.row.scope)>=0?'green':'red'">{{scope.row.scope}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="high"
+              align="right"
+              label="24h最高价">
+            </el-table-column>
+            <el-table-column
+              prop="down"
+              align="right"
+              label="24h最低价">
+            </el-table-column>
+            <el-table-column
+              prop="all"
+              align="right"
+              class-name="lastList"
+              label="24h成交量">
+            </el-table-column>
+          </el-table>
           </el-row>
         </el-tab-pane>
+
         <el-tab-pane label="BTC市场" name="BTC">
-          <el-row class="tabTitle">
-            <el-col :span="4"><div class="title">市场</div></el-col>
-            <el-col :span="4"><div class="title">最新价</div></el-col>
-            <el-col :span="4"><div class="title">24h涨跌幅</div></el-col>
-            <el-col :span="4"><div class="title">24h最高价</div></el-col>
-            <el-col :span="4"><div class="title">24h最低价</div></el-col>
-            <el-col :span="4"><div class="title">24h成交量</div></el-col>
+          <el-row class="tabContent">
+            <el-table
+            :data="BTCList"
+            stripe
+            @row-click="linkToGoods"
+            style="width: 100%">
+            <el-table-column
+              align="center"
+              width="80">
+              <template slot-scope="scope">
+                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="name"
+              label="市场"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              label="最新价"
+              width="188">
+              <template slot-scope="scope">
+                <span class="newPriceL">{{scope.row.newPrice1}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;{{scope.row.newPrice2}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="scope"
+              align="right"
+              label="24h涨跌">
+              <template slot-scope="scope">
+                <span :class="parseFloat(scope.row.scope)>=0?'green':'red'">{{scope.row.scope}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="high"
+              align="right"
+              label="24h最高价">
+            </el-table-column>
+            <el-table-column
+              prop="down"
+              align="right"
+              label="24h最低价">
+            </el-table-column>
+            <el-table-column
+              prop="all"
+              align="right"
+              class-name="lastList"
+              label="24h成交量">
+            </el-table-column>
+          </el-table>
           </el-row>
-          <ul class="tabContent">
-            <li v-for="(item,idx) in BTCList" :key="idx">
-              <router-link :to="'/tradingCenter/'+item.id">
-                <el-row class="goodsItem">
-                  <el-col :span="4"><div class="good"><i :class="item.star=='off'?'el-icon-star-off':'el-icon-star-on'"></i>{{item.name}}</div></el-col>
-                  <el-col :span="4"><div class="goods">{{item.newPrice1}}</div></el-col>
-                  <el-col :span="4"><div class="goods">{{item.scope}}</div></el-col>
-                  <el-col :span="4"><div class="goods">{{item.high}}</div></el-col>
-                  <el-col :span="4"><div class="goods">{{item.down}}</div></el-col>
-                  <el-col :span="4"><div class="goods">{{item.all}}</div></el-col>
-                </el-row>
-              </router-link>
-            </li>
-          </ul>
         </el-tab-pane>
+
         <el-tab-pane label="ETH市场" name="ETH">
-          <el-row class="tabTitle">
-            <el-col :span="4"><div class="title">市场</div></el-col>
-            <el-col :span="4"><div class="title">最新价</div></el-col>
-            <el-col :span="4"><div class="title">24h涨跌幅</div></el-col>
-            <el-col :span="4"><div class="title">24h最高价</div></el-col>
-            <el-col :span="4"><div class="title">24h最低价</div></el-col>
-            <el-col :span="4"><div class="title">24h成交量</div></el-col>
+          <el-row class="tabContent">
+            <el-table
+            :data="ETHList"
+            stripe
+            @row-click="linkToGoods"
+            style="width: 100%">
+            <el-table-column
+              align="center"
+              width="80">
+              <template slot-scope="scope">
+                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="name"
+              label="市场"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              label="最新价"
+              width="188">
+              <template slot-scope="scope">
+                <span class="newPriceL">{{scope.row.newPrice1}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;{{scope.row.newPrice2}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="scope"
+              align="right"
+              label="24h涨跌">
+              <template slot-scope="scope">
+                <span :class="parseFloat(scope.row.scope)>=0?'green':'red'">{{scope.row.scope}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="high"
+              align="right"
+              label="24h最高价">
+            </el-table-column>
+            <el-table-column
+              prop="down"
+              align="right"
+              label="24h最低价">
+            </el-table-column>
+            <el-table-column
+              prop="all"
+              align="right"
+              class-name="lastList"
+              label="24h成交量">
+            </el-table-column>
+          </el-table>
           </el-row>
+        </el-tab-pane>
+
+        <el-tab-pane :disabled="true">
+          <span slot="label">
+            <el-input
+          class="search"
+          placeholder="请输入内容"
+          prefix-icon="el-icon-search"
+          >
+        </el-input>
+          </span>
         </el-tab-pane>
       </el-tabs>
-      <el-input
-        class="search"
-        placeholder="请输入内容"
-        prefix-icon="el-icon-search"
-        >
-      </el-input>
+      
     </el-col>
   </el-row>
 
@@ -80,13 +204,27 @@
     <el-col :span="24">
       <div class="fTop">
         <ul class="linkList">
-          <li>关于我们</li>
-          <li>服务协议</li>
-          <li>隐私声明</li>
-          <li>费率标准</li>
-          <li>API文档</li>
-          <li>上币申请</li>
-          <li>上币申请</li>
+          <li>
+            <a href="#">关于我们</a>
+          </li>
+          <li>
+            <a href="#">服务协议</a>
+          </li>
+          <li>
+            <a href="#">隐私声明</a>
+          </li>
+          <li>
+            <a href="#">费率标准</a>
+          </li>
+          <li>
+            <a href="#">API文档</a>
+          </li>
+          <li>
+            <a href="#">上币申请</a>
+          </li>
+          <li>
+            <a href="#">联系我们</a>
+          </li>
         </ul>
         <ul class="iconList">
           <li>上</li>
@@ -101,10 +239,18 @@
           @  2017-2018   coin plus.com  All  Rights  Reserved
         </div>
         <ul class="priceList">
-          <li>费率标准</li>
-          <li>API文档</li>
-          <li>上币申请</li>
-          <li>上币申请</li>
+          <li>
+            <span class="name">24h&nbsp;成交额</span><span class="num">277,050.93</span>
+          </li>
+          <li>
+            <span class="name">BNB&nbsp;/&nbsp;</span><span class="num">277,050.93</span>
+          </li>
+          <li>
+            <span class="name">BTC&nbsp;/&nbsp;</span><span class="num">277,050.93</span>
+          </li>
+          <li>
+            <span class="name">ETH&nbsp;/&nbsp;</span><span class="num">277,050.93</span>
+          </li>
         </ul>
       </div>
     </el-col>
@@ -120,16 +266,53 @@ export default {
         hasBorder:true,
         BTCList: [
           {id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"}
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},
+          {id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},
+          {id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},
         ],
-
+        ETHList: []
       };
     },
     methods: {
       handleClick(tab, event) {
-        console.log(tab, event);
+        //console.log(tab, event);
+      },
+      star(row, column, cellValue) {
+
+      },
+      linkToGoods(row, event, column){
+        console.log(row.id);
+      },
+      changeStar(star){
+        console.log(star)
+      },
+      handleScroll(){
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+        // console.log(scrollTop)
+        if(scrollTop>600){
+          this.hasBorder = false;
+        }else{
+          this.hasBorder = true;
+        }
       }
-    }
+    },
+    mounted () {
+      window.addEventListener('scroll', this.handleScroll)
+    },
+    destroyed () {
+      window.removeEventListener('scroll', this.handleScroll)
+    },
 }
 </script>
 
@@ -154,7 +337,7 @@ export default {
       li{
         font-size: 14px;
         padding: 0 60px;
-        line-height: 20px;
+        line-height: 16px;
         border-right: 1px solid #cccccc;
         &:nth-last-child(1){
           border: 0;
@@ -169,39 +352,78 @@ export default {
     padding: 60px;
     padding-bottom: 120px;
     .tabBox{
-      position: relative;
+      #tab-3{
+        margin-top:-1px; 
+        margin-right:-1px; 
+        border-top:1px solid #ffffff; 
+        border-right:1px solid #ffffff; 
+      }
       .search{
-        height: 34px;
+        height: 28px;
         width: 200px;
-        position: absolute;
-        top: 2px;
-        left: 300px;
         input{
           border-radius: 0;
-          height: 34px;
+          height: 28px;
         }
         span{
-          height: 34px;
+          height: 28px;
           i{
-            line-height: 34px;
+            line-height: 28px;
           }
         }
       }
-      .f-left{
-        text-align: left;
-      }
-      .f-right{
-        text-align: right;
-      }
-      .tabTitle{
-        font-size: 12px;
-        color: #666666;
-        text-align: center;
-        line-height: 30px;
-        .title{
+      .tabContent{
+        .el-table--enable-row-hover .el-table__body tr:hover > td{
+          background-color: rgba(245,166,35,0.10);
+        }
+        .el-table td{
           cursor:pointer;
         }
+        .el-table th, .el-table td{
+          padding: 0;
+          font-weight: 500;
+          font-size: 12px;
+          line-height: 30px;
+          height: 30px;
+        }
+        .el-icon-star-on{
+          font-size: 13px;
+        }
+        .star-on{
+          color: #F5A623;
+        }
+        .star-off{
+          color: #cccccc;
+        }
+        .green{
+          color: #70a800;
+        }
+        .red{
+          color: #ea0070;
+        }
+        .newPriceR{
+          color: #999999
+        }
+        tbody,thead{
+          .lastList{
+            padding: 0 26px;
+          }
+        }
+        
       }
+      .tabClass .el-tabs__header{
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding: 0 60px;
+        z-index: 10;
+        background: #fff;
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        box-shadow: 0 2px 4px 0 #999999;
+      }
+      
 
       .el-tabs__nav{
         border-radius: 0;
@@ -213,7 +435,7 @@ export default {
         margin: 0;
       }
       .el-tabs__content{
-        border: 1px solid #CCCCCC;
+        border: 1px solid #eeeeee;
       }
     }
     
@@ -224,8 +446,14 @@ export default {
     background: #333333;
     padding: 0 60px;
     font-size: 14px;
-    color: #999999;
+    color: #CCCCCC;
     line-height: 98px;
+    li{
+      margin-right: 18px;
+    }
+    a{
+      color: #999999;
+    }
     .fLine{
       border: 1px solid #979797;
     }
@@ -234,6 +462,12 @@ export default {
     }
     .fTop,.fDown{
       justify-content: space-between;
+    }
+    .priceList,.reserved{
+      font-size: 12px;
+    }
+    .priceList .num{
+      color: #ffffff;
     }
   }
 
@@ -245,9 +479,6 @@ export default {
   }
 }
 
-.tabClass{
-
-}
 </style>
 
 <style scoped lang="scss">
