@@ -4,7 +4,7 @@
       <div class="logoBox">
         <p class="logo">LOGO</p>
       </div>
-      <el-form :model="loginForm" size="medium" :rules="rules" ref="loginForm" class="loginForm formbase">
+      <el-form :model="loginForm" size="small" :rules="rules" ref="loginForm" class="loginForm formbase">
         <div class="formT">
           <div class="formTitle">
             登录
@@ -19,6 +19,7 @@
           <el-form-item prop="pass">
             <el-input
               placeholder="密码"
+              type="password"
               v-model="loginForm.pass">
               <i slot="prefix" class="el-input__icon el-icon-search"></i>
             </el-input>
@@ -31,8 +32,8 @@
           </div>
       </el-form>
       <div class="linkList">
-        <router-link to="">忘记密码</router-link>
-        <div class="register"><span>还没有账号? </span><router-link to="">马上注册</router-link></div>
+        <router-link to="/retrieve">忘记密码</router-link>
+        <div class="register"><span>还没有账号? </span><router-link to="/register">马上注册</router-link></div>
       </div>
     </div>
     <p class="footer">@  2017-2018   coin plus.com  All  Rights  Reserved</p>
@@ -80,7 +81,13 @@ export default {
 
 <style lang="scss">
 @import "../styles/login.scss";
+</style>
 
+
+<style lang="scss" scoped>
+.linkList{
+  justify-content: space-between;
+}
 </style>
 
 

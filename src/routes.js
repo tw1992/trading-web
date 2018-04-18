@@ -16,6 +16,14 @@ let routes = [{
   hidden: true
 },
 {
+    path: '/retrieve',
+    component: function (resolve) {
+        require(['./views/retrieve.vue'], resolve)
+    },
+    name: '找回密码',
+    hidden: true
+  },
+{
   path: '/404',
   component: function (resolve) {
       require(['./views/404.vue'], resolve)
@@ -62,6 +70,30 @@ let routes = [{
       component: function (resolve) {
           require(['./views/mandatory/mandatory.vue'], resolve)
       },
+      children: [{
+            path: '/mandatory/openOrders',
+            component: function (resolve) {
+                require(['./views/mandatory/openOrders.vue'], resolve)
+            },
+            name: '当前委托'
+        },
+        {
+            path: '/mandatory/orderHistory',
+            component: function (resolve) {
+                require(['./views/mandatory/orderHistory.vue'], resolve)
+            },
+            name: '历史委托'
+        },
+        {
+            path: '/mandatory/tradeHistory',
+            component: function (resolve) {
+                require(['./views/mandatory/tradeHistory.vue'], resolve)
+            },
+            name: '成交记录'
+        }],
+        redirect: {
+            path: '/openOrders'
+        },
       name: '委托管理'
   },
   {

@@ -20,9 +20,9 @@
         </el-submenu>
         <el-submenu index="/mandatory">
             <template slot="title">{{$t('route.orders')}}</template>
-            <el-menu-item index="2-1">{{$t('route.openOrders')}}</el-menu-item>
-            <el-menu-item index="2-2">{{$t('route.orderHistory')}}</el-menu-item>
-            <el-menu-item index="2-3">{{$t('route.tradeHistory')}}</el-menu-item>
+            <el-menu-item index="/mandatory/openOrders">{{$t('route.openOrders')}}</el-menu-item>
+            <el-menu-item index="/mandatory/orderHistory">{{$t('route.orderHistory')}}</el-menu-item>
+            <el-menu-item index="/mandatory/tradeHistory">{{$t('route.tradeHistory')}}</el-menu-item>
         </el-submenu>
         <el-submenu index="/account">
             <template slot="title">{{$t('route.account')}}</template>
@@ -116,6 +116,9 @@ export default {
 
 <style scoped lang="scss">
 @import "~scss_vars";
+.header{
+  box-shadow: 0 2px 4px 0 #CCCCCC;
+}
 .homeNav{
   min-width: 1200px;
   display: flex;
