@@ -1,0 +1,53 @@
+.orderBox{
+    border: 1px solid #ccc;
+    .el-table th, .el-table td{
+        padding: 0;
+        height: 30px;
+        font-size: 12px;
+    }
+    .el-table th{
+        background: #eeeeee;
+        font-weight: 500;
+    }
+    .el-table th.is-leaf, .el-table td{
+        border-bottom: 1px solid #ccc;
+    }
+    .el-table--enable-row-hover .el-table__body tr:hover > td{
+      background-color: rgba(245,166,35,0.10);
+    }
+    .firstCol{
+        padding-left: 20px !important;
+    }
+    .detail{
+        width: 1000px;
+        margin: 20px auto;
+        background: #EEEEEE;
+        box-sizing: border-box;
+        padding: 20px 20px 0;
+        .title{
+            font-size: 14px;
+            margin-bottom: 10px;
+            span{
+                color: #333333;
+                margin-left: 40px;
+                font-weight: 600;
+            }
+        }
+        .el-table th{
+            color: #666666;
+        }
+        .el-table tr{
+            background: #EEEEEE;
+            color: #333333;
+        }
+        .firstCol{
+            padding-left: 0 !important;
+            .cell{
+                padding-left: 0;
+            }
+        }
+        .el-table th.is-leaf, .el-table td{
+            border-bottom: 1px solid #fff;
+        }
+    }
+}

@@ -40,7 +40,6 @@ export default {
 
 <style lang="scss">
 .mandBox{
-  min-height: 626px;
   padding: 30px 60px;
   a{
     color: #333333;
@@ -79,16 +78,17 @@ export default {
       transition:color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), padding 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     }
   }
+  .el-tabs--card > .el-tabs__header{
+    border: 0;
+  }
+  .el-tabs--card > .el-tabs__header .el-tabs__item.is-active{
+    border-bottom-color: #F5A623;
+  }
 }
 
 
 
-.el-tabs--card > .el-tabs__header{
-  border: 0;
-}
-.el-tabs--card > .el-tabs__header .el-tabs__item.is-active{
-  border-bottom-color: #F5A623;
-}
+
 </style>
 
 

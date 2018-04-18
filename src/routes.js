@@ -101,7 +101,17 @@ let routes = [{
       component: function (resolve) {
           require(['./views/userCenter/user.vue'], resolve)
       },
-      name: '个人中心'
+      name: '个人',
+      children: [{
+            path: '/userCenter/account',
+            component: function (resolve) {
+                require(['./views/userCenter/account.vue'], resolve)
+            },
+            name: '个人中心'
+        }],
+        redirect: {
+            path: '/openOrders'
+        },
   },
   {
       path: '/helpCenter',

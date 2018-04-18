@@ -24,9 +24,9 @@
             <el-menu-item index="/mandatory/orderHistory">{{$t('route.orderHistory')}}</el-menu-item>
             <el-menu-item index="/mandatory/tradeHistory">{{$t('route.tradeHistory')}}</el-menu-item>
         </el-submenu>
-        <el-submenu index="/account">
+        <el-submenu index="/userCenter">
             <template slot="title">{{$t('route.account')}}</template>
-            <el-menu-item index="2-1">{{$t('route.accountManagement')}}</el-menu-item>
+            <el-menu-item index="/userCenter/account">{{$t('route.accountManagement')}}</el-menu-item>
             <el-menu-item index="2-2">{{$t('route.assessment')}}</el-menu-item>
             <el-menu-item index="2-3">{{$t('route.logout')}}</el-menu-item>
         </el-submenu>

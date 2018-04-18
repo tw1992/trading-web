@@ -3,7 +3,7 @@
       <v-head></v-head>
       
       <div class="content">
-          <router-view></router-view>
+          <router-view class="contentMain"></router-view>
           <v-foot></v-foot>
       </div>
   </div>
@@ -25,7 +25,10 @@ export default {
   min-width: 1200px;
   .content{
     padding-top: 62px;
-    min-height: 100%;
+    .contentMain{
+      min-height: 686px;
+      box-sizing: border-box;
+    }
   }
 }
 </style>
