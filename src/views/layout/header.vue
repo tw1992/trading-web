@@ -13,10 +13,10 @@
           <el-menu-item index="" class="blank" disabled></el-menu-item>
         <el-submenu index="/fundsManagement">
             <template slot="title">{{$t('route.funds')}}</template>
-            <el-menu-item index="">{{$t('route.balances')}}</el-menu-item>
-            <el-menu-item index="">{{$t('route.deposits')}}</el-menu-item>
-            <el-menu-item index="">{{$t('route.withdrawals')}}</el-menu-item>
-            <el-menu-item index="">{{$t('route.address')}}</el-menu-item>
+            <el-menu-item index="/fundsManagement/balances">{{$t('route.balances')}}</el-menu-item>
+            <el-menu-item index="/fundsManagement/deposits">{{$t('route.deposits')}}</el-menu-item>
+            <el-menu-item index="/fundsManagement/withdrawals">{{$t('route.withdrawals')}}</el-menu-item>
+            <el-menu-item index="/fundsManagement/address">{{$t('route.address')}}</el-menu-item>
         </el-submenu>
         <el-submenu index="/mandatory">
             <template slot="title">{{$t('route.orders')}}</template>

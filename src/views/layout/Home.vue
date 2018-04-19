@@ -404,7 +404,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #EEEEEE;
+      // color: #EEEEEE;
       li{
         font-size: 14px;
         padding: 0 60px;
@@ -414,7 +414,7 @@ export default {
           border: 0;
         }
         a{
-          color: #EEEEEE;
+          color: #cccccc;
         }
       }
     }

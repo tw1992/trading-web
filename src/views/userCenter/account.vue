@@ -1,112 +1,125 @@
 <template>
-  <div class="accBox">
-      <p class="topTip">安全建议：检查访问网址、开启二次验证、不要给他人转账和透露密码信息等。</p>
-      <div class="emailBox">
-            <div class="email">
-                <span class="name">2970973119@qq.com</span>
-                <router-link to="">未实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
-            </div>
-            <p class="loginTime">
-                <span class="time">最后登录时间: 2018-04-16 17:45:20</span>
-                <span class="IP">IP: 103.192.224.102</span>
-            </p>
-            <p class="UID">UID:23298</p>
-      </div>
-      <div class="otherBox">
-          <div class="otherT">
-            <div class="passBox itemBox">
-                <div class="boxL">
-                    <p class="titles">
-                        <i class="el-icon-edit"></i>
-                        <span class="title">登录密码</span>
-                    </p>
-                    <p class="tips">
-                        * * * * * *
-                    </p>
+    <div class="accBox">
+        <p class="topTip">安全建议：检查访问网址、开启二次验证、不要给他人转账和透露密码信息等。</p>
+        <div class="emailBox">
+                <div class="email">
+                    <span class="name">2970973119@qq.com</span>
+                    <router-link to="">未实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
                 </div>
-                <div class="boxR">
-                    <el-button type="primary">修改</el-button>
-                </div>
-                
-            </div>
-            <div class="phoneBox itemBox">
-                <div class="boxL">
-                    <p class="titles">
-                        <i class="el-icon-edit"></i>
-                        <span class="title">手机验证</span>
-                    </p>
-                    <p class="tips">
-                       提现,修改密码及安全设置时,用以收取短信验证
-                    </p>
-                </div>
-                <div class="boxR">
-                    <el-switch
-                    v-model="value1"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949">
-                    </el-switch>
-                </div>
-            </div>
-          </div>
-          <div class="otherB">
-              <div class="APIBox itemBox">
+                <p class="loginTime">
+                    <span class="time">最后登录时间: 2018-04-16 17:45:20</span>
+                    <span class="IP">IP: 103.192.224.102</span>
+                </p>
+                <p class="UID">UID:23298</p>
+        </div>
+        <div class="otherBox">
+            <div class="otherT">
+                <div class="passBox itemBox">
                     <div class="boxL">
                         <p class="titles">
                             <i class="el-icon-edit"></i>
-                            <span class="title">API</span>
+                            <span class="title">登录密码</span>
                         </p>
                         <p class="tips">
-                            创建API密钥可以让您借助第三方网站或移动应用使用币加的行情查询，实时交易等服务。请参阅API文档了解如何使用您的API Keys
+                            * * * * * *
                         </p>
                     </div>
                     <div class="boxR">
-                        <el-button type="primary">启用</el-button>
+                        <el-button type="primary" @click="changePwdFlag = true">修改</el-button>
                     </div>
-              </div>
-              <div class="GoogleBox itemBox">
+                    
+                </div>
+                <div class="phoneBox itemBox">
                     <div class="boxL">
                         <p class="titles">
                             <i class="el-icon-edit"></i>
-                            <span class="title">谷歌验证</span>
+                            <span class="title">手机验证</span>
                         </p>
                         <p class="tips">
-                            提现,修改密码及安全设置时,用以收取短信验证
+                        提现,修改密码及安全设置时,用以收取短信验证
                         </p>
                     </div>
                     <div class="boxR">
                         <el-switch
-                        v-model="value2"
+                        v-model="value1"
                         active-color="#13ce66"
                         inactive-color="#ff4949">
-                        <div class="tip">on</div>
-                        <civ class="tip">off</civ>
                         </el-switch>
                     </div>
-              </div>
-          </div>
-      </div>
-      <div class="tableBox">
-            <p class="tabTip">最近登录</p>
-            <el-table
-            :data="tableData"
-            class="latelyTab"
-            style="width: 100%">
-            <el-table-column
-            prop="time"
-            label="登录时间"
-            class-name="firstCol">
-            </el-table-column>
-            <el-table-column
-            prop="IP"
-            label="IP">
-            </el-table-column>
-            <el-table-column
-            prop="address"
-            label="登录所在地">
-            </el-table-column>
-        </el-table>
-      </div>
-  </div>
+                </div>
+            </div>
+            <div class="otherB">
+                <div class="APIBox itemBox">
+                        <div class="boxL">
+                            <p class="titles">
+                                <i class="el-icon-edit"></i>
+                                <span class="title">API</span>
+                            </p>
+                            <p class="tips">
+                                创建API密钥可以让您借助第三方网站或移动应用使用币加的行情查询，实时交易等服务。请参阅API文档了解如何使用您的API Keys
+                            </p>
+                        </div>
+                        <div class="boxR">
+                            <el-button type="primary">启用</el-button>
+                        </div>
+                </div>
+                <div class="GoogleBox itemBox">
+                        <div class="boxL">
+                            <p class="titles">
+                                <i class="el-icon-edit"></i>
+                                <span class="title">谷歌验证</span>
+                            </p>
+                            <p class="tips">
+                                提现,修改密码及安全设置时,用以收取短信验证
+                            </p>
+                        </div>
+                        <div class="boxR">
+                            <el-switch
+                            v-model="value2"
+                            active-color="#13ce66"
+                            inactive-color="#ff4949">
+                            <div class="tip">on</div>
+                            <civ class="tip">off</civ>
+                            </el-switch>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="tableBox">
+                <p class="tabTip">最近登录</p>
+                <el-table
+                :data="tableData"
+                class="latelyTab"
+                style="width: 100%">
+                <el-table-column
+                prop="time"
+                label="登录时间"
+                class-name="firstCol">
+                </el-table-column>
+                <el-table-column
+                prop="IP"
+                label="IP">
+                </el-table-column>
+                <el-table-column
+                prop="address"
+                label="登录所在地">
+                </el-table-column>
+            </el-table>
+        </div>
+
+        <!-- 修改密码 -->
+        <el-dialog
+            title="提示"
+            :visible.sync="changePwdFlag"
+            width="30%"
+            custom-class="baseDialog changePwd"
+            center>
+            <span>需要注意的是内容是默认不居中的</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" size="mini" @click="changePwdFlag = false">确 定</el-button>
+            </span>
+        </el-dialog>
+    </div>
 </template>
 
 <script>
@@ -131,7 +144,8 @@ export default {
           time: '2018-04-10  15:47:28',
           IP: '192.103.104.101',
           address: 'Hong Kong'
-        },]
+        },],
+        changePwdFlag: false,
     };
   }
 };
@@ -268,6 +282,10 @@ export default {
         .firstCol{
             padding-left: 50px !important;
         }
+  }
+
+  .changePwd{
+      
   }
 }
 </style>

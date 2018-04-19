@@ -1,0 +1,16 @@
+//重置Dialog样式
+.baseDialog{
+    border-radius: 10px;
+    .el-dialog__header{
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 14px;
+        .el-dialog__title{
+            // font-weight: 600;
+            font-size: 20px;
+        }
+    }
+    .el-button{
+        width: 80px;
+        border-radius: 0;
+    }
+}

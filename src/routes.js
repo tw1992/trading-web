@@ -63,13 +63,45 @@ let routes = [{
       component: function (resolve) {
           require(['./views/fundsManagement/fundsManagement.vue'], resolve)
       },
-      name: '资金管理'
+      name: '资金管理',
+      children: [{
+            path: '/fundsManagement/balances',
+            component: function (resolve) {
+                require(['./views/fundsManagement/balances.vue'], resolve)
+            },
+            name: '我的资产'
+        },
+        {
+            path: '/fundsManagement/deposits',
+            component: function (resolve) {
+                require(['./views/fundsManagement/deposits.vue'], resolve)
+            },
+            name: '充值'
+        },
+        {
+            path: '/fundsManagement/withdrawals',
+            component: function (resolve) {
+                require(['./views/fundsManagement/withdrawals.vue'], resolve)
+            },
+            name: '提现'
+        },
+        {
+            path: '/fundsManagement/address',
+            component: function (resolve) {
+                require(['./views/fundsManagement/address.vue'], resolve)
+            },
+            name: '地址管理'
+        }],
+        redirect: {
+            path: '/balances'
+        }
   },
   {
       path: '/mandatory',
       component: function (resolve) {
           require(['./views/mandatory/mandatory.vue'], resolve)
       },
+      name: '委托管理',
       children: [{
             path: '/mandatory/openOrders',
             component: function (resolve) {
@@ -93,8 +125,8 @@ let routes = [{
         }],
         redirect: {
             path: '/openOrders'
-        },
-      name: '委托管理'
+        }
+      
   },
   {
       path: '/userCenter',

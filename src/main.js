@@ -5,6 +5,7 @@ import ElementUI from 'element-ui';
 import './styles/element-variables.scss';
 // import 'element-ui/lib/theme-chalk/index.css';
 import './styles/vars.scss'
+import './styles/DialogInit.scss'
 import VueRouter from 'vue-router'
 import routes from './routes'
 import i18n from './lang'

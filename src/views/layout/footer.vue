@@ -84,6 +84,10 @@ export default {
     }
     a{
       color: #999999;
+      &:hover{
+        color:#ffffff;
+        transition:color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1), padding 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+      }
     }
     .fLine{
       border: 1px solid #979797;

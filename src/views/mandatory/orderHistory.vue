@@ -1,5 +1,8 @@
 <template>
   <div class="historyBox">
+    <p class="title">
+      历史委托
+    </p>
     <div class="searchBox">
       <div class="searchItem">
         <span class="searchLabel">时间：</span>
