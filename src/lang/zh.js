@@ -7,6 +7,7 @@ export default {
     deposits: "充值",
     withdrawals: "提现",
     transactionHistory: "充值提现历史",
+    address: "地址管理",
     orders: "委托管理",
     openOrders: "当前委托",
     orderHistory: "历史委托",

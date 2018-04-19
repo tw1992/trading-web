@@ -7,6 +7,7 @@ export default {
     deposits: "Deposits",
     withdrawals: "Withdrawals",
     transactionHistory: "Transaction History",
+    address: "Address",
     orders: "Orders",
     openOrders: "Open Orders",
     orderHistory: "Order History",

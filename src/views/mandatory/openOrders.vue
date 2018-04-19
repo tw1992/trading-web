@@ -85,7 +85,7 @@
 </style>
 
 <style lang="scss">
-@import "../../styles/mandatory.scss";
+// @import "../../styles/mandatory.scss";
 </style>
 
 

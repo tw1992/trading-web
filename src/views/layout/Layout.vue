@@ -3,9 +3,12 @@
       <v-head></v-head>
       
       <div class="content">
+        <transition name="fade"
+		            mode="out-in">
           <router-view class="contentMain"></router-view>
-          <v-foot></v-foot>
+        </transition>
       </div>
+      <v-foot></v-foot>
   </div>
 </template>
 
@@ -23,6 +26,7 @@ export default {
 .wrapper{
   min-height: 100%;
   min-width: 1200px;
+  padding-bottom: -200px;
   .content{
     padding-top: 62px;
     .contentMain{

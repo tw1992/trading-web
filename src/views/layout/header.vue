@@ -14,9 +14,9 @@
         <el-submenu index="/fundsManagement">
             <template slot="title">{{$t('route.funds')}}</template>
             <el-menu-item index="">{{$t('route.balances')}}</el-menu-item>
-            <el-menu-item index="2-2">{{$t('route.deposits')}}</el-menu-item>
-            <el-menu-item index="2-3">{{$t('route.withdrawals')}}</el-menu-item>
-            <el-menu-item index="2-2">{{$t('route.transactionHistory')}}</el-menu-item>
+            <el-menu-item index="">{{$t('route.deposits')}}</el-menu-item>
+            <el-menu-item index="">{{$t('route.withdrawals')}}</el-menu-item>
+            <el-menu-item index="">{{$t('route.address')}}</el-menu-item>
         </el-submenu>
         <el-submenu index="/mandatory">
             <template slot="title">{{$t('route.orders')}}</template>
@@ -27,8 +27,8 @@
         <el-submenu index="/userCenter">
             <template slot="title">{{$t('route.account')}}</template>
             <el-menu-item index="/userCenter/account">{{$t('route.accountManagement')}}</el-menu-item>
-            <el-menu-item index="2-2">{{$t('route.assessment')}}</el-menu-item>
-            <el-menu-item index="2-3">{{$t('route.logout')}}</el-menu-item>
+            <el-menu-item index="">{{$t('route.assessment')}}</el-menu-item>
+            <el-menu-item index="">{{$t('route.logout')}}</el-menu-item>
         </el-submenu>
         <!-- <el-menu-item index="">{{$t('route.join')}}</el-menu-item>
         <el-menu-item index="/helpCenter">{{$t('route.support')}}</el-menu-item>

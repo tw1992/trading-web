@@ -3,7 +3,21 @@
 
   <el-row class="banner">
     <el-col :span="24">
-      
+      <swiper :options="swiperOption">
+        <swiper-slide class="swiper-no-swiping" v-for="(slide, index) in swiperSlides" :key="index">
+          <!-- I'm Slide {{ slide }} -->
+          <div class="newBox" v-for="(item, idx) in slide" :key="idx">
+            <a :href="item.linkTo" :title="item.name" target="_blank">
+              <img :src="item.img">
+              <div class="time" v-if="item.time">
+                距活动结束<span>{{item.time}}</span>
+              </div>
+            </a>
+          </div>
+          
+        </swiper-slide>
+        <div class="swiper-pagination" slot="pagination"></div>
+      </swiper>
     </el-col>
   </el-row>
 
@@ -203,11 +217,52 @@
 </template>
 
 <script>
+import 'swiper/dist/css/swiper.css';
+import { swiper, swiperSlide } from 'vue-awesome-swiper';
 export default {
   data() {
       return {
         activeName: 'BTC',
         hasBorder:true,
+        swiperOption: {
+          direction : 'vertical',
+          autoplay:{
+            disableOnInteraction: false,
+          },
+          // loop : true,
+          noSwiping : true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable :true
+          }
+        },
+        swiperSlides: [],
+        newList:[{
+          name: "new1",
+          img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
+          time: "2天17小时26分12秒",
+          linkTo: "https://www.baidu.com/"
+        },{
+          name: "new2",
+          img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
+          time: "",
+          linkTo: "https://www.baidu.com/"
+        },{
+          name: "new3",
+          img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
+          time: "",
+          linkTo: "https://www.baidu.com/"
+        },{
+          name: "new1",
+          img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
+          time: "",
+          linkTo: "https://www.baidu.com/"
+        },{
+          name: "new1",
+          img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
+          time: "",
+          linkTo: "https://www.baidu.com/"
+        }],
         BTCList: [
           {id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
           {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},
@@ -225,12 +280,21 @@ export default {
           {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
           {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},
         ],
-        ETHList: []
+        ETHList: [],
       };
     },
     methods: {
       handleClick(tab, event) {
         //console.log(tab, event);
+      },
+      sliceArray(array, size){
+        var result = [];
+        for (var x = 0; x < Math.ceil(array.length / size); x++) {
+            var start = x * size;
+            var end = start + size;
+            result.push(array.slice(start, end));
+        }
+        this.swiperSlides = result;
       },
       star(row, column, cellValue) {
 
@@ -251,8 +315,16 @@ export default {
         }
       }
     },
+    components: {
+      swiper,
+      swiperSlide
+    },
+    beforeCreate () {
+      
+    },
     mounted () {
-      window.addEventListener('scroll', this.handleScroll)
+      window.addEventListener('scroll', this.handleScroll);
+      this.sliceArray(this.newList,4);
     },
     destroyed () {
       window.removeEventListener('scroll', this.handleScroll)
@@ -268,6 +340,61 @@ export default {
   .banner{
     height: 400px;
     background: #000;
+    display: flex;
+    justify-content: center;
+    
+    .swiper-container{
+      padding-right: 20px;
+      width: 1000px;
+      height: 240px;
+      margin-top: 100px;
+      .swiper-pagination{
+        right: 0px;
+      }
+      .swiper-slide{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .newBox{
+          position: relative;
+          width: 226px;
+          height: 180px;
+          img{
+            width: 100%;
+            height: 100%;
+          }
+          a{
+            width: 100%;
+            height: 100%;
+            display: block;
+          }
+          .time{
+            box-sizing: border-box;
+            height: 30px;
+            width: 100%;
+            background: #8A8A8A;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            font-size: 12px;
+            line-height: 30px;
+            padding-left: 10px;
+            color: #CCCCCC;
+            span{
+              margin-left: 20px;
+              color: #ffffff;
+            }
+          }
+        }
+      }
+    }
+  }
+  .swiper-pagination-bullet{
+    background: #cccccc;
+  }
+  .swiper-pagination-bullet-active{
+    opacity: 1;
+    background: #F5A623;
   }
   .message{
     height: 80px;

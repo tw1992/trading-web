@@ -7,7 +7,10 @@
     <li class="line" :class="activeName=='orderHistory'||activeName=='tradeHistory'?'active':''"></li>
     <li :class="activeName == 'tradeHistory'?'active':''"><router-link to="/mandatory/tradeHistory">成交记录</router-link></li>
   </ul>
-  <router-view></router-view>
+  <transition name="fade"
+		            mode="out-in">
+    <router-view></router-view>
+  </transition>
 </div>
 </template>
 
@@ -39,6 +42,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../../styles/mandatory.scss";
 .mandBox{
   padding: 30px 60px;
   a{
