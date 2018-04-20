@@ -110,7 +110,7 @@
 
         <!-- 修改密码 -->
         <el-dialog
-            title="提示"
+            title="修改密码"
             :visible.sync="changePwdDialog"
             width="30%"
             custom-class="baseDialog changePwd"
