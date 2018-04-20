@@ -16,7 +16,7 @@
             <el-menu-item index="/fundsManagement/balances">{{$t('route.balances')}}</el-menu-item>
             <el-menu-item index="/fundsManagement/deposits">{{$t('route.deposits')}}</el-menu-item>
             <el-menu-item index="/fundsManagement/withdrawals">{{$t('route.withdrawals')}}</el-menu-item>
-            <el-menu-item index="/fundsManagement/address">{{$t('route.address')}}</el-menu-item>
+            <el-menu-item index="/fundsManagement/transactionHistory">{{$t('route.transactionHistory')}}</el-menu-item>
         </el-submenu>
         <el-submenu index="/mandatory">
             <template slot="title">{{$t('route.orders')}}</template>
@@ -113,6 +113,15 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.el-menu--horizontal .el-menu--popup{
+  min-width: 120px;
+  text-indent: 8px;
+}
+
+</style>
+
 
 <style scoped lang="scss">
 @import "~scss_vars";

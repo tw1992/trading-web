@@ -86,11 +86,11 @@ let routes = [{
             name: '提现'
         },
         {
-            path: '/fundsManagement/address',
+            path: '/fundsManagement/transactionHistory',
             component: function (resolve) {
-                require(['./views/fundsManagement/address.vue'], resolve)
+                require(['./views/fundsManagement/transactionHistory.vue'], resolve)
             },
-            name: '地址管理'
+            name: '充值提现记录'
         }],
         redirect: {
             path: '/balances'
@@ -144,6 +144,13 @@ let routes = [{
         redirect: {
             path: '/openOrders'
         },
+  },
+  {
+      path: '/attestation',
+      component: function (resolve) {
+          require(['./views/userCenter/attestation.vue'], resolve)
+      },
+      name: '谷歌认证'
   },
   {
       path: '/helpCenter',

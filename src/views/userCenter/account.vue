@@ -40,8 +40,9 @@
                         </p>
                     </div>
                     <div class="boxR">
+                        <div class="switchBtn" @click="switchClick('phoneFlag')"></div>
                         <el-switch
-                        v-model="value1"
+                        v-model="phoneFlag"
                         active-color="#13ce66"
                         inactive-color="#ff4949">
                         </el-switch>
@@ -74,12 +75,12 @@
                             </p>
                         </div>
                         <div class="boxR">
+                            <div class="switchBtn" @click="switchClick('googleFlag')"></div>
                             <el-switch
-                            v-model="value2"
+                            @change="googleClick"
+                            v-model="googleFlag"
                             active-color="#13ce66"
                             inactive-color="#ff4949">
-                            <div class="tip">on</div>
-                            <civ class="tip">off</civ>
                             </el-switch>
                         </div>
                 </div>
@@ -110,13 +111,26 @@
         <!-- 修改密码 -->
         <el-dialog
             title="提示"
-            :visible.sync="changePwdFlag"
+            :visible.sync="changePwdDialog"
             width="30%"
             custom-class="baseDialog changePwd"
             center>
             <span>需要注意的是内容是默认不居中的</span>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="mini" @click="changePwdFlag = false">确 定</el-button>
+                <el-button type="primary" size="mini" @click="changePwdDialog = false">确 定</el-button>
+            </span>
+        </el-dialog>
+
+        <!-- 开启谷歌验证 -->
+        <el-dialog
+            title="开启谷歌验证"
+            :visible.sync="googleAddDialog"
+            width="30%"
+            custom-class="baseDialog"
+            center>
+            <span>需要注意的是内容是默认不居中的</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" size="mini" @click="googleStart()">开始</el-button>
             </span>
         </el-dialog>
     </div>
@@ -126,8 +140,13 @@
 export default {
   data() {
     return {
-      value1: true,
-      value2: true,
+      phoneFlag: true,
+      googleFlag: false,
+      googleAddDialog: false,
+      phoneAddDialog: false,
+      changePwdDialog: false,
+      googleDelDialog: false,
+      phoneDelDialog: false,
       tableData: [{
           time: '2018-04-10  15:47:28',
           IP: '192.103.104.101',
@@ -145,9 +164,42 @@ export default {
           IP: '192.103.104.101',
           address: 'Hong Kong'
         },],
-        changePwdFlag: false,
+        
     };
-  }
+  },
+  methods: {
+      googleClick(eve) {
+          console.log(eve);
+          if(eve){
+              this.googleAddDialog =true;
+          }
+          return false;
+        // if(this.googleFlag == true){
+        //     
+        // }
+
+      },
+      googleStart() {
+        this.$router.push("/attestation")
+      },
+      switchClick(target) {     //判断swich显示对应弹窗
+        console.log(this[target],target);
+        var flag = this[target],target;
+        if(target == 'phoneFlag'){
+            if(flag){
+
+            }else{
+
+            }
+        }else if(target == 'googleFlag'){
+            if(flag){
+                this.googleDelDialog = true;
+            }else{
+                this.googleAddDialog = true;
+            }
+        }
+      }
+    },
 };
 </script>
 
@@ -231,6 +283,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
         .el-button{
             border-radius: 0;
             width: 120px;
@@ -238,6 +291,16 @@ export default {
         }
         .el-switch__core{
             margin-right: 30px;
+        }
+        .switchBtn{
+            width: 56%;
+            height: 26%;
+            position: absolute;
+            left: 0;
+            top: 36%;
+            z-index: 5;
+            border-radius: 10px;
+            cursor:pointer;
         }
     }
   }

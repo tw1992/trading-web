@@ -1,4 +1,7 @@
 <template>
+<div class="maxBox">
+
+
   <div class="wrapper">
       <v-head></v-head>
       
@@ -8,8 +11,10 @@
           <router-view class="contentMain"></router-view>
         </transition>
       </div>
-      <v-foot></v-foot>
+      
   </div>
+  <v-foot></v-foot>
+</div>
 </template>
 
 <script>
@@ -23,14 +28,18 @@ export default {
 </script>
 
 <style lang='scss'>
-.wrapper{
+.maxBox{
   min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.wrapper{
+  flex: 1;
   min-width: 1200px;
-  padding-bottom: -200px;
   .content{
     padding-top: 62px;
     .contentMain{
-      min-height: 686px;
+      // min-height: 686px;
       box-sizing: border-box;
     }
   }

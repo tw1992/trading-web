@@ -224,6 +224,7 @@ export default {
       return {
         activeName: 'BTC',
         hasBorder:true,
+        backTop:false,
         swiperOption: {
           direction : 'vertical',
           autoplay:{
@@ -310,8 +311,10 @@ export default {
         // console.log(scrollTop)
         if(scrollTop>600){
           this.hasBorder = false;
+          this.backTop = true;
         }else{
           this.hasBorder = true;
+          this.backTop = false;
         }
       }
     },
