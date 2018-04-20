@@ -133,6 +133,26 @@
                 <el-button type="primary" size="mini" @click="googleStart()">开始</el-button>
             </span>
         </el-dialog>
+
+        <!-- 解除谷歌验证 -->
+        <el-dialog
+            title="解除谷歌验证"
+            :visible.sync="googleDelDialog"
+            width="30%"
+            custom-class="baseDialog"
+            center>
+            <el-form :model="googleDelForm" status-icon :rules="googleDelRules" ref="googleDelForm" class="googleDelForm">
+                <el-form-item label="登录密码" prop="pwd">
+                    <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="googleDelForm.pwd" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="谷歌验证码" prop="verCode">
+                    <el-input class="inputBase" placeholder="6位动态数字" v-model.number="googleDelForm.verCode"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button class="btnBase" type="primary" size="mini" @click="googleDelDialog = false;googleFlag  = false">确认</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -141,12 +161,20 @@ export default {
   data() {
     return {
       phoneFlag: true,
-      googleFlag: false,
+      googleFlag: true,
       googleAddDialog: false,
       phoneAddDialog: false,
       changePwdDialog: false,
       googleDelDialog: false,
       phoneDelDialog: false,
+      googleDelForm: {
+          pwd: "",
+          verCode: ""
+      },
+      googleDelRules: {
+          pwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
+          verCode:[{ required: true,min: 6, max: 6, message: '请输入6位动态数字', trigger: 'blur' }],
+      },
       tableData: [{
           time: '2018-04-10  15:47:28',
           IP: '192.103.104.101',
@@ -350,5 +378,29 @@ export default {
   .changePwd{
       
   }
+  .el-form-item.is-required .el-form-item__label:before{
+      content: '';
+  }
+  .el-form{
+      width: 70%;
+      margin: auto;
+      label{
+          text-align: left;
+          text-indent: -4px;
+          line-height: 30px;
+          font-size: 15px;
+      }
+      input{
+          border: 0;
+          border-bottom: 1px solid #dcdfe6;
+          padding-left: 0;
+      }
+  }
+  .el-dialog__footer{
+    .el-button{
+        margin-bottom: 20px;
+    }
+  }
+  
 }
 </style>
