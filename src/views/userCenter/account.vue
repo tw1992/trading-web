@@ -115,9 +115,49 @@
             width="30%"
             custom-class="baseDialog changePwd"
             center>
-            <span>需要注意的是内容是默认不居中的</span>
+            <el-form :model="changePwdForm" status-icon :rules="changePwdForm.rules" ref="changePwdForm">
+                <el-form-item label="原密码" prop="pwd1">
+                    <el-input class="inputBase" type="password" placeholder="请输入原密码" v-model="changePwdForm.pwd1" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="pwd2">
+                    <el-input class="inputBase" type="password" placeholder="(至少8个字符,必须包含大小写字母和数字)" v-model="changePwdForm.pwd2" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="确认新密码" prop="newpwd">
+                    <el-input class="inputBase" type="password" placeholder="请再次输入新密码" v-model="changePwdForm.newpwd" auto-complete="off"></el-input>
+                </el-form-item>
+            </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="mini" @click="changePwdDialog = false">确 定</el-button>
+                <el-button type="primary" size="mini" @click="changePwdDialog = false">确认</el-button>
+            </span>
+        </el-dialog>
+
+        <!-- 开启/解除 手机验证 -->
+        <el-dialog
+            :title="(phoneFlag?'解除':'开启') + '手机验证'"
+            :visible.sync="phoneDialog"
+            width="30%"
+            custom-class="baseDialog changePwd"
+            center>
+            <el-form :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
+                <el-form-item label="登录密码" prop="pwd">
+                    <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="phoneForm.pwd" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="您的手机号" prop="phone">
+                    <el-input placeholder="(仅限中国大陆)" v-model="phoneForm.phone" type="tel" auto-complete="off" class="inputBase input-with-select">
+                        <el-select v-model="phoneForm.select" slot="prepend" placeholder="请选择">
+                        <el-option label="+86" value="+86"></el-option>
+                        <el-option label="+88" value="+88"></el-option>
+                        <el-option label="+89" value="+89"></el-option>
+                        </el-select>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="验证码" class="verCode" prop="verCode">
+                    <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.newpwd" auto-complete="off"></el-input>
+                    <a href="javascript:;">获取</a>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" size="mini" @click="changePwdDialog = false">确认</el-button>
             </span>
         </el-dialog>
 
@@ -128,7 +168,11 @@
             width="30%"
             custom-class="baseDialog"
             center>
-            <span>需要注意的是内容是默认不居中的</span>
+            <div class="flexBox">
+                <a href="javascript:;"><img src="../../assets/google.png"></a>
+                <p class="tips">在开始绑定之前,请确保您的手机畅通</p>
+                <p class="tips">并可以访问苹果商店或谷歌商店</p>
+            </div>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="mini" @click="googleStart()">开始</el-button>
             </span>
@@ -141,7 +185,7 @@
             width="30%"
             custom-class="baseDialog"
             center>
-            <el-form :model="googleDelForm" status-icon :rules="googleDelRules" ref="googleDelForm" class="googleDelForm">
+            <el-form :model="googleDelForm" status-icon :rules="googleDelForm.rules" ref="googleDelForm" class="googleDelForm">
                 <el-form-item label="登录密码" prop="pwd">
                     <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="googleDelForm.pwd" auto-complete="off"></el-input>
                 </el-form-item>
@@ -153,6 +197,29 @@
                 <el-button class="btnBase" type="primary" size="mini" @click="googleDelDialog = false;googleFlag  = false">确认</el-button>
             </span>
         </el-dialog>
+
+        <!-- 风险提示 -->
+        <el-dialog
+            title="风险提示"
+            :show-close = "false"
+            :visible.sync="riskDialog"
+            width="30%"
+            custom-class="baseDialog"
+            class="right"
+            center>
+            <div class="flexBox">
+                <p class="tips">为了您的账号安全,我们建议您开启双重验证.</p>
+                <p class="tips">请您选择合适的验证方式.</p>
+                <div class="startBox">
+                    <a href="javascript:;" @click="riskDialog = false;googleAddDialog = true"><img src="../../assets/google.png"></a>
+                    <a href="javascript:;" @click="riskDialog = false;phoneDialog = true"><img src="../../assets/phone.png"></a>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <span class="tips">我已知晓风险</span>
+                <el-button type="primary" size="mini" @click="riskDialog = false">暂不设置</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -160,20 +227,41 @@
 export default {
   data() {
     return {
-      phoneFlag: true,
+      phoneFlag: false,
       googleFlag: true,
       googleAddDialog: false,
-      phoneAddDialog: false,
+      phoneDialog: false,
       changePwdDialog: false,
       googleDelDialog: false,
-      phoneDelDialog: false,
-      googleDelForm: {
+      riskDialog: true,
+      googleDelForm: {      //解除谷歌验证
           pwd: "",
-          verCode: ""
+          verCode: "",
+          rules: {
+            pwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
+            verCode:[{ required: true,min: 6, max: 6, message: '请输入6位动态数字', trigger: 'blur' }],
+        }
       },
-      googleDelRules: {
-          pwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
-          verCode:[{ required: true,min: 6, max: 6, message: '请输入6位动态数字', trigger: 'blur' }],
+      changePwdForm: {      //修改密码
+          pwd1: "",
+          pwd2: "",
+          newpwd: "",
+          rules: {
+            pwd1:[{ required: true, message: '请输入密码', trigger: 'blur' }],
+            pwd2:[{ required: true, message: '请输入密码', trigger: 'blur' }],
+            newpwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
+        }
+      },
+      phoneForm: {      // 开启/解除 手机验证
+          pwd: "",
+          phone: "",
+          verCode: "",
+          select: "+86",
+          rules: {
+            pwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
+            phone:[{ required: true, message: '请输入手机号', trigger: 'blur' }],
+            verCode:[{ required: true, message: '请输入验证码', trigger: 'blur' }],
+        }
       },
       tableData: [{
           time: '2018-04-10  15:47:28',
@@ -378,6 +466,71 @@ export default {
   .changePwd{
       
   }
+  .flexBox{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      a{
+          width: 100px;
+          height: 100px;
+          margin: 20px;
+          text-align: center;
+          img{
+              max-height: 100%;
+              margin: auto;
+          }
+      }
+      .tips{
+          font-size: 12px;
+          text-align: center;
+          width: 100%;
+          line-height: 20px;
+      }
+      .startBox{
+          display: flex;
+          width: 64%;
+          padding: 20px 0;
+      }
+  }
+  //带选项的input
+  .el-form-item.is-error .el-input-group__prepend{
+      border-color: #f56c6c;
+  }
+  .el-form-item.is-success .el-input-group__prepend{
+      border-color: #67c23a;
+  }
+  .el-input-group__prepend{
+      width: 10px;
+      border: 0;
+      border-bottom: 1px solid #dcdfe6;
+      border-radius: 0;
+      background: #ffffff;
+      padding-right: 16px;
+      text-indent: 4px;
+      .el-input__inner{
+          padding-right: 0;
+      }
+      .el-input__suffix{
+          display: none;
+      }
+  }
+  //获取按钮
+  .verCode{
+      position: relative;
+      a{
+          position: absolute;
+          right: 0;
+          bottom: 8px;
+          height: 22px;
+          line-height: 22px;
+          padding: 0 8px;
+          border-left: 1px solid #333333;
+          color: #333333;
+      }
+      .el-input__suffix{
+            right: 48px;
+      }
+  }
   .el-form-item.is-required .el-form-item__label:before{
       content: '';
   }
@@ -396,10 +549,25 @@ export default {
           padding-left: 0;
       }
   }
+  .el-dialog__body{
+      padding-bottom: 0;
+  }
   .el-dialog__footer{
+    .tips{
+        color: #999999;
+        font-size: 12px;
+        vertical-align: middle;
+        margin-right: 12px;
+    }
     .el-button{
         margin-bottom: 20px;
     }
+  }
+  .right.el-dialog__wrapper .el-dialog__footer{
+      text-align: right;
+      .el-button{
+        margin-right: 20px;
+      }
   }
   
 }
