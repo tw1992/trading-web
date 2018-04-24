@@ -254,7 +254,7 @@
         custom-class="baseDialog codeDialog"
         center>
         <div class="codeBox">
-          <img src="../../assets/pic.jpg">
+          <img src="../../assets/img/pic.jpg">
         </div>
         <span slot="footer" class="dialog-footer">
             <p class="add">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>

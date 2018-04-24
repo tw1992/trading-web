@@ -11,15 +11,15 @@
             </div>
 
             <div class="step1 stepItem" v-show="steps == 1">
-                <img class="logo" src="../../assets/appstore.png">
-                <img class="logo" src="../../assets/googlePlay.png">
+                <img class="logo" src="../../assets/img/appstore.png">
+                <img class="logo" src="../../assets/img/googlePlay.png">
                 <el-button type="primary" size="mini" class="btnBase" @click="steps++">下一步</el-button>
             </div>
             <div class="step2 stepItem" v-show="steps == 2">
                 <p class="tips">谷歌二次验证16位密钥</p>
                 <p class="theKey">UDFH478ITJ39JKRU</p>
                 <div class="yardBox">
-                    <img src="../../assets/pic.jpg" class="yard">
+                    <img src="../../assets/img/pic.jpg" class="yard">
                     <p class="tips">试用谷歌验证器APP</p>
                     <p class="tips">扫描该二维码</p>
                 </div>

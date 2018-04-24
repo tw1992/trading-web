@@ -4,7 +4,7 @@
         <div class="emailBox">
                 <div class="email">
                     <span class="name">2970973119@qq.com</span>
-                    <router-link to="">未实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
+                    <router-link to="/autonym">未实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
                 </div>
                 <p class="loginTime">
                     <span class="time">最后登录时间: 2018-04-16 17:45:20</span>
@@ -169,7 +169,7 @@
             custom-class="baseDialog"
             center>
             <div class="flexBox">
-                <a href="javascript:;"><img src="../../assets/google.png"></a>
+                <a href="javascript:;"><img src="../../assets/img/google.png"></a>
                 <p class="tips">在开始绑定之前,请确保您的手机畅通</p>
                 <p class="tips">并可以访问苹果商店或谷歌商店</p>
             </div>
@@ -211,8 +211,8 @@
                 <p class="tips">为了您的账号安全,我们建议您开启双重验证.</p>
                 <p class="tips">请您选择合适的验证方式.</p>
                 <div class="startBox">
-                    <a href="javascript:;" @click="riskDialog = false;googleAddDialog = true"><img src="../../assets/google.png"></a>
-                    <a href="javascript:;" @click="riskDialog = false;phoneDialog = true"><img src="../../assets/phone.png"></a>
+                    <a href="javascript:;" @click="riskDialog = false;googleAddDialog = true"><img src="../../assets/img/google.png"></a>
+                    <a href="javascript:;" @click="riskDialog = false;phoneDialog = true"><img src="../../assets/img/phone.png"></a>
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">

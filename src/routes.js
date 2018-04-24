@@ -32,6 +32,13 @@ let routes = [{
   hidden: true
 },
 {
+    path: '/tradingCenter/:goodsId',
+    component: function (resolve) {
+        require(['./views/tradingCenter/tradingCenter.vue'], resolve)
+    },
+    name: '交易中心'
+},
+{
   path: '/',
   component: function (resolve) {
       require(['./views/layout/Layout.vue'], resolve)
@@ -52,13 +59,6 @@ let routes = [{
       require(['./views/layout/Layout.vue'], resolve)
   },
   children: [{
-      path: '/tradingCenter/:goodsId',
-      component: function (resolve) {
-          require(['./views/tradingCenter/tradingCenter.vue'], resolve)
-      },
-      name: '交易中心'
-  },
-  {
       path: '/fundsManagement',
       component: function (resolve) {
           require(['./views/fundsManagement/fundsManagement.vue'], resolve)

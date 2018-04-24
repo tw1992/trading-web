@@ -8,14 +8,17 @@
     align-items: center;
     .loginBox{
         width: 580px;
-        padding-bottom: 40px;
+        box-sizing: border-box;
+        padding: 0 120px 76px 120px;
         background: #FFFFFF;
         display: flex;
         flex-direction: column;
         align-items: center;
         .logoBox{
-            height: 40px;
+            height: 54px;
+            width: 140px;
             margin-top:30px;
+            text-align: center;
         }
         .formTitle{
             // font-weight: 600;
@@ -26,9 +29,9 @@
         }
     }
     .linkList{
-        width: 400px;
+        width: 100%;
         display: flex;
-        // margin-top: 14px;
+        font-size: 12px;
         a{
             color: #4A90E2;
         }
@@ -46,16 +49,17 @@
 
     // input样式
     .formbase{
+        width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        width: 400px;
+        .el-form-item--small.el-form-item{
+            margin-bottom: 24px;
+        }
         .el-form-item__content{
             .el-input{
-                border-bottom: 1px solid #CCCCCC;
                 input{ 
                     border-radius: 0;
-                    border: 0;
                 }
                 
             }
@@ -65,9 +69,14 @@
         }
         .submitBtn{
             width: 100%;
-            margin-top: 20px;
+            font-size: 20px;
+            // margin-top: 20px;
+            border-radius: 6px;
         }
     }
     
-    
+    .el-input__inner{
+        border: 0;
+        border-bottom: 1px solid #CCCCCC;
+    }
   }
