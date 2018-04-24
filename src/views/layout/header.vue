@@ -129,8 +129,10 @@ export default {
   box-shadow: 0 2px 4px 0 #CCCCCC;
 }
 .homeNav{
+  padding: 0 60px;
   min-width: 1200px;
   display: flex;
+  box-sizing: border-box;
   // .el-menu-item{
   //   float: left;
   // }

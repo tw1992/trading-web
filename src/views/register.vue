@@ -103,7 +103,7 @@ export default {
 <style lang="scss">
 @import "../styles/login.scss";
 .el-form-item--small.recommend{
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 }
 .consent .el-form-item__content{
   line-height: 26px;

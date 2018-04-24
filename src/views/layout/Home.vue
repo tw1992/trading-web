@@ -24,7 +24,6 @@
   <el-row class="message">
     <el-col :span="24">
       <ul class="messageList">
-        <li><a href="">芯链正式开放交易</a></li>
         <li><a href="">关于本体（ONT）上线交易的风险通知</a></li>
         <li><a href="">第二期第二轮投票上币结果公布及第三轮投票开启通知</a></li>
         <li><a href="">全球首家数字货币开采与交易一体化的矿池平台上线</a></li>
@@ -34,6 +33,7 @@
 
   <el-row class="tabMain">
     <el-col class="tabBox" :span="24" ref="tabs">
+      <div class="block" v-show="!hasBorder"></div>
       <el-tabs class="" :type="hasBorder?'card':''" :class="{'tabClass':!hasBorder}" v-model="activeName" @tab-click="handleClick">
         
         <el-tab-pane>
@@ -309,7 +309,7 @@ export default {
       handleScroll(){
         var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
         // console.log(scrollTop)
-        if(scrollTop>600){
+        if(scrollTop>540){
           this.hasBorder = false;
           this.backTop = true;
         }else{
@@ -341,16 +341,16 @@ export default {
   min-width: 1200px;
   color: #333333;
   .banner{
-    height: 400px;
+    height: 330px;
     background: #000;
     display: flex;
     justify-content: center;
     
     .swiper-container{
       padding-right: 20px;
-      width: 1000px;
+      width: 1200px;
       height: 240px;
-      margin-top: 100px;
+      margin-top: 50px;
       .swiper-pagination{
         right: 0px;
       }
@@ -403,13 +403,15 @@ export default {
     height: 80px;
     background: #333333;
     .messageList{
+      width: 1200px;
+      margin: auto;
       height: 80px;
       display: flex;
       justify-content: center;
       align-items: center;
       // color: #EEEEEE;
       li{
-        font-size: 14px;
+        font-size: 12px;
         padding: 0 60px;
         line-height: 16px;
         border-right: 1px solid #cccccc;
@@ -423,10 +425,16 @@ export default {
     }
   }
   .tabMain{
-    padding: 60px;
     padding-bottom: 120px;
+    width: 1200px;
+    margin: auto;
+    padding-top: 40px;
+    .block{
+      width: 100%;
+      height: 41px;
+    }
     .tabBox{
-      #tab-3{
+       #tab-3{
         margin-top:-1px; 
         margin-right:-1px; 
         border-top:1px solid #ffffff; 
@@ -485,17 +493,27 @@ export default {
         }
         
       }
+      @keyframes top
+      {
+      from {top:-60px;}
+      to {top:0;}
+      }
       .tabClass .el-tabs__header{
         position: fixed;
         top: 0;
         left: 0;
-        padding: 0 60px;
+        padding: 0 10px;
+        animation:top 0.5s ease;
         z-index: 10;
         background: #fff;
         width: 100%;
         height: 60px;
         line-height: 60px;
         box-shadow: 0 2px 4px 0 #999999;
+        .el-tabs__nav-wrap{
+          width: 1200px;
+          margin: auto;
+        }
       }
       
 

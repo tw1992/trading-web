@@ -44,7 +44,9 @@ export default {
 <style lang="scss">
 @import "../../styles/mandatory.scss";
 .mandBox{
-  padding: 30px 60px;
+  padding-bottom:60px;
+  width: 1200px;
+  margin: auto;
   // a{
   //   color: #333333;
   // }

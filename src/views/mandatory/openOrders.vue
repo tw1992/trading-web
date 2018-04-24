@@ -16,26 +16,32 @@
       </el-table-column>
       <el-table-column
         label="市场"
+        width="60"
         prop="goods">
       </el-table-column>
       <el-table-column
         label="类型"
+        width="60"
         prop="type">
       </el-table-column>
       <el-table-column
         label="方向"
+        width="80"
         prop="direction">
       </el-table-column>
       <el-table-column
+        width="160"
         label="价格"
         prop="prices">
       </el-table-column>
       <el-table-column
+        width="160"
         label="委托数量"
         prop="num">
       </el-table-column>
       <el-table-column
         label="成交率%"
+        width="120"
         prop="probability">
       </el-table-column>
       <el-table-column

@@ -90,11 +90,9 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-.bgBox .formbase{
-    height:200px;
-}
 .linkList{
-    justify-content: center;
+    text-align:right;
+    display: inline;
 }
 .sendBox{
     width: 600px;

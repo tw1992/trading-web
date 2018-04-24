@@ -217,7 +217,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <span class="tips">我已知晓风险</span>
-                <el-button type="primary" size="mini" @click="riskDialog = false">暂不设置</el-button>
+                <el-button :style="{fontSize:'12px'}" type="primary" size="mini" @click="riskDialog = false">暂不设置</el-button>
             </span>
         </el-dialog>
     </div>
@@ -388,7 +388,7 @@ export default {
             }
             .title{
                 font-size: 15px;
-                
+                line-height: 20px;
             }
         }
         .tips{
@@ -462,36 +462,14 @@ export default {
             padding-left: 50px !important;
         }
   }
-
-  .changePwd{
-      
-  }
-  .flexBox{
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      a{
-          width: 100px;
-          height: 100px;
-          margin: 20px;
-          text-align: center;
-          img{
-              max-height: 100%;
-              margin: auto;
-          }
-      }
-      .tips{
-          font-size: 12px;
-          text-align: center;
-          width: 100%;
-          line-height: 20px;
-      }
-      .startBox{
-          display: flex;
-          width: 64%;
-          padding: 20px 0;
-      }
-  }
+  
+  .right.el-dialog__wrapper .el-dialog__footer{
+        text-align: right;
+        .el-button{
+          margin-right: 20px;
+        }
+    }
+    
   //带选项的input
   .el-form-item.is-error .el-input-group__prepend{
       border-color: #f56c6c;
@@ -514,61 +492,8 @@ export default {
           display: none;
       }
   }
-  //获取按钮
-  .verCode{
-      position: relative;
-      a{
-          position: absolute;
-          right: 0;
-          bottom: 8px;
-          height: 22px;
-          line-height: 22px;
-          padding: 0 8px;
-          border-left: 1px solid #333333;
-          color: #333333;
-      }
-      .el-input__suffix{
-            right: 48px;
-      }
-  }
-  .el-form-item.is-required .el-form-item__label:before{
-      content: '';
-  }
-  .el-form{
-      width: 70%;
-      margin: auto;
-      label{
-          text-align: left;
-          text-indent: -4px;
-          line-height: 30px;
-          font-size: 15px;
-      }
-      input{
-          border: 0;
-          border-bottom: 1px solid #dcdfe6;
-          padding-left: 0;
-      }
-  }
-  .el-dialog__body{
-      padding-bottom: 0;
-  }
-  .el-dialog__footer{
-    .tips{
-        color: #999999;
-        font-size: 12px;
-        vertical-align: middle;
-        margin-right: 12px;
-    }
-    .el-button{
-        margin-bottom: 20px;
-    }
-  }
-  .right.el-dialog__wrapper .el-dialog__footer{
-      text-align: right;
-      .el-button{
-        margin-right: 20px;
-      }
-  }
+  
+  
   
 }
 </style>

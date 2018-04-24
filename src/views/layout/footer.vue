@@ -1,4 +1,5 @@
 <template>
+<div class="footerbg">
   <el-row class="footer">
     <el-col :span="24">
       <div class="fTop">
@@ -54,6 +55,7 @@
       </div>
     </el-col>
   </el-row>
+</div>
 </template>
 
 <script>
@@ -71,16 +73,21 @@ export default {
 </script>
 
 <style lang="scss" >
-  .footer{
-    min-width: 1200px;
-    height: 200px;
+  .footerbg{
     background: #333333;
-    padding: 0 60px;
+  }
+  .footer{
+    width: 1200px;
+    margin: auto;
+    height: 200px;
     font-size: 14px;
     color: #CCCCCC;
     line-height: 98px;
     li{
       margin-right: 18px;
+      &:nth-last-child(1){
+        margin-right: 0;
+      }
     }
     a{
       color: #999999;

@@ -153,6 +153,13 @@ let routes = [{
       name: '谷歌认证'
   },
   {
+    path: '/autonym',
+    component: function (resolve) {
+        require(['./views/userCenter/autonym.vue'], resolve)
+    },
+    name: '实名认证'
+  },
+  {
       path: '/helpCenter',
       component: function (resolve) {
           require(['./views/helpCenter/helpCenter.vue'], resolve)

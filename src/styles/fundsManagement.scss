@@ -1,7 +1,204 @@
 @import "./tableBase.scss";
 
-.funds{
+.fundsmain{
+    width: 1200px;
+    margin: auto;
     .title{
-        
+        font-size: 18px;
+        line-height: 100px;
     }
 }
+
+.el-popover .baseColor{
+    color: #F5A623;
+  }
+  .careful{
+    color: #D0021B;
+  }
+  
+  .fundsmain{
+    overflow: hidden;
+    font-size: 14px;
+    color: #333333;
+    .baseColor{
+      color: #F5A623;
+    }
+    .depLbox,.depRbox{
+      height: 830px;
+      border: 1px solid #D7D7D7;
+      background: #F6F6F6;
+      margin-bottom: 60px;
+      box-sizing: border-box;
+    }
+    .depLbox{
+      width: 520px;
+      float: left;
+      padding: 34px 66px 120px 34px;
+      .selectInput{
+        width: 100%;
+        margin-bottom: 134px;
+        .el-input{
+          input{
+            border-radius: 0;
+          }
+        }
+      }
+      .priceBox{
+        display: flex;
+        justify-content: space-between;
+        line-height: 28px;
+        margin-bottom:20px; 
+        .priceList{
+          li{
+            width: 200px;
+            display: flex;
+            justify-content: space-between;
+          }
+        }
+        .know{
+          align-self: flex-end;
+          i{
+            margin-right: 12px;
+          }
+        }
+      }
+      .addBox{
+        padding: 24px 18px;
+        background: #ffffff;
+        border: 1px solid #D7D7D7;
+        .addTitle{
+          margin-bottom: 14px;
+        }
+        .add{
+          word-wrap:break-word; 
+          word-break:break-all; 
+          margin-bottom: 26px;
+        }
+        .warning{
+          color: #D0021B;
+        }
+      }
+      .btnBox{
+        margin-top: 30px;
+        margin-bottom: 60px;
+        width: 100%;
+        overflow: hidden;
+        .showcode{
+          margin-right: 34px;
+        }
+        .showcode,.copy{
+          float: right;
+          line-height: 24px;
+          padding: 10px;
+          border: 1px solid #D7D7D7;
+          background: #ffffff;
+          color: #666666;
+          span{
+            vertical-align: middle;
+          }
+          i{
+            font-size: 24px;
+            margin-right: 6px;
+            vertical-align: middle;
+          }
+        }
+      }
+      .tipsBox{
+        .tipsT{
+          font-weight: 600;
+          line-height: 30px;
+          
+        }
+        .tipsList{
+          color: #999999;
+          line-height: 30px;
+          .dot{
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #999999;
+            margin-left: 4px;
+            margin-right: 12px;
+          }
+          p{
+            display: inline-block;
+          }
+        }
+      }
+    }
+    .depRbox{
+      width: 620px;
+      float: right;
+      position: relative;
+      padding-top: 40px;
+      .depRtitle{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+        padding-left: 20px;
+        padding-right: 10px;
+        line-height: 40px;
+        border-bottom: 1px solid #D7D7D7;
+        .titleR{
+          .more{
+            color: #333333;
+            border-left: 1px solid #979797;
+            padding-left: 8px;
+          }
+          .showtip{
+            i{
+              margin: 0 8px;
+            }
+          }
+        }
+      }
+      .depList{
+        height: 100%;
+        overflow-y: auto;
+        .depItem{
+          box-sizing: border-box;
+          padding: 20px 40px 30px;
+          display: flex;
+          height: 200px;
+          // border-top: 1px solid #D7D7D7;
+          border-bottom: 1px solid #D7D7D7;
+          background: #ffffff;
+          word-wrap:break-word; 
+          word-break:break-all; 
+          // &:nth-child(1){
+          //   border-top: 0;
+          // }
+          .nodes{
+            .nodeTitle{
+              color: #666666;
+              line-height: 26px;
+            }
+            .nodeMain{
+              font-size: 13px;
+            }
+          }
+          .itemT{
+            display: flex;
+            margin-bottom: 34px;
+            .nodes{
+              margin-right: 42px;
+            }
+          }
+          
+          .itemL{
+            width: 190px;
+            margin-right: 60px;
+          }
+          .itemR{
+            width: 288px;
+          }
+        }
+        
+      }
+    }
+  }

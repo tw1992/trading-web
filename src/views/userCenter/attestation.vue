@@ -66,6 +66,7 @@
         <el-dialog
             title="完成谷歌验证"
             :visible.sync="finishFlag"
+            :show-close = "false"
             width="30%"
             custom-class="baseDialog"
             center>
@@ -181,6 +182,9 @@ export default {
             .el-step__icon.is-text{
                 border: 5px solid;
             }
+            .el-step__title{
+                font-size: 14px;
+            }
         }
         .stepItem{
             display: flex;
@@ -256,7 +260,7 @@ export default {
         .el-dialog__body{
             text-align: center;
             p{
-                padding: 40px 0 20px;
+                padding: 30px 0;
                 display: block;
                 width: 100%;
             }
