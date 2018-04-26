@@ -106,7 +106,7 @@
                         <td><span>{{item.probability}}</span></td>
                         <td><span>{{item.sum}}</span></td>
                         <td><span>{{item.condition}}</span></td>
-                        <td style="text-align: center;"><a href="javascript:;">撤销</a></td>
+                        <td style="text-align: center;"><div class="options">撤销</div></td>
                       </tr>
 										</tbody>
 									</table>
@@ -1147,7 +1147,7 @@ $baseColor : #F5A623;
             padding-left: 24px;
           }
           tr td:nth-last-child(1){
-            a{
+            .options{
               color: #7D7D7D;
               &:hover{
                 color: #ffffff;
