@@ -14,14 +14,14 @@
         <li>24H成交量 13728 BTC</li>
       </ul>
       <div class="goodsBox fz16 white">
-        <a href="javascript:;" class="showGoods">BTC/USDT<i class="el-icon-caret-bottom baseColor"></i></a>
+        <div class="showGoods options">BTC/USDT<i class="el-icon-caret-bottom baseColor"></i></div>
       </div>
       <div class="userBox fz16 white">
         <router-link to="/login">登录</router-link>
         <router-link to="/register">注册</router-link>
       </div>
       <div class="langsBox fz16 white">
-        <a href="javascript:;" class="showLangs">简体中文<i class="el-icon-arrow-down"></i></a>
+        <div class="showLangs options">简体中文<i class="el-icon-arrow-down"></i></div>
       </div>
     </div>
     <div class="tradMain">
@@ -30,9 +30,304 @@
         <div class="tradMainLT">
 
         </div>
-        <!-- 记录面板 -->
+        <!-- 订单面板 -->
         <div class="tradMainLB">
+          <ul class="orderSelect fz14">
+            <li><div class="options" :class="orderSelect == 1?'active':''" @click="orderSelect=1">当前委托</div></li>
+            <li><div class="options" :class="orderSelect == 2?'active':''" @click="orderSelect=2">历史委托</div></li>
+            <li><div class="options" :class="orderSelect == 3?'active':''" @click="orderSelect=3">历史成交</div></li>
+            <li><div class="options" :class="orderSelect == 4?'active':''" @click="orderSelect=4">资产管理</div></li>
+            <div class="block"></div>
+            <div class="hideOrder"><el-checkbox v-model="hideOrder">隐藏其他交易对</el-checkbox></div>
+          </ul>
+          <div class="orderTableBox">
+            <!-- 当前委托 -->
+            <div class="slider" v-show="orderSelect == 1">
+              <table class="table tableHead">
+										<colgroup style="width: 12%"></colgroup>
+										<colgroup style="width: 8%"></colgroup>
+										<colgroup style="width: 8%"></colgroup>
+										<colgroup style="width: 8%"></colgroup>
+										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 13%"></colgroup>
+								<tbody>
+                  <tr>
+									<th style="padding-left: 24px;">时间</th>
+									<th>市场</th>
+									<th>类型</th>
+									<th>方向</th>
+									<th>价格</th>
+									<th>数量</th>
+									<th>成交率%</th>
+									<th>成交金额</th>
+									<th>触发条件</th>
+									<th style="text-align: center;" class="cancels">
+										<span class="btn">全撤</span>
+										<div class="btn iconfont-downsjsmall">
+                      <i class="el-icon-more"></i>
+                      <div class="cancelType">
+                        <ul>
+                          <li>全部</li>
+                          <li>限价</li>
+                          <li>止盈止损</li>
+                        </ul>
+                      </div>
+										</div>
+									</th>
 
+								</tr>
+								</tbody>
+              </table>
+              <div class="tableBox">
+                <div class="tbody">
+									<table class="table table-strip">
+										<colgroup style="width: 12%"></colgroup>
+										<colgroup style="width: 8%"></colgroup>
+										<colgroup style="width: 8%"></colgroup>
+										<colgroup style="width: 8%"></colgroup>
+										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 13%"></colgroup>
+										<tbody>
+                      <tr v-for="(item,idx) in openOrder" :key="idx">
+                        <td><span>{{item.time}}</span></td>
+                        <td><span>{{item.goods}}</span></td>
+                        <td><span>{{item.type}}</span></td>
+                        <td><span>{{item.direction}}</span></td>
+                        <td><span>{{item.price}}</span></td>
+                        <td><span>{{item.num}}</span></td>
+                        <td><span>{{item.probability}}</span></td>
+                        <td><span>{{item.sum}}</span></td>
+                        <td><span>{{item.condition}}</span></td>
+                        <td style="text-align: center;"><a href="javascript:;">撤销</a></td>
+                      </tr>
+										</tbody>
+									</table>
+								</div>
+              </div>
+            </div>
+
+            <!-- 历史委托 -->
+            <div class="slider" v-show="orderSelect == 2">
+              <div class="searchBox">
+                <ul class="scopeList">
+                  <li><a href="javascript:;">当日</a></li>
+                  <li><a href="javascript:;">一周</a></li>
+                  <li><a href="javascript:;">一个月</a></li>
+                  <li><a href="javascript:;">三个月</a></li>
+                </ul>
+                <div class="timeBox">
+                  <span class="lable">起止日期</span>
+                  <el-date-picker
+                    v-model="startTime"
+                    type="date"
+                    size="mini"
+                    prefix-icon="el-icon-caret-bottom"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                  <div class="line"></div>
+                  <el-date-picker
+                    v-model="endTime"
+                    type="date"
+                    size="mini"
+                    prefix-icon="el-icon-caret-bottom"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                  <div class="searchTime">搜索</div>
+                </div>
+              </div>
+              <table class="table tableHead">
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+                    <colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+								<tbody>
+                  <tr>
+									<th style="padding-left: 24px;">委托时间</th>
+									<th>市场</th>
+									<th>类型</th>
+									<th>方向</th>
+									<th>均价</th>
+									<th>价格</th>
+									<th>Filled</th>
+									<th>数量</th>
+                  <th>成交金额</th>
+									<th>触发条件</th>
+									<th>状态</th>
+
+								</tr>
+								</tbody>
+              </table>
+              <div class="tableBox" style="height: 150px;">
+                <div class="tbody">
+									<table class="table table-strip">
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+                    <colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<tbody>
+                      <tr v-for="(item,idx) in openOrder" :key="idx">
+                        <td><span>{{item.time}}</span></td>
+                        <td><span>{{item.goods}}</span></td>
+                        <td><span>{{item.type}}</span></td>
+                        <td><span>{{item.direction}}</span></td>
+                        <td><span>{{item.price}}</span></td>
+                        <td><span>{{item.num}}</span></td>
+                        <td><span>{{item.num}}</span></td>
+                        <td><span>{{item.sum}}</span></td>
+                        <td><span>{{item.sum}}</span></td>
+                        <td><span>{{item.condition}}</span></td>
+                        <td><span>{{item.sum}}</span></td>
+                      </tr>
+										</tbody>
+									</table>
+								</div>
+              </div>
+            </div>
+
+            <!-- 历史成交 -->
+            <div class="slider" v-show="orderSelect == 3">
+              <div class="searchBox">
+                <ul class="scopeList">
+                  <li><a href="javascript:;">当日</a></li>
+                  <li><a href="javascript:;">一周</a></li>
+                  <li><a href="javascript:;">一个月</a></li>
+                  <li><a href="javascript:;">三个月</a></li>
+                </ul>
+                <div class="timeBox">
+                  <span class="lable">起止日期</span>
+                  <el-date-picker
+                    v-model="startTime"
+                    type="date"
+                    size="mini"
+                    prefix-icon="el-icon-caret-bottom"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                  <div class="line"></div>
+                  <el-date-picker
+                    v-model="endTime"
+                    type="date"
+                    size="mini"
+                    prefix-icon="el-icon-caret-bottom"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                  <div class="searchTime">搜索</div>
+                </div>
+              </div>
+              <table class="table tableHead">
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+								<tbody>
+                  <tr>
+									<th style="padding-left: 24px;">成交时间</th>
+									<th>市场</th>
+									<th>方向</th>
+									<th>成交均价</th>
+									<th>数量</th>
+                  <th>成交金额</th>
+									<th>手续费</th>
+
+								</tr>
+								</tbody>
+              </table>
+              <div class="tableBox" style="height: 150px;">
+                <div class="tbody">
+									<table class="table table-strip">
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 14%"></colgroup>
+										<tbody>
+                      <tr v-for="(item,idx) in openOrder" :key="idx">
+                        <td><span>{{item.time}}</span></td>
+                        <td><span>{{item.goods}}</span></td>
+                        <td><span>{{item.direction}}</span></td>
+                        <td><span>{{item.price}}</span></td>
+                        <td><span>{{item.num}}</span></td>
+                        <td><span>{{item.sum}}</span></td>
+                        <td><span>{{item.sum}}</span></td>
+                      </tr>
+										</tbody>
+									</table>
+								</div>
+              </div>
+            </div>
+
+            <!-- 资产管理 -->
+            <div class="slider" v-show="orderSelect == 4">
+              <table class="table tableHead">
+										<colgroup style="width: 20%"></colgroup>
+										<colgroup style="width: 20%"></colgroup>
+										<colgroup style="width: 20%"></colgroup>
+										<colgroup style="width: 20%"></colgroup>
+										<colgroup style="width: 20%"></colgroup>
+								<tbody>
+                  <tr>
+									<th style="padding-left: 24px;">币种</th>
+									<th>总额</th>
+									<th>可用余额</th>
+									<th>下单冻结</th>
+									<th>BTC估值</th>
+								</tr>
+								</tbody>
+              </table>
+              <div class="tableBox">
+                <div class="tbody" v-show="funds.length>0">
+									<table class="table table-strip">
+										<colgroup style="width: 20%"></colgroup>
+										<colgroup style="width: 20%"></colgroup>
+										<colgroup style="width: 20%"></colgroup>
+										<colgroup style="width: 20%"></colgroup>
+										<colgroup style="width: 20%"></colgroup>
+										<tbody>
+                      <tr v-for="(item,idx) in funds" :key="idx">
+                        <td><span>{{item.goods}}</span></td>
+                        <td><span>{{item.sum}}</span></td>
+                        <td><span>{{item.usable}}</span></td>
+                        <td><span>{{item.freeze}}</span></td>
+                        <td><span>{{item.value}}</span></td>
+                      </tr>
+										</tbody>
+									</table>
+								</div>
+
+                <!-- 暂无记录 -->
+                <p v-show="funds.length==0" style="width:100%;text-align:center;margin-top:80px;">暂无记录</p>
+              </div>
+
+              
+            </div>
+
+          </div>
         </div>
       </div>
       <div class="tradMainR">
@@ -41,13 +336,13 @@
           <div class="marketL">
             <div class="marketLTop">
               <ul class="selectList">
-                <li><a href="javascript:;" :class="marketSelect == 1?'tableActive':''" @click="marketSelect = 1"></a></li>
-                <li><a href="javascript:;" :class="marketSelect == 2?'tableActive':''" @click="marketSelect = 2"></a></li>
-                <li><a href="javascript:;" :class="marketSelect == 3?'tableActive':''" @click="marketSelect = 3"></a></li>
+                <li><div class="options" href="javascript:;" :class="marketSelect == 1?'tableActive':''" @click="marketSelect = 1"></div></li>
+                <li><div class="options" :class="marketSelect == 2?'tableActive':''" @click="marketSelect = 2"></div></li>
+                <li><div class="options" :class="marketSelect == 3?'tableActive':''" @click="marketSelect = 3"></div></li>
               </ul>
               <div class="flort">
                 <span>深度合并</span>
-                <a href="javascript:;" class="flortBtn">8位小数<i class="el-icon-caret-bottom"></i></a>
+                <div class="flortBtn options">8位小数<i class="el-icon-caret-bottom"></i></div>
               </div>
             </div>
 
@@ -139,9 +434,9 @@
         <!-- 交易面板 -->
         <div class="tradMainRB">
           <ul class="dealSelect fz14">
-            <li><a href="javascript:;" :class="dealSelect == 1?'active':''" @click="dealSelect=1">限价交易</a></li>
-            <li><a href="javascript:;" :class="dealSelect == 2?'active':''" @click="dealSelect=2">市价交易</a></li>
-            <li><a href="javascript:;" :class="dealSelect == 3?'active':''" @click="dealSelect=3">止盈止损</a></li>
+            <li><div class="options" :class="dealSelect == 1?'active':''" @click="dealSelect=1">限价交易</div></li>
+            <li><div class="options" :class="dealSelect == 2?'active':''" @click="dealSelect=2">市价交易</div></li>
+            <li><div class="options" :class="dealSelect == 3?'active':''" @click="dealSelect=3">止盈止损</div></li>
           </ul>
           <div class="dealbox">
             <div class="dealItem">
@@ -171,10 +466,10 @@
               </div>
               <div class="numBox">
                 <div class="numList">
-                  <a href="javascript:;">25%</a>
-                  <a href="javascript:;">50%</a>
-                  <a href="javascript:;">75%</a>
-                  <a href="javascript:;">100%</a>
+                  <div class="options">25%</div>
+                  <div class="options">50%</div>
+                  <div class="options">75%</div>
+                  <div class="options">100%</div>
                 </div>
               </div>
               <div class="sumBox">
@@ -211,10 +506,10 @@
               </div>
               <div class="numBox">
                 <div class="numList">
-                  <a href="javascript:;">25%</a>
-                  <a href="javascript:;">50%</a>
-                  <a href="javascript:;">75%</a>
-                  <a href="javascript:;">100%</a>
+                  <div class="options">25%</div>
+                  <div class="options">50%</div>
+                  <div class="options">75%</div>
+                  <div class="options">100%</div>
                 </div>
               </div>
               <div class="sumBox">
@@ -236,8 +531,15 @@ export default {
   data() {
       return {
         newmarket:[],
-        marketSelect: 1,  //行情选项
-        dealSelect:1,     //交易选项
+        marketSelect: 1,    //行情选项
+        dealSelect:1,       //交易选项
+        orderSelect: 1,     //订单选项
+        hideOrder: false,
+        openOrder: [],      //当前委托
+        funds: [],          //资产管理
+        startTime: '',
+        endTime: '',
+
       };
     },
     methods: {
@@ -506,10 +808,46 @@ export default {
 
         this.newmarket = list;
 
+      },
+      getOpenOrde() {
+        var list = [];
+        var item = {
+          time: '01-09 15:03:07',
+          goods: 'LRC/BTC',
+          type: '限价',
+          direction: '买入',
+          price: '0.00000000',
+          num: '0.00000000',
+          probability: '100%',
+          sum: '0.00000000',
+          condition: '条件'
+        };
+        for(var i=0;i<12;i++){
+          list.push(item);
+        }
+
+        this.openOrder = list;
+      },
+      getFunds() {
+        var obj = {
+          goods: 'LRC',
+          sum: '0.00000000',
+          usable: '0.00000000',
+          freeze: '0.00000000',
+          value: '0.00000000'
+        }
+        var list = [];
+        for(var i=0;i<12;i++){
+          list.push(obj);
+        }
+
+        this.funds = list;
       }
     },
     mounted() {
       this.getTable();
+      this.getOpenOrde();
+      this.getFunds();
     }
 }
 </script>
@@ -578,6 +916,9 @@ $baseColor : #F5A623;
 }
 
 .tradingCenterBox{
+  .options{
+    cursor:pointer;
+  }
   overflow-x: hidden;
   width: 100%;
   height: 100%;
@@ -646,7 +987,7 @@ $baseColor : #F5A623;
     }
     .langsBox{
       height: 100%;
-      a{
+      .showLangs{
         padding: 0 14px;
         height: 100%;
         line-height: 40px;
@@ -663,8 +1004,33 @@ $baseColor : #F5A623;
     height: 100%;
     display: flex;
 
+    //选项卡样式
+    .orderSelect,.dealSelect{
+      display: flex;
+      border-bottom: 1px solid #101010;
+      li{
+        .options{
+          line-height: 40px;
+          margin: 0 24px;
+          box-sizing: border-box;
+          height: 100%;
+          cursor:pointer;
+        }
+        .options.active{
+          color: #7694EF;
+          border-bottom: 1px solid #7694EF;
+        }
+      }
+      .block{
+        flex: 1;
+      }
+      .hideOrder{
+        margin-right: 66px;
+        line-height: 40px;
+      }
+    }
     //滚动条
-    .newmarket{
+    .newmarket,.tableBox{
       &::-webkit-scrollbar{
         width:6px;
         height:10px;
@@ -695,6 +1061,157 @@ $baseColor : #F5A623;
       .tradMainLB{
         height: 254px;
         margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        .orderTableBox{
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          .slider{
+            height: 100%;
+            width: 100%;
+            .searchBox{
+              display: flex;
+              height: 30px;
+              .scopeList{
+                height: 100%;
+                padding-left: 24px;
+                display: flex;
+                align-items: center;
+                a{
+                  border: 1px solid #969696;
+                  margin-right: 16px;
+                  padding: 0 4px;
+                  &:hover{
+                    border-color: #7EC28D;
+                  }
+                }
+              }
+              .timeBox{
+                margin-left: 54px;
+                display: flex;
+                align-items: center;
+                .lable{
+                  margin-right: 8px;
+                }
+                .line{
+                  height: 1px;
+                  width: 8px;
+                  margin: 0 2px;
+                  border-top:1px solid #969696;
+                }
+              }
+              .searchTime{
+                display: block;
+                width: 38px;
+                height: 20px;
+                line-height: 20px;
+                text-align: center;
+                background: #8DCC9B;
+                color: #ffffff;
+                margin-left: 12px;
+                cursor:pointer;
+              }
+            }
+            .tableBox{
+              height:180px;
+              overflow-y: auto;
+            }
+          }
+        }
+        .table{
+          width: 100%;
+          border-collapse: collapse;
+          border-spacing: 0;
+          cursor:pointer;
+          th{
+            padding: 5px 0;
+            text-align: left;
+          }
+          // th:nth-child(3){
+          //   padding-right: 12px;
+          // }
+          tr{
+            &:hover{
+              background: #424C55;
+            }
+          }
+          td{
+            text-align: left;
+            box-sizing: border-box;
+            padding: 2px 0px;
+            height:26px;
+            position: relative;
+          }
+          tr td:nth-child(1){
+            padding-left: 24px;
+          }
+          tr td:nth-last-child(1){
+            a{
+              color: #7D7D7D;
+              &:hover{
+                color: #ffffff;
+              }
+            }
+          }
+        }
+        .tableHead{
+          th{
+            font-weight: 500;
+          }
+          tr{
+            &:hover{
+              background: #050505;
+            }
+          }
+          th.cancels .btn{
+            border: 1px solid #465461;
+            background-color: #3b4752;
+            padding:0 5px;
+            height: 20px;
+            line-height: 20px;
+            display: inline-block;
+            border-radius: 2px;
+          }
+          th.cancels .iconfont-downsjsmall{
+            position: relative;
+            display: inline-block;
+            margin: 0;
+            &:hover .cancelType{
+              z-index: 5;
+              opacity: 1;
+            }
+            .cancelType{
+              position: absolute;
+              top: 20px;
+              right: -1px;
+              min-width: 120px;
+              z-index: -1;
+              opacity: 0;
+              padding-top: 2px;
+              transition: all 0.5s ease-in-out;
+              ul{
+                box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+              }
+              li{
+                padding: 0 10px;
+                font-size: 12px;
+                color: #999;
+                text-align: center;
+                line-height: 22px;
+                border: 1px solid #465461;
+                border-top: 0;
+                background-color: #3b4752;
+                &:first-of-type{
+                  border-top: 1px solid #465461;
+                }
+                &:hover{
+                  background: #2b2c27;
+                }
+              }
+            }
+          }
+        }
       }
     }
     .tradMainR{
@@ -756,19 +1273,20 @@ $baseColor : #F5A623;
               display: flex;
               li{
                 margin-left: 12px;
-                a{
+                .options{
                   display: block;
                   height: 14px;
                   width: 26px;
                   border: 1px solid #858282;
                 }
-                a.tableActive{
+                .options.tableActive{
                   border-color: $baseColor;
                 }
               }
             }
             .flort{
               .flortBtn{
+                display: inline-block;
                 height: 18px;
                 border: 1px solid #858282;
                 padding: 0 6px;
@@ -858,22 +1376,7 @@ $baseColor : #F5A623;
         margin-top: 10px;
         display: flex;
         flex-direction: column;
-        .dealSelect{
-          display: flex;
-          border-bottom: 1px solid #101010;
-          li{
-            a{
-              line-height: 40px;
-              margin: 0 24px;
-              box-sizing: border-box;
-              display: block;
-              height: 100%;
-            }
-            a.active{
-              border-bottom: 1px solid #7694EF;
-            }
-          }
-        }
+        
         .dealbox{
           flex: 1;
           padding: 0 24px;
@@ -899,7 +1402,6 @@ $baseColor : #F5A623;
                 box-sizing: border-box;
                 width: 226px;
                 height: 32px;
-                display: inline-block;
                 float: right;
                 background: #424C55;
                 border: 0;
@@ -994,7 +1496,7 @@ $baseColor : #F5A623;
                 display: flex;
                 justify-content: space-between;
                 margin: 10px 0;
-                a{
+                .options{
                   width: 40px;
                   height: 20px;
                   line-height: 20px;
@@ -1042,4 +1544,40 @@ $baseColor : #F5A623;
 }
 </style>
 
+<style lang="scss">
+.tradingCenterBox{
+  .el-checkbox__inner{
+    background: #050505;
+  }
+
+  .timeBox .el-date-editor.el-input{
+    &:hover .el-input__prefix{
+        display: none;
+      }
+    width: 94px;
+    font-size: 12px;
+    .el-input__prefix{
+      left: 68px;
+      i{
+        line-height: 20px;
+      }
+    }
+    input{
+      padding-left: 8px;
+      padding-right: 12px;
+      background: #050505;
+      height: 20px;
+      line-height: 20px;
+      border-radius: 0;
+      
+    }
+    .el-input__suffix{
+      right: 0px;
+      i{
+        line-height: 20px;
+      }
+    }
+  }
+}
+</style>
 
