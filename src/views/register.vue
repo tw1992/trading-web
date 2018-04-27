@@ -13,30 +13,30 @@
             <el-input
               placeholder="邮箱地址"
               v-model="registerForm.email">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
+              <i slot="prefix" class="iconfont icon-youjian1"></i>
             </el-input>
           </el-form-item>
           <el-form-item prop="pass">
             <el-input
               placeholder="密码"
               type="password"
-              v-model="registerForm.pass">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
+              v-model="registerForm.password">
+              <i slot="prefix" class="iconfont icon-suozi"></i>
             </el-input>
           </el-form-item>
           <el-form-item prop="pass2">
             <el-input
               placeholder="确认密码"
               type="password"
-              v-model="registerForm.pass2">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
+              v-model="registerForm.password2">
+              <i slot="prefix" class="iconfont icon-suozi"></i>
             </el-input>
           </el-form-item>
-          <el-form-item prop="recommend" class="recommend">
+          <el-form-item class="recommend">
             <el-input
               placeholder="推荐人（选填）"
               v-model="registerForm.recommend">
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
+              <i slot="prefix" class="iconfont icon-wo"></i>
             </el-input>
           </el-form-item>
           <el-form-item prop="consent" class="consent">
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+//import { mapState } from 'vuex'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -68,28 +69,61 @@ export default {
           if (!reg.test(value)) {
             callback(new Error('请输入正确的邮箱'));
           }
+          callback();
+        }
+      };
+      var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        } else {
+          if (this.registerForm.pass2 !== '') {
+            this.$refs.registerForm.validateField('pass2');
+          }
+          callback();
+        }
+      };
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.registerForm.pass) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
         }
       };
       return {
         registerForm:{
-          email:"",
-          pass:"",
-          pass2:"",
+          email:"466865383@qq.com",
+          password:"123456",
+          password2:"123456",
           recommend:"",
-          consent:false
+          consent:[]
         },
         rules:{
           email:[{ validator: validateEmail, trigger: 'blur' }],
-          pass:[{ required: true, message: '请输入密码', trigger: 'blur' },],
+          pass:[{ validator: validatePass, trigger: 'blur' },],
+          pass2:[{ validator: validatePass2, trigger: 'blur' },],
           consent:[{ type: 'array',required: true, message: '未同意服务条款', trigger: 'change' },],
         },
       };
     },
+    // computed: {
+    //   ...mapState([
+    //       'email',
+    //       'token'
+    //   ]),
+    // }, 
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            this.$store.dispatch('Regist', this.registerForm).then((res) => {  
+              console.log(res)
+              //this.loading = false;  
+              //this.$router.push({path: '/login'});  
+            }).catch((e) => {  
+              //this.loading = false  
+            }) 
           } else {
             console.log('error submit!!');
             return false;
@@ -116,6 +150,9 @@ export default {
 }
 .linkList{
   justify-content: center;
+}
+.iconfont{
+  font-size: 24px;
 }
 </style>
 

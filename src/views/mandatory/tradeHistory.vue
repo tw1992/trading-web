@@ -53,7 +53,7 @@
         <el-button size="mini">重置</el-button>
       </div>
       <div class="searchItem export">
-        <a href="javascript:;">导出历史委托记录<i class="el-icon-document"></i></a>
+        <a href="javascript:;">导出历史委托记录<i class="iconfont icon-excel"></i></a>
       </div>
     </div>
 

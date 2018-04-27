@@ -1,6 +1,8 @@
 <template>
 <div class="home">
-
+  <!-- <div class="goTop" v-show="!isTop" @click="smoothscroll()">
+    <i class="el-icon-upload2"></i>
+  </div> -->
   <el-row class="banner">
     <el-col :span="24">
       <swiper :options="swiperOption">
@@ -222,9 +224,9 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper';
 export default {
   data() {
       return {
+        isTop: true,
         activeName: 'BTC',
         hasBorder:true,
-        backTop:false,
         swiperOption: {
           direction : 'vertical',
           autoplay:{
@@ -311,11 +313,15 @@ export default {
         // console.log(scrollTop)
         if(scrollTop>540){
           this.hasBorder = false;
-          this.backTop = true;
+          this.isTop = false;
         }else{
           this.hasBorder = true;
-          this.backTop = false;
+          this.isTop = true;
         }
+      },
+      smoothscroll() {
+        document.body.scrollTop = 0
+        document.documentElement.scrollTop = 0
       }
     },
     components: {
@@ -340,6 +346,21 @@ export default {
   height: 100%;
   min-width: 1200px;
   color: #333333;
+  .goTop{
+    height: 46px;
+    width: 46px;
+    border-radius: 50%;
+    color: #ffffff;
+    line-height: 46px;
+    font-size: 26px;
+    background: #000000;
+    text-align: center;
+    position: fixed;
+    right: 60px;
+    bottom: 240px;
+    cursor:pointer;
+    z-index: 100;
+  }
   .banner{
     height: 330px;
     background: #000;
@@ -400,12 +421,12 @@ export default {
     background: #F5A623;
   }
   .message{
-    height: 80px;
+    height: 46px;
     background: #333333;
     .messageList{
       width: 1200px;
       margin: auto;
-      height: 80px;
+      height: 46px;
       display: flex;
       justify-content: center;
       align-items: center;

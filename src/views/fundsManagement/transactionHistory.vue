@@ -6,14 +6,14 @@
 
     <div class="selectBox">
       <ul class="select">
-        <li :class="activeIdx == '0'?'active':''" @click="changeActive(0)"><a href="javascript:;">充值记录</a></li>
+        <li :class="activeIdx == '0'?'active':''" @click="changeActive(0)"><a href="javascript:;">充值</a></li>
         <li class="line active"></li>
-        <li :class="activeIdx == '1'?'active':''" @click="changeActive(1)"><a href="javascript:;">提现记录</a></li>
+        <li :class="activeIdx == '1'?'active':''" @click="changeActive(1)"><a href="javascript:;">提现</a></li>
       </ul>
 
       <div class="export">
-        <a v-show="activeIdx == 0" href="javascript:;">导出充值记录<i class="el-icon-document"></i></a>
-        <a v-show="activeIdx == 1" href="javascript:;">导出提现记录<i class="el-icon-document"></i></a>
+        <a v-show="activeIdx == 0" href="javascript:;">导出充值记录<i class="iconfont icon-excel"></i></a>
+        <a v-show="activeIdx == 1" href="javascript:;">导出提现记录<i class="iconfont icon-excel"></i></a>
       </div>
     </div>
 
@@ -51,7 +51,7 @@
           <el-table-column
             label="信息">
             <template slot-scope="scope">
-              <div class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.message.add}}</p></div>
+              <div style="margin-bottom:4px;" class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.message.add}}</p></div>
               <div class="tdItem"><p class="tdname">Txid</p><p class="tdmain">{{scope.row.message.Txid}}</p></div>
             </template>
           </el-table-column>
@@ -183,7 +183,10 @@ export default {
       display: flex;
       align-items: center;
       a{
-          color: #333333;
+        color: #333333;
+        &:hover{
+          color: #F5A623;
+        }
       }
       i{
           margin-left: 8px;
@@ -232,8 +235,10 @@ export default {
     color: #D0021B;
   }
   .tdItem{
+    line-height: 16px;
     display: flex;
     justify-content: space-between;
+    margin: 6px 0;
     .tdmain{
       width: 400px;
       padding-right: 60px;

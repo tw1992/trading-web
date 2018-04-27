@@ -13,7 +13,7 @@
                 <el-input
                 placeholder="邮箱地址"
                 v-model="retrieveForm.email">
-                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                <i slot="prefix" class="iconfont icon-youjian1"></i>
                 </el-input>
             </el-form-item>
             
@@ -90,6 +90,9 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+.iconfont{
+    font-size: 24px;
+}
 .linkList{
     text-align:right;
     display: inline;

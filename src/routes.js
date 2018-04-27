@@ -22,7 +22,15 @@ let routes = [{
     },
     name: '找回密码',
     hidden: true
-  },
+},
+{
+    path: '/resetpassword',
+    component: function (resolve) {
+        require(['./views/resetpassword.vue'], resolve)
+    },
+    name: '重置密码',
+    hidden: true
+},
 {
   path: '/404',
   component: function (resolve) {
@@ -158,6 +166,13 @@ let routes = [{
         require(['./views/userCenter/autonym.vue'], resolve)
     },
     name: '实名认证'
+  },
+  {
+    path: '/terms',
+    component: function (resolve) {
+        require(['./views/layout/other/terms.vue'], resolve)
+    },
+    name: '服务条款'
   },
   {
       path: '/helpCenter',

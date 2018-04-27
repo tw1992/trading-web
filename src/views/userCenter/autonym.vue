@@ -326,6 +326,9 @@ export default {
             content: '';
             margin-right: 0;
         }
+        .el-upload--text{
+            background:  #EEEEEE;
+        }
         .avatar-uploader .el-upload {
             border: 1px dashed #d9d9d9;
             border-radius: 6px;
@@ -337,8 +340,8 @@ export default {
             border-color: #F5A623;
         }
         .avatar-uploader-icon {
-            font-size: 28px;
-            color: #8c939d;
+            font-size: 80px;
+            color: #ffffff;
             width: 300px;
             height: 200px;
             line-height: 200px;

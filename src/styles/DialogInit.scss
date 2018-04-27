@@ -2,6 +2,7 @@
 .baseDialog{
     width: 400px !important;
     border-radius: 10px;
+    margin-top: 24vh !important;
     .el-dialog__header{
         border-bottom: 2px solid #ccc;
         padding-bottom: 20px;
@@ -25,8 +26,10 @@
         label{
             text-align: left;
             text-indent: -4px;
-            line-height: 16px;
+            line-height: 12px;
             font-size: 12px;
+            margin-bottom: 6px;
+            display: block;
         }
         input{
             border: 0;

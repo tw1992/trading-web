@@ -2,25 +2,27 @@
     <div class="accBox">
         <p class="topTip">安全建议：检查访问网址、开启二次验证、不要给他人转账和透露密码信息等。</p>
         <div class="emailBox">
-                <div class="email">
-                    <span class="name">2970973119@qq.com</span>
-                    <router-link to="/autonym">未实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
-                </div>
-                <p class="loginTime">
+            <div class="email">
+                <p class="name">2970973119@qq.com</p>
+                <p class="lastLogin">
                     <span class="time">最后登录时间: 2018-04-16 17:45:20</span>
                     <span class="IP">IP: 103.192.224.102</span>
                 </p>
-                <p class="UID">UID:23298</p>
+                <p class="UID">UID: 23298</p>
+            </div>
+            <div class="attest">
+                <router-link class="toattest" to="/autonym">未实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
+            </div>
         </div>
         <div class="otherBox">
             <div class="otherT">
                 <div class="passBox itemBox">
                     <div class="boxL">
                         <p class="titles">
-                            <i class="el-icon-edit"></i>
+                            <i class="iconfont icon-suozi"></i>
                             <span class="title">登录密码</span>
                         </p>
-                        <p class="tips">
+                        <p class="tips" style="font-size:16px;">
                             * * * * * *
                         </p>
                     </div>
@@ -32,7 +34,7 @@
                 <div class="phoneBox itemBox">
                     <div class="boxL">
                         <p class="titles">
-                            <i class="el-icon-edit"></i>
+                            <i class="iconfont icon-shouji"></i>
                             <span class="title">手机验证</span>
                         </p>
                         <p class="tips">
@@ -53,7 +55,7 @@
                 <div class="APIBox itemBox">
                         <div class="boxL">
                             <p class="titles">
-                                <i class="el-icon-edit"></i>
+                                <i class="iconfont icon-APIwendang"></i>
                                 <span class="title">API</span>
                             </p>
                             <p class="tips">
@@ -67,7 +69,7 @@
                 <div class="GoogleBox itemBox">
                         <div class="boxL">
                             <p class="titles">
-                                <i class="el-icon-edit"></i>
+                                <i class="iconfont icon-APIwendang"></i>
                                 <span class="title">谷歌验证</span>
                             </p>
                             <p class="tips">
@@ -338,36 +340,46 @@ export default {
     border: 1px solid #cccccc;
   }
   .emailBox {
-    height: 200px;
+    height: 140px;
     box-sizing: border-box;
     padding: 16px 30px;
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+    
+    justify-content: space-between;
     margin-bottom: 20px;
     .email {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      .name {
-        font-size: 20px;
-      }
-      a {
-        color: #f5a623;
-        font-size: 14px;
-        padding-right: 10px;
-      }
+        display: flex;
+        flex-direction: column;
+        .name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .lastLogin,.UID{
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+      
     }
-    .loginTime {
-      // margin: 32px 0;
-      font-size: 12px;
-      span {
-        margin-right: 20px;
-      }
+    .attest{
+        .toattest {
+            color: #f5a623;
+            font-size: 14px;
+            padding-right: 10px;
+            line-height: 26px;
+            font-weight: 600;
+        }
     }
-    .UID {
-      font-size: 12px;
-    }
+    // .loginTime {
+    //   // margin: 32px 0;
+    //   font-size: 12px;
+    //   span {
+    //     margin-right: 20px;
+    //   }
+    // }
+    // .UID {
+    //   font-size: 12px;
+    // }
   }
   .itemBox {
     width: 580px;
@@ -379,16 +391,18 @@ export default {
     .boxL{
         width: 360px;
         .titles{
-            line-height: 20px;
-            margin-bottom: 10px;
+            height: 30px;
+            margin-bottom: 12px;
+            vertical-align: middle;
             i{
                 color: #999999 ;
-                font-size: 20px;
+                font-size: 30px;
                 margin-right: 6px;
+                vertical-align: middle;
             }
             .title{
                 font-size: 15px;
-                line-height: 20px;
+                vertical-align: middle;
             }
         }
         .tips{
@@ -402,7 +416,7 @@ export default {
         position: relative;
         .el-button{
             border-radius: 0;
-            width: 120px;
+            width: 100px;
             height: 40px;
         }
         .el-switch__core{
@@ -497,3 +511,4 @@ export default {
   
 }
 </style>
+

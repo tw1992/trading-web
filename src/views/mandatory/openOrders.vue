@@ -26,8 +26,10 @@
       </el-table-column>
       <el-table-column
         label="方向"
-        width="80"
-        prop="direction">
+        width="80">
+        <template slot-scope="scope">
+          <span :class="scope.row.direction=='卖出'?'red':'green'">{{ scope.row.direction }}</span>
+        </template>
       </el-table-column>
       <el-table-column
         width="160"
@@ -109,7 +111,7 @@
           time: '2018-04-11 18:08:11',
           goods: 'BTC',
           type: '限价',
-          direction: '卖出',
+          direction: '买入',
           prices: '0.00000051',
           num: '3,374.74628467',
           probability: '0.00029%',

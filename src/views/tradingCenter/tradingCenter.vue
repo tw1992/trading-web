@@ -7,7 +7,7 @@
       <p class="time">2018-04-01    12:00:04</p>
       <div class="block"></div>
       <ul class="fz14 marketList">
-        <li>最新价<span class="red fb16">6948.32</span>≈ 44851.40 CNY</li>
+        <li>最新价<span style="margin:0 2px;" class="fb16 red">6948.32</span>≈ 44851.40 CNY</li>
         <li>涨跌幅<span class="green"> +0.22%</span></li>
         <li>高 6984.99</li>
         <li>低 6868.67</li>
@@ -116,12 +116,12 @@
 
             <!-- 历史委托 -->
             <div class="slider" v-show="orderSelect == 2">
-              <div class="searchBox">
+              <div class="scopeBox">
                 <ul class="scopeList">
-                  <li><a href="javascript:;">当日</a></li>
-                  <li><a href="javascript:;">一周</a></li>
-                  <li><a href="javascript:;">一个月</a></li>
-                  <li><a href="javascript:;">三个月</a></li>
+                  <li><div class="options">当日</div></li>
+                  <li><div class="options">一周</div></li>
+                  <li><div class="options">一个月</div></li>
+                  <li><div class="options">三个月</div></li>
                 </ul>
                 <div class="timeBox">
                   <span class="lable">起止日期</span>
@@ -172,7 +172,7 @@
 								</tr>
 								</tbody>
               </table>
-              <div class="tableBox" style="height: 150px;">
+              <div class="tableBox" style="height: 140px;">
                 <div class="tbody">
 									<table class="table table-strip">
 										<colgroup style="width: 9%"></colgroup>
@@ -208,12 +208,12 @@
 
             <!-- 历史成交 -->
             <div class="slider" v-show="orderSelect == 3">
-              <div class="searchBox">
+              <div class="scopeBox">
                 <ul class="scopeList">
-                  <li><a href="javascript:;">当日</a></li>
-                  <li><a href="javascript:;">一周</a></li>
-                  <li><a href="javascript:;">一个月</a></li>
-                  <li><a href="javascript:;">三个月</a></li>
+                  <li><div class="options">当日</div></li>
+                  <li><div class="options">一周</div></li>
+                  <li><div class="options">一个月</div></li>
+                  <li><div class="options">三个月</div></li>
                 </ul>
                 <div class="timeBox">
                   <span class="lable">起止日期</span>
@@ -256,7 +256,7 @@
 								</tr>
 								</tbody>
               </table>
-              <div class="tableBox" style="height: 150px;">
+              <div class="tableBox" style="height: 140px;">
                 <div class="tbody">
 									<table class="table table-strip">
 										<colgroup style="width: 14%"></colgroup>
@@ -367,16 +367,16 @@
                   <colgroup style="width:30%;"></colgroup>
                   <tbody>
                     <tr v-for="(it,idx) in newmarket" :key="idx">
-                      <td class="f-left red"><span>{{it.price}}</span></td>
-                      <td class="f-center"><span>{{it.num}}</span></td>
-                      <td class="f-right" style="color: #898989;"><span>{{it.time}}</span><div class="zhuzhuang redBg" :style="{width: Math.random()*346+'px'}"></div></td>
+                      <td class="f-left red hoverB"><span>{{it.price}}</span></td>
+                      <td class="f-center"><span class="hoverSpan">{{it.num}}</span></td>
+                      <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{it.time}}</span><div class="zhuzhuang redBg" :style="{width: Math.random()*346+'px'}"></div></td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               
               <div class="depth">
-                <div class="depthL green fz14">
+                <div style="color: #7EC28D;" class="depthL fz14">
                   0.00000435<i class="el-icon-sort-up"></i><span class="price baseColor">&yen;0.18</span>
                 </div>
                 <div class="depthWrong">
@@ -391,9 +391,9 @@
                   <colgroup style="width:30%;"></colgroup>
                   <tbody>
                     <tr v-for="(it,idx) in newmarket" :key="idx">
-                      <td class="f-left green"><span>{{it.price}}</span></td>
-                      <td class="f-center"><span>{{it.num}}</span></td>
-                      <td class="f-right" style="color: #898989;"><span>{{it.time}}</span><div class="zhuzhuang greenBg" :style="{width: Math.random()*346+'px'}"></div></td>
+                      <td class="f-left green hoverB"><span>{{it.price}}</span></td>
+                      <td class="f-center"><span class="hoverSpan">{{it.num}}</span></td>
+                      <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{it.time}}</span><div class="zhuzhuang greenBg" :style="{width: Math.random()*346+'px'}"></div></td>
                     </tr>
                   </tbody>
                   
@@ -459,10 +459,10 @@
                 <label>XRP</label>
                 <input type="text">
                 <span class="most">最多购买<span>0</span></span>
-                <div class="jiantou baseColor">
+                <!-- <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
                   <i class="el-icon-caret-bottom"></i>
-                </div>
+                </div> -->
               </div>
               <div class="numBox">
                 <div class="numList">
@@ -499,10 +499,10 @@
                 <label>XRP</label>
                 <input type="text">
                 <span class="most">最多购买<span>0</span></span>
-                <div class="jiantou baseColor">
+                <!-- <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
                   <i class="el-icon-caret-bottom"></i>
-                </div>
+                </div> -->
               </div>
               <div class="numBox">
                 <div class="numList">
@@ -527,6 +527,7 @@
 </template>
 
 <script>
+import calc from 'calculatorjs'
 export default {
   data() {
       return {
@@ -848,6 +849,8 @@ export default {
       this.getTable();
       this.getOpenOrde();
       this.getFunds();
+      var num = calc.add(0.00000001, 0.00000002)
+      console.log(num.toFixed(8))
     }
 }
 </script>
@@ -856,6 +859,11 @@ export default {
 $baseColor : #F5A623;
 //基础样式
 .tradingCenterBox{
+  .hoverB{
+    &:hover{
+      font-weight: 600;
+    }
+  }
   .fz13{
     font-size: 13px;
   }
@@ -1070,7 +1078,7 @@ $baseColor : #F5A623;
           .slider{
             height: 100%;
             width: 100%;
-            .searchBox{
+            .scopeBox{
               display: flex;
               height: 30px;
               .scopeList{
@@ -1078,7 +1086,7 @@ $baseColor : #F5A623;
                 padding-left: 24px;
                 display: flex;
                 align-items: center;
-                a{
+                .options{
                   border: 1px solid #969696;
                   margin-right: 16px;
                   padding: 0 4px;
@@ -1228,6 +1236,7 @@ $baseColor : #F5A623;
           border-collapse: collapse;
           border-spacing: 0;
           cursor:pointer;
+          
           th{
             padding: 2px 12px;
           }
@@ -1244,6 +1253,16 @@ $baseColor : #F5A623;
             padding: 2px 0px;
             line-height: 12px;
             position: relative;
+            span{
+              z-index:2;
+              position: relative;
+            }
+            .hoverSpan{
+              &:hover{
+                font-weight: 600;
+                color: #ffffff;
+              }
+            }
             .zhuzhuang{
               position: absolute;
               top: 1px;

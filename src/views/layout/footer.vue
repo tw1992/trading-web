@@ -8,11 +8,11 @@
             <a href="#">关于我们</a>
           </li>
           <li>
-            <a href="#">服务协议</a>
+            <router-link to="/terms">服务协议</router-link>
           </li>
-          <li>
+          <!-- <li>
             <a href="#">隐私声明</a>
-          </li>
+          </li> -->
           <li>
             <a href="#">费率标准</a>
           </li>
@@ -27,10 +27,10 @@
           </li>
         </ul>
         <ul class="iconList">
-          <li>上</li>
-          <li>上</li>
-          <li>上</li>
-          <li>上</li>
+          <li><i class="iconfont icon-iconset0360"></i></li>
+          <li><i class="iconfont icon-iconset0360"></i></li>
+          <li><i class="iconfont icon-iconset0360"></i></li>
+          <li><i class="iconfont icon-iconset0360"></i></li>
         </ul>
       </div>
       <div class="fLine"></div>
@@ -75,14 +75,15 @@ export default {
 <style lang="scss" >
   .footerbg{
     background: #333333;
+    height: 126px;
   }
   .footer{
     width: 1200px;
     margin: auto;
-    height: 200px;
+    height: 126px;
     font-size: 14px;
     color: #CCCCCC;
-    line-height: 98px;
+    line-height: 62px;
     li{
       margin-right: 18px;
       &:nth-last-child(1){
@@ -97,7 +98,7 @@ export default {
       }
     }
     .fLine{
-      border: 1px solid #979797;
+      border-top: 1px solid #515558;
     }
     ul,.fTop,.fDown{
       display: flex;

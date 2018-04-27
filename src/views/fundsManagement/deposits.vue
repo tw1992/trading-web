@@ -31,7 +31,7 @@
             <span class="num">0.00000000 ADA</span>
           </li>
         </ul>
-        <a href="javascript:;" class="know baseColor"><i class="el-icon-share"></i><span>什么是ADA？</span></a>
+        <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>什么是ADA？</span></a>
       </div>
 
       <div class="addBox">
@@ -40,8 +40,8 @@
         <p class="warning">禁止向ADA地址充值除ADA之外的资产，任何充入ADA地址的非ADA资产将不可找回。</p>
       </div>
       <div class="btnBox">
-        <a href="javascript:;" class="copy"><i class="el-icon-edit"></i>复制到剪贴板</a>
-        <a href="javascript:;" class="showcode" @click="codeDialog = true"><i class="el-icon-edit"></i><span>展示二维码</span></a>
+        <a href="javascript:;" class="copy"><i class="iconfont icon-fuzhi"></i>复制到剪贴板</a>
+        <a href="javascript:;" class="showcode" @click="codeDialog = true"><i class="iconfont icon-erweima"></i><span>展示二维码</span></a>
       </div>
       <div class="tipsBox">
         <p class="tipsT">温馨提示</p>

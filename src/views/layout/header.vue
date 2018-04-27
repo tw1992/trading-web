@@ -11,20 +11,22 @@
           <el-menu-item index="/Home">{{$t('route.logo')}}</el-menu-item>
           <el-menu-item index="/tradingCenter/1">{{$t('route.tradingCenter')}}</el-menu-item>
           <el-menu-item index="" class="blank" disabled></el-menu-item>
-        <el-submenu index="/fundsManagement">
+          <el-menu-item v-if="!user" index="/login">{{$t('route.login')}}</el-menu-item>
+          <el-menu-item v-if="!user" index="/register">{{$t('route.register')}}</el-menu-item>
+        <el-submenu index="/fundsManagement" v-if="user">
             <template slot="title">{{$t('route.funds')}}</template>
             <el-menu-item index="/fundsManagement/balances">{{$t('route.balances')}}</el-menu-item>
             <el-menu-item index="/fundsManagement/deposits">{{$t('route.deposits')}}</el-menu-item>
             <el-menu-item index="/fundsManagement/withdrawals">{{$t('route.withdrawals')}}</el-menu-item>
             <el-menu-item index="/fundsManagement/transactionHistory">{{$t('route.transactionHistory')}}</el-menu-item>
         </el-submenu>
-        <el-submenu index="/mandatory">
+        <el-submenu index="/mandatory" v-if="user">
             <template slot="title">{{$t('route.orders')}}</template>
             <el-menu-item index="/mandatory/openOrders">{{$t('route.openOrders')}}</el-menu-item>
             <el-menu-item index="/mandatory/orderHistory">{{$t('route.orderHistory')}}</el-menu-item>
             <el-menu-item index="/mandatory/tradeHistory">{{$t('route.tradeHistory')}}</el-menu-item>
         </el-submenu>
-        <el-submenu index="/userCenter">
+        <el-submenu index="/userCenter" v-if="user">
             <template slot="title">{{$t('route.account')}}</template>
             <el-menu-item index="/userCenter/account">{{$t('route.accountManagement')}}</el-menu-item>
             <el-menu-item index="">{{$t('route.assessment')}}</el-menu-item>
@@ -51,28 +53,14 @@
         </el-submenu>
         </el-menu>
         </el-col>
-      <!-- <div class="userinfo">
-        <el-dropdown trigger="hover" placement="bottom-start">
-          <div>
-            <i class="iconfont orgName icon-duoren"></i>
-            <span class="el-dropdown-link userinfo-inner">{{sysUserName}}</span>
-          </div>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="logout">{{$t('route.logout')}}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <span class="fullScreen" @click="fullScreen">
-          <i class="iconfont icon-icwindowzoom48px"></i>
-          全屏
-        </span>
-      </div> -->
 </template>
 
 <script>
 export default {
   data() {
     return {
-      sysUserName: "aaa"
+      sysUserName: "aaa",
+      user: "",
     };
   },
   methods: {

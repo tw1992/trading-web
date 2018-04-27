@@ -31,7 +31,7 @@
             <span class="num">0.00000000 ADA</span>
           </li>
         </ul>
-        <a href="javascript:;" class="know baseColor"><i class="el-icon-share"></i><span>什么是ADA？</span></a>
+        <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>什么是ADA？</span></a>
       </div>
 
       <div class="tipsBox">

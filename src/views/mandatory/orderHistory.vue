@@ -56,7 +56,7 @@
         <el-checkbox size="mini" v-model="conceal">隐藏已撤销</el-checkbox>
       </div>
       <div class="searchItem export">
-        <a href="javascript:;">导出历史委托记录<i class="el-icon-document"></i></a>
+        <a href="javascript:;">导出历史委托记录<i class="iconfont icon-excel"></i></a>
       </div>
     </div>
 
@@ -80,8 +80,10 @@
           prop="type">
         </el-table-column>
         <el-table-column
-          label="方向"
-          prop="direction">
+          label="方向">
+          <template slot-scope="scope">
+            <span :class="scope.row.direction=='卖出'?'red':'green'">{{ scope.row.direction }}</span>
+          </template>
         </el-table-column>
         <el-table-column
           label="价格"

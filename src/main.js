@@ -6,9 +6,11 @@ import './styles/element-variables.scss';
 // import 'element-ui/lib/theme-chalk/index.css';
 import './styles/vars.scss'
 import './styles/DialogInit.scss'
+import './assets/iconfont/iconfont.css'
 import VueRouter from 'vue-router'
 import routes from './routes'
 import i18n from './lang'
+
 
 Vue.use(ElementUI)
 Vue.use(VueRouter)
