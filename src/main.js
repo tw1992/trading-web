@@ -7,32 +7,32 @@ import './styles/element-variables.scss';
 import './styles/vars.scss'
 import './styles/DialogInit.scss'
 import './assets/iconfont/iconfont.css'
-import VueRouter from 'vue-router'
-import routes from './routes'
+import router from './routes'
 import i18n from './lang'
 
 
 Vue.use(ElementUI)
-Vue.use(VueRouter)
-
-const router = new VueRouter({
-  mode: 'history',
-  routes
-})
 
 Vue.use(ElementUI, {
   size: 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
 })
 
+
+// 页面刷新时，重新赋值token
+if (window.localStorage.getItem('token')) {
+  store.dispatch('initLogin');
+}
+
+
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
   ElementUI,
   i18n,
   store,
+  router,
   components: { App },
   template: '<App/>'
 })

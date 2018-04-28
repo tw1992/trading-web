@@ -11,24 +11,24 @@
           <el-menu-item index="/Home">{{$t('route.logo')}}</el-menu-item>
           <el-menu-item index="/tradingCenter/1">{{$t('route.tradingCenter')}}</el-menu-item>
           <el-menu-item index="" class="blank" disabled></el-menu-item>
-          <el-menu-item v-if="!user" index="/login">{{$t('route.login')}}</el-menu-item>
-          <el-menu-item v-if="!user" index="/register">{{$t('route.register')}}</el-menu-item>
-        <el-submenu index="/fundsManagement" v-if="user">
+          <el-menu-item v-if="!email" index="/login">{{$t('route.login')}}</el-menu-item>
+          <el-menu-item v-if="!email" index="/register">{{$t('route.register')}}</el-menu-item>
+        <el-submenu index="/fundsManagement" v-if="email">
             <template slot="title">{{$t('route.funds')}}</template>
             <el-menu-item index="/fundsManagement/balances">{{$t('route.balances')}}</el-menu-item>
             <el-menu-item index="/fundsManagement/deposits">{{$t('route.deposits')}}</el-menu-item>
             <el-menu-item index="/fundsManagement/withdrawals">{{$t('route.withdrawals')}}</el-menu-item>
             <el-menu-item index="/fundsManagement/transactionHistory">{{$t('route.transactionHistory')}}</el-menu-item>
         </el-submenu>
-        <el-submenu index="/mandatory" v-if="user">
+        <el-submenu index="/mandatory" v-if="email">
             <template slot="title">{{$t('route.orders')}}</template>
             <el-menu-item index="/mandatory/openOrders">{{$t('route.openOrders')}}</el-menu-item>
             <el-menu-item index="/mandatory/orderHistory">{{$t('route.orderHistory')}}</el-menu-item>
             <el-menu-item index="/mandatory/tradeHistory">{{$t('route.tradeHistory')}}</el-menu-item>
         </el-submenu>
-        <el-submenu index="/userCenter" v-if="user">
+        <el-submenu index="/userCenter" v-if="email">
             <template slot="title">{{$t('route.account')}}</template>
-            <el-menu-item index="/userCenter/account">{{$t('route.accountManagement')}}</el-menu-item>
+            <el-menu-item index="/userCenter/account">{{email}}</el-menu-item>
             <el-menu-item index="">{{$t('route.assessment')}}</el-menu-item>
             <el-menu-item index="">{{$t('route.logout')}}</el-menu-item>
         </el-submenu>
@@ -56,11 +56,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
       sysUserName: "aaa",
-      user: "",
     };
   },
   methods: {
@@ -95,10 +95,21 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+        'email',
+        'token',
+        'userInfo',
+    ]),
     language() {
       return this.$store.getters.language
     }
   },
+  mounted (){
+    this.$store.dispatch('initLogin');
+    console.log(this.email)
+    console.log(this.token)
+    this.$store.dispatch('getUserInfo');
+  }
 };
 </script>
 

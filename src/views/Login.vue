@@ -16,11 +16,11 @@
               <i slot="prefix" class="iconfont icon-youjian1"></i>
             </el-input>
           </el-form-item>
-          <el-form-item prop="pass">
+          <el-form-item prop="password">
             <el-input
               placeholder="密码"
               type="password"
-              v-model="loginForm.pass">
+              v-model="loginForm.password">
               <i slot="prefix" class="iconfont icon-suozi"></i>
             </el-input>
           </el-form-item>
@@ -112,6 +112,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import VueRouter from 'vue-router'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -123,15 +125,16 @@ export default {
             callback(new Error('请输入正确的邮箱'));
           }
         }
+        callback();
       };
       return {
         loginForm:{
-          email:"",
-          pass:""
+          email:"466865383@qq.com",
+          password:""
         },
         rules:{
           email:[{ validator: validateEmail, trigger: 'blur' }],
-          pass:[{ required: true, message: '请输入密码', trigger: 'blur' },],
+          password:[{ required: true, message: '请输入密码', trigger: 'blur' },],
         },
 
         phoneDialog: false,  //手机验证
@@ -148,7 +151,7 @@ export default {
             verCode: { required: true, message: '请输入验证码', trigger: 'blur' }
           }
         },
-        doubleDialog: true,
+        doubleDialog: false,
         doubleSelect: 1,
       };
     },
@@ -156,13 +159,43 @@ export default {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            this.$store.dispatch('Login', this.loginForm).then((res) => {  
+              console.log(res)
+              //this.loading = false;  
+              //this.$router.push({path: '/login'});  
+              this.$message({
+                message: '登录成功',
+                type: 'success'
+              });
+              var _this = this;
+              setTimeout(()=>{
+                let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
+                console.log(redirect)
+                _this.$router.push({ path: redirect })
+                console.log(123)
+              },2000)
+            }).catch((e) => {  
+              //this.loading = false  
+              // console.log("err")
+              // console.log(e)
+            })
           } else {
             console.log('error submit!!');
             return false;
           }
         });
       },
+    },
+    computed: {
+    ...mapGetters([
+        'email',
+        'token',
+        'userInfo',
+      ]),
+    },
+    mounted (){
+      console.log(this.email)
+      console.log(this.token)
     }
 }
 </script>

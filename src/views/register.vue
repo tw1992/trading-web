@@ -121,8 +121,18 @@ export default {
               console.log(res)
               //this.loading = false;  
               //this.$router.push({path: '/login'});  
+              this.$message({
+                message: '注册成功',
+                type: 'success'
+              });
+              var _this = this;
+              setTimeout(()=>{
+                _this.$router.push("/login");
+              },2000)
             }).catch((e) => {  
               //this.loading = false  
+              // console.log("err")
+              // console.log(e)
             }) 
           } else {
             console.log('error submit!!');

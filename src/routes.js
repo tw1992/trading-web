@@ -1,4 +1,10 @@
 import Home from './views/layout/Home.vue'
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import store from '@/store'
+
+Vue.use(VueRouter)
+
 let routes = [{
   path: '/login',
   component: function (resolve) {
@@ -72,6 +78,9 @@ let routes = [{
           require(['./views/fundsManagement/fundsManagement.vue'], resolve)
       },
       name: '资金管理',
+      meta: {
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
       children: [{
             path: '/fundsManagement/balances',
             component: function (resolve) {
@@ -109,6 +118,9 @@ let routes = [{
       component: function (resolve) {
           require(['./views/mandatory/mandatory.vue'], resolve)
       },
+      meta: {
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
       name: '委托管理',
       children: [{
             path: '/mandatory/openOrders',
@@ -142,6 +154,9 @@ let routes = [{
           require(['./views/userCenter/user.vue'], resolve)
       },
       name: '个人',
+      meta: {
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
       children: [{
             path: '/userCenter/account',
             component: function (resolve) {
@@ -158,6 +173,9 @@ let routes = [{
       component: function (resolve) {
           require(['./views/userCenter/attestation.vue'], resolve)
       },
+      meta: {
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
       name: '谷歌认证'
   },
   {
@@ -165,6 +183,9 @@ let routes = [{
     component: function (resolve) {
         require(['./views/userCenter/autonym.vue'], resolve)
     },
+    meta: {
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
     name: '实名认证'
   },
   {
@@ -191,4 +212,28 @@ let routes = [{
 }
 ];
 
-export default routes;
+
+const router = new VueRouter({
+    mode: 'history',
+    routes
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(r => r.meta.requireAuth)) {
+        if (store.getters.token) {
+            next();
+        }
+        else {
+            next({
+                path: '/login',
+                query: {redirect: to.fullPath}
+            })
+        }
+    }
+    else {
+        next();
+    }
+})
+
+
+export default router;
