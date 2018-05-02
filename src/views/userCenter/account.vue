@@ -3,12 +3,12 @@
         <p class="topTip">安全建议：检查访问网址、开启二次验证、不要给他人转账和透露密码信息等。</p>
         <div class="emailBox">
             <div class="email">
-                <p class="name">2970973119@qq.com</p>
+                <p class="name">{{userInfo.email}}</p>
                 <p class="lastLogin">
-                    <span class="time">最后登录时间: 2018-04-16 17:45:20</span>
-                    <span class="IP">IP: 103.192.224.102</span>
+                    <span class="time">最后登录时间: {{tableData[0]?tableData[0].time:""}}</span>
+                    <span class="IP">IP: {{tableData[0]?tableData[0].ip:""}}</span>
                 </p>
-                <p class="UID">UID: 23298</p>
+                <p class="UID">UID: {{userInfo.id}}</p>
             </div>
             <div class="attest">
                 <router-link class="toattest" to="/autonym">未实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
@@ -27,7 +27,7 @@
                         </p>
                     </div>
                     <div class="boxR">
-                        <el-button type="primary" @click="changePwdFlag = true">修改</el-button>
+                        <el-button type="primary" @click="changePwdDialog = true">修改</el-button>
                     </div>
                     
                 </div>
@@ -100,7 +100,7 @@
                 class-name="firstCol">
                 </el-table-column>
                 <el-table-column
-                prop="IP"
+                prop="ip"
                 label="IP">
                 </el-table-column>
                 <el-table-column
@@ -121,11 +121,11 @@
                 <el-form-item label="原密码" prop="pwd1">
                     <el-input class="inputBase" type="password" placeholder="请输入原密码" v-model="changePwdForm.pwd1" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="新密码" prop="pwd2">
-                    <el-input class="inputBase" type="password" placeholder="(至少8个字符,必须包含大小写字母和数字)" v-model="changePwdForm.pwd2" auto-complete="off"></el-input>
+                <el-form-item label="新密码" prop="newpwd1">
+                    <el-input class="inputBase" type="password" placeholder="(至少8个字符,必须包含大小写字母和数字)" v-model="changePwdForm.newpwd1" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="确认新密码" prop="newpwd">
-                    <el-input class="inputBase" type="password" placeholder="请再次输入新密码" v-model="changePwdForm.newpwd" auto-complete="off"></el-input>
+                <el-form-item label="确认新密码" prop="newpwd2">
+                    <el-input class="inputBase" type="password" placeholder="请再次输入新密码" v-model="changePwdForm.newpwd2" auto-complete="off"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -155,7 +155,8 @@
                 </el-form-item>
                 <el-form-item label="验证码" class="verCode" prop="verCode">
                     <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.newpwd" auto-complete="off"></el-input>
-                    <a href="javascript:;">获取</a>
+                    <a v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">获取</a>
+                    <span v-show="!VerCodeFlag">{{verCodeTime}} S</span>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -226,16 +227,40 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import axios from '../../api/axios'
+import { isPoneAvailable,isPassword } from '../../utils/common'
 export default {
   data() {
+      var validatePass = (rule, value, callback) => {
+        if (!isPassword(value)) {
+          callback(new Error('请输入正确的密码'));
+        } else {
+          if (this.changePwdForm.newpwd2 !== '') {
+            this.$refs.changePwdForm.validateField('newpwd2');
+          }
+          callback();
+        }
+      };
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.changePwdForm.newpwd1) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
     return {
       phoneFlag: false,
-      googleFlag: true,
+      googleFlag: false,
       googleAddDialog: false,
       phoneDialog: false,
       changePwdDialog: false,
       googleDelDialog: false,
-      riskDialog: true,
+      riskDialog: false,        //风险提示
+      VerCodeFlag: true,
+      verCodeTime: 60,
       googleDelForm: {      //解除谷歌验证
           pwd: "",
           verCode: "",
@@ -246,12 +271,12 @@ export default {
       },
       changePwdForm: {      //修改密码
           pwd1: "",
-          pwd2: "",
-          newpwd: "",
+          newpwd1: "",
+          newpwd2: "",
           rules: {
             pwd1:[{ required: true, message: '请输入密码', trigger: 'blur' }],
-            pwd2:[{ required: true, message: '请输入密码', trigger: 'blur' }],
-            newpwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
+            newpwd1:[{ validator: validatePass, trigger: 'blur' }],
+            newpwd2:[{ validator: validatePass2, trigger: 'blur' }],
         }
       },
       phoneForm: {      // 开启/解除 手机验证
@@ -259,29 +284,14 @@ export default {
           phone: "",
           verCode: "",
           select: "+86",
+          smsId: "",
           rules: {
             pwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
             phone:[{ required: true, message: '请输入手机号', trigger: 'blur' }],
             verCode:[{ required: true, message: '请输入验证码', trigger: 'blur' }],
         }
       },
-      tableData: [{
-          time: '2018-04-10  15:47:28',
-          IP: '192.103.104.101',
-          address: 'Hong Kong'
-        }, {
-          time: '2018-04-10  15:47:28',
-          IP: '192.103.104.101',
-          address: 'Hong Kong'
-        }, {
-          time: '2018-04-10  15:47:28',
-          IP: '192.103.104.101',
-          address: 'Hong Kong'
-        }, {
-          time: '2018-04-10  15:47:28',
-          IP: '192.103.104.101',
-          address: 'Hong Kong'
-        },],
+      tableData: [],            //登录历史
         
     };
   },
@@ -302,12 +312,12 @@ export default {
       },
       switchClick(target) {     //判断swich显示对应弹窗
         console.log(this[target],target);
-        var flag = this[target],target;
+        var flag = this[target];
         if(target == 'phoneFlag'){
-            if(flag){
-
+            if(flag){  
+                this.phoneDialog = true;
             }else{
-
+                this.phoneDialog = true;
             }
         }else if(target == 'googleFlag'){
             if(flag){
@@ -316,8 +326,78 @@ export default {
                 this.googleAddDialog = true;
             }
         }
+      },
+      getVerificationCode(mobile) {     //获取验证码
+            var _this = this;
+            if(isPoneAvailable(mobile)){
+                axios.get(`/api/sms/to_mobile/${mobile}`).then(function(res){  
+                    console.log(res);
+                    _this.VerCodeFlag = false;
+                    _this.verCodeTime = 60;
+                    _this.verCodeTimeStart ();
+                    phoneForm.smsId = res.data.smsId;
+                }).catch(function (res){  
+                    console.log(res);
+                });  
+            }else{
+                this.$message({
+                    message: '请填写正确的手机号码',
+                    type: 'warning'
+                    });
+            }
+            
+      },
+      verCodeTimeStart (){              //验证码计时器
+          var _this = this;
+          var timer = setInterval(()=>{
+              if(_this.verCodeTime>1){
+                  _this.verCodeTime--;
+              }else{
+                  clearInterval(timer);
+                  this.VerCodeFlag = true;
+              }
+          },1000)
       }
     },
+    computed: {
+        ...mapGetters([
+            'email',
+            'token',
+            'userInfo',
+        ])
+    },
+    created() {
+        var _this = this;
+        this.$store.dispatch('getUserInfo');
+        console.log(this.userInfo,this.userInfo.two_factor_auth_type == "CLOSE");
+        if(this.userInfo.two_factor_auth_type == "CLOSE"){
+            this.riskDialog = true;
+            this.phoneFlag = false;
+            this.googleFlag = false;
+        }else if(this.userInfo.two_factor_auth_type == "MOBILE"){
+            this.riskDialog = false;
+            this.phoneFlag = true;
+            this.googleFlag = false;
+        }else if(this.userInfo.two_factor_auth_type == "GOOGLE"){
+            this.riskDialog = false;
+            this.phoneFlag = false;
+            this.googleFlag = true;
+        }else if(this.userInfo.two_factor_auth_type == "BOTH"){
+            this.riskDialog = false;
+            this.phoneFlag = true;
+            this.googleFlag = true;
+        }else{
+            this.riskDialog = true;
+        }
+        
+
+        axios.get('/api/user/login_log').then(function(res){  
+            console.log(res);
+            _this.tableData = res.data;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+    }
 };
 </script>
 

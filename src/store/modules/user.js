@@ -96,8 +96,8 @@ const user = {
     getUserInfo({ commit }){
         return new Promise((resolve, reject) => { 
             axios.get('/api/user/info', '').then(response => {   
-                console.log(response);
-                //commit('SET_USERINFO', '');  
+                //console.log(response);
+                commit('SET_USERINFO', response.data);  
                 resolve(response);  
             }).catch(error => {   
                 reject(error) 
