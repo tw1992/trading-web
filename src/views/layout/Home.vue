@@ -363,7 +363,7 @@ export default {
   }
   .banner{
     height: 330px;
-    background: #000;
+    background: #000000;
     display: flex;
     justify-content: center;
     

@@ -2,7 +2,7 @@
   <div class="bgBox">
     <div class="loginBox" v-if="!sendFlag">
       <div class="logoBox">
-        <p class="logo">LOGO</p>
+        <img class="logo" src="../assets/img/logo.png" alt="logo">
       </div>
         <el-form :model="retrieveForm" size="small" :rules="rules" ref="retrieveForm" class="loginForm formbase">
             <div class="formT">

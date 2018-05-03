@@ -19,6 +19,10 @@
             width: 140px;
             margin-top:30px;
             text-align: center;
+            .logo{
+                max-height: 100%;
+                max-width: 100%;
+            }
         }
         .formTitle{
             // font-weight: 600;

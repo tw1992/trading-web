@@ -8,7 +8,7 @@
         @select="handleSelect"
         text-color="#333333"
         active-text-color="#F5A623">
-          <el-menu-item index="/Home">{{$t('route.logo')}}</el-menu-item>
+          <el-menu-item index="/Home" class="logo"><img src="../../assets/img/logo.png" alt="logo"></el-menu-item>
           <el-menu-item index="/tradingCenter/1">{{$t('route.tradingCenter')}}</el-menu-item>
           <el-menu-item index="" class="blank" disabled></el-menu-item>
           <el-menu-item v-if="!email" index="/login">{{$t('route.login')}}</el-menu-item>
@@ -113,25 +113,21 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.el-menu--horizontal .el-menu--popup{
-  min-width: 120px;
-  text-indent: 8px;
-}
 
-</style>
 
 
 <style scoped lang="scss">
 @import "~scss_vars";
 .header{
   box-shadow: 0 2px 4px 0 #CCCCCC;
+  
 }
 .homeNav{
   padding: 0 60px;
   min-width: 1200px;
   display: flex;
   box-sizing: border-box;
+  // background: #131520;
   // .el-menu-item{
   //   float: left;
   // }
@@ -147,10 +143,24 @@ export default {
     }
   }
 }
-.changeLang{
-    .el-dropdown-link{
-        
-    }
-    
+</style>
+
+<style lang="scss">
+.el-menu--horizontal .el-menu--popup{
+  min-width: 120px;
+  text-indent: 8px;
+}
+.el-menu--horizontal{
+  border:0;
+}
+.logo.el-menu-item.is-active{
+  border-bottom:0;
+}
+.logo.el-menu-item{
+  img{
+    max-height:26px;
+    display: inline-block;
+    vertical-align: middle;
+  }
 }
 </style>

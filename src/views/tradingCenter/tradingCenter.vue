@@ -2,7 +2,7 @@
   <div class="tradingCenterBox">
     <div class="tradHeader">
       <router-link to="/Home" class="logoBox">
-        <img src="../../assets/img/ID  hand.png" alt="logo">
+        <img src="../../assets/img/logo.png" alt="logo">
       </router-link>
       <p class="time">2018-04-01    12:00:04</p>
       <div class="block"></div>
@@ -948,13 +948,13 @@ $baseColor : #F5A623;
     align-items: center;
     .logoBox{
       display: block;
-      width: 70px;
-      height: 26px;
+      // width: 70px;
+      // height: 26px;
       margin-left: 10px;
-      margin-right: 50px;
+      margin-right: 30px;
       img{
-        width: 100%;
-        height: 100%;
+        max-width: 100%;
+        max-height: 26px;
       }
     }
     .block{
@@ -1025,8 +1025,8 @@ $baseColor : #F5A623;
           cursor:pointer;
         }
         .options.active{
-          color: #7694EF;
-          border-bottom: 1px solid #7694EF;
+          color: $baseColor;
+          border-bottom: 1px solid $baseColor;
         }
       }
       .block{

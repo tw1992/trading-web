@@ -74,7 +74,7 @@ export default {
 
 <style lang="scss" >
   .footerbg{
-    background: #333333;
+    background: #000000;
     height: 126px;
   }
   .footer{

@@ -2,7 +2,7 @@
   <div class="bgBox">
     <div class="loginBox">
       <div class="logoBox">
-        <p class="logo">LOGO</p>
+        <img class="logo" src="../assets/img/logo.png" alt="logo">
       </div>
       <el-form :model="registerForm" size="small" :rules="rules" ref="registerForm" class="loginForm formbase">
         <div class="formT">
