@@ -39,13 +39,14 @@
       <el-tabs class="" :type="hasBorder?'card':''" :class="{'tabClass':!hasBorder}" v-model="activeName" @tab-click="handleClick">
         
         <el-tab-pane>
-          <span slot="label"><i class="el-icon-star-on"></i> 自选</span>
+          <span slot="label"><i class="el-icon-star-on"></i> {{$t('home.favorites')}}</span>
           <el-row class="tabContent">
             <el-table
             :data="BTCList"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
+            <span slot="empty">{{$t('home.noData')}}</span>
             <el-table-column
               align="center"
               width="80">
@@ -55,11 +56,11 @@
             </el-table-column>
             <el-table-column
               prop="name"
-              label="市场"
+              :label="$t('home.pair')"
               width="180">
             </el-table-column>
             <el-table-column
-              label="最新价"
+              :label="$t('home.lastPrice')"
               width="188">
               <template slot-scope="scope">
                 <span class="newPriceL">{{scope.row.newPrice1}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;{{scope.row.newPrice2}}</span>
@@ -68,7 +69,7 @@
             <el-table-column
               prop="scope"
               align="right"
-              label="24h涨跌">
+              :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="parseFloat(scope.row.scope)>=0?'green':'red'">{{scope.row.scope}}</span>
               </template>
@@ -76,30 +77,32 @@
             <el-table-column
               prop="high"
               align="right"
-              label="24h最高价">
+              :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="down"
               align="right"
-              label="24h最低价">
+              :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="all"
               align="right"
               class-name="lastList"
-              label="24h成交量">
+              :label="'24h'+$t('home.volume')">
             </el-table-column>
           </el-table>
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="BTC市场" name="BTC">
+        <el-tab-pane name="BTC">
+          <span slot="label">BTC {{$t('home.markets')}}</span>
           <el-row class="tabContent">
             <el-table
             :data="BTCList"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
+            <span slot="empty">{{$t('home.noData')}}</span>
             <el-table-column
               align="center"
               width="80">
@@ -109,11 +112,11 @@
             </el-table-column>
             <el-table-column
               prop="name"
-              label="市场"
+              :label="$t('home.pair')"
               width="180">
             </el-table-column>
             <el-table-column
-              label="最新价"
+              :label="$t('home.lastPrice')"
               width="188">
               <template slot-scope="scope">
                 <span class="newPriceL">{{scope.row.newPrice1}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;{{scope.row.newPrice2}}</span>
@@ -122,7 +125,7 @@
             <el-table-column
               prop="scope"
               align="right"
-              label="24h涨跌">
+              :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="parseFloat(scope.row.scope)>=0?'green':'red'">{{scope.row.scope}}</span>
               </template>
@@ -130,30 +133,32 @@
             <el-table-column
               prop="high"
               align="right"
-              label="24h最高价">
+              :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="down"
               align="right"
-              label="24h最低价">
+              :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="all"
               align="right"
               class-name="lastList"
-              label="24h成交量">
+              :label="'24h'+$t('home.volume')">
             </el-table-column>
           </el-table>
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="ETH市场" name="ETH">
+        <el-tab-pane name="ETH">
+          <span slot="label">ETH {{$t('home.markets')}}</span>
           <el-row class="tabContent">
             <el-table
             :data="ETHList"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
+            <span slot="empty">{{$t('home.noData')}}</span>
             <el-table-column
               align="center"
               width="80">
@@ -163,11 +168,11 @@
             </el-table-column>
             <el-table-column
               prop="name"
-              label="市场"
+              :label="$t('home.pair')"
               width="180">
             </el-table-column>
             <el-table-column
-              label="最新价"
+              :label="$t('home.lastPrice')"
               width="188">
               <template slot-scope="scope">
                 <span class="newPriceL">{{scope.row.newPrice1}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;{{scope.row.newPrice2}}</span>
@@ -176,7 +181,7 @@
             <el-table-column
               prop="scope"
               align="right"
-              label="24h涨跌">
+              :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="parseFloat(scope.row.scope)>=0?'green':'red'">{{scope.row.scope}}</span>
               </template>
@@ -184,18 +189,18 @@
             <el-table-column
               prop="high"
               align="right"
-              label="24h最高价">
+              :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="down"
               align="right"
-              label="24h最低价">
+              :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="all"
               align="right"
               class-name="lastList"
-              label="24h成交量">
+              :label="'24h'+$t('home.volume')">
             </el-table-column>
           </el-table>
           </el-row>
@@ -204,10 +209,10 @@
         <el-tab-pane :disabled="true">
           <span slot="label">
             <el-input
-          class="search"
-          placeholder="请输入内容"
-          prefix-icon="el-icon-search"
-          >
+            class="search"
+            placeholder=""
+            prefix-icon="el-icon-search"
+            >
         </el-input>
           </span>
         </el-tab-pane>
@@ -322,7 +327,7 @@ export default {
       smoothscroll() {
         document.body.scrollTop = 0
         document.documentElement.scrollTop = 0
-      }
+      },
     },
     components: {
       swiper,
@@ -418,7 +423,7 @@ export default {
   }
   .swiper-pagination-bullet-active{
     opacity: 1;
-    background: #F5A623;
+    background: #FC9217;
   }
   .message{
     height: 46px;
@@ -493,7 +498,7 @@ export default {
           font-size: 13px;
         }
         .star-on{
-          color: #F5A623;
+          color: #FC9217;
         }
         .star-off{
           color: #cccccc;

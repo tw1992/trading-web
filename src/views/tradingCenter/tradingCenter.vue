@@ -7,21 +7,21 @@
       <p class="time">2018-04-01    12:00:04</p>
       <div class="block"></div>
       <ul class="fz14 marketList">
-        <li>最新价<span style="margin:0 2px;" class="fb16 red">6948.32</span>≈ 44851.40 CNY</li>
-        <li>涨跌幅<span class="green"> +0.22%</span></li>
-        <li>高 6984.99</li>
-        <li>低 6868.67</li>
-        <li>24H成交量 13728 BTC</li>
+        <li>{{$t('home.lastPrice')}}<span style="margin:0 2px;" class="fb16 red">6948.32</span>≈ 44851.40 CNY</li>
+        <li>{{$t('tradingCenter.change')}}<span class="green"> +0.22%</span></li>
+        <li>{{$t('home.high')}} 6984.99</li>
+        <li>{{$t('home.low')}} 6868.67</li>
+        <li>24H{{$t('home.volume')}} 13728 BTC</li>
       </ul>
       <div class="goodsBox fz16 white">
         <div class="showGoods options">BTC/USDT<i class="el-icon-caret-bottom baseColor"></i></div>
       </div>
       <div class="userBox fz16 white">
-        <router-link to="/login">登录</router-link>
-        <router-link to="/register">注册</router-link>
+        <router-link to="/login">{{$t('route.login')}}</router-link>
+        <router-link to="/register">{{$t('route.register')}}</router-link>
       </div>
       <div class="langsBox fz16 white">
-        <div class="showLangs options">简体中文<i class="el-icon-arrow-down"></i></div>
+        <div class="showLangs options">{{$t('route.lang')}}<i class="el-icon-arrow-down"></i></div>
       </div>
     </div>
     <div class="tradMain">
@@ -33,12 +33,12 @@
         <!-- 订单面板 -->
         <div class="tradMainLB">
           <ul class="orderSelect fz14">
-            <li><div class="options" :class="orderSelect == 1?'active':''" @click="orderSelect=1">当前委托</div></li>
-            <li><div class="options" :class="orderSelect == 2?'active':''" @click="orderSelect=2">历史委托</div></li>
-            <li><div class="options" :class="orderSelect == 3?'active':''" @click="orderSelect=3">历史成交</div></li>
-            <li><div class="options" :class="orderSelect == 4?'active':''" @click="orderSelect=4">资产管理</div></li>
+            <li><div class="options" :class="orderSelect == 1?'active':''" @click="orderSelect=1">{{$t('route.openOrders')}}</div></li>
+            <li><div class="options" :class="orderSelect == 2?'active':''" @click="orderSelect=2">{{$t('route.orderHistory')}}</div></li>
+            <li><div class="options" :class="orderSelect == 3?'active':''" @click="orderSelect=3">{{$t('tradingCenter.tradeHistory')}}</div></li>
+            <li><div class="options" :class="orderSelect == 4?'active':''" @click="orderSelect=4">{{$t('route.funds')}}</div></li>
             <div class="block"></div>
-            <div class="hideOrder"><el-checkbox v-model="hideOrder">隐藏其他交易对</el-checkbox></div>
+            <div class="hideOrder"><el-checkbox v-model="hideOrder">{{$t('tradingCenter.hide')}}</el-checkbox></div>
           </ul>
           <div class="orderTableBox">
             <!-- 当前委托 -->
@@ -66,7 +66,7 @@
 									<th>成交金额</th>
 									<th>触发条件</th>
 									<th style="text-align: center;" class="cancels">
-										<span class="btn">全撤</span>
+										<span class="btn">{{$t('tradingCenter.cancelAll')}}</span>
 										<div class="btn iconfont-downsjsmall">
                       <i class="el-icon-more"></i>
                       <div class="cancelType">
@@ -106,7 +106,7 @@
                         <td><span>{{item.probability}}</span></td>
                         <td><span>{{item.sum}}</span></td>
                         <td><span>{{item.condition}}</span></td>
-                        <td style="text-align: center;"><div class="options">撤销</div></td>
+                        <td style="text-align: center;"><div class="options">{{$t('tradingCenter.cancel')}}</div></td>
                       </tr>
 										</tbody>
 									</table>
@@ -321,7 +321,7 @@
 								</div>
 
                 <!-- 暂无记录 -->
-                <p v-show="funds.length==0" style="width:100%;text-align:center;margin-top:80px;">暂无记录</p>
+                <p v-show="funds.length==0" style="width:100%;text-align:center;margin-top:80px;">{{$t('tradingCenter.noData')}}</p>
               </div>
 
               
@@ -341,17 +341,17 @@
                 <li><div class="options" :class="marketSelect == 3?'tableActive':''" @click="marketSelect = 3"></div></li>
               </ul>
               <div class="flort">
-                <span>深度合并</span>
-                <div class="flortBtn options">8位小数<i class="el-icon-caret-bottom"></i></div>
+                <span>{{$t('tradingCenter.groups')}}</span>
+                <div class="flortBtn options">8{{$t('tradingCenter.decimals')}}<i class="el-icon-caret-bottom"></i></div>
               </div>
             </div>
 
             <table class="table">
 							<tbody>
                 <tr>
-                  <th class="f-left fz14">价格(BTC)</th>
-                  <th class="f-center fz15">数量(IOST)</th>
-                  <th class="f-right fz14">金额（BTC)</th>
+                  <th class="f-left fz14">{{$t('tradingCenter.price')}}(BTC)</th>
+                  <th class="f-center fz15">{{$t('tradingCenter.amount')}}(IOST)</th>
+                  <th class="f-right fz14">{{$t('tradingCenter.sum')}}(BTC)</th>
                 </tr>
 							</tbody>
               <colgroup style="width:30%;"></colgroup>
@@ -381,7 +381,7 @@
                 </div>
                 <div class="depthWrong">
                   <img src="https://resource.binance.com/resources/img/depthFail.gif">
-                  <p>行情更新延迟</p>
+                  <p>{{$t('tradingCenter.marketStatus')}}:{{$t('tradingCenter.delay')}}</p>
                 </div>
               </div>
               <div class="tableBox" :class="marketSelect == 3?'toHeight100':marketSelect == 2?'toHeight0':''">
@@ -405,9 +405,9 @@
             <table class="table">
 							<tbody>
                 <tr>
-                  <th class="f-left fz13">价格(BTC)</th>
-                  <th class="f-center fz13">数量(IOST)</th>
-                  <th class="f-right fz13">时间</th>
+                  <th class="f-left fz13">{{$t('tradingCenter.price')}}(BTC)</th>
+                  <th class="f-center fz13">{{$t('tradingCenter.amount')}}(IOST)</th>
+                  <th class="f-right fz13">{{$t('tradingCenter.time')}}</th>
                 </tr>
 							</tbody>
               <colgroup style="width:30%;"></colgroup>
@@ -434,18 +434,18 @@
         <!-- 交易面板 -->
         <div class="tradMainRB">
           <ul class="dealSelect fz14">
-            <li><div class="options" :class="dealSelect == 1?'active':''" @click="dealSelect=1">限价交易</div></li>
-            <li><div class="options" :class="dealSelect == 2?'active':''" @click="dealSelect=2">市价交易</div></li>
-            <li><div class="options" :class="dealSelect == 3?'active':''" @click="dealSelect=3">止盈止损</div></li>
+            <li><div class="options" :class="dealSelect == 1?'active':''" @click="dealSelect=1">{{$t('tradingCenter.limit')}}</div></li>
+            <li><div class="options" :class="dealSelect == 2?'active':''" @click="dealSelect=2">{{$t('tradingCenter.market')}}</div></li>
+            <li><div class="options" :class="dealSelect == 3?'active':''" @click="dealSelect=3">{{$t('tradingCenter.stopLimit')}}</div></li>
           </ul>
           <div class="dealbox">
             <div class="dealItem">
               <div class="dealT">
-                <span class="f-fl">买入 XRP</span>
+                <span class="f-fl">{{$t('tradingCenter.buy')}} XRP</span>
                 <span class="f-fr"><i class="el-icon-edit"></i>__BTC</span>
               </div>
               <div class="inputItem">
-                <span class="fcB">价格：</span>
+                <span class="fcB">{{$t('tradingCenter.price')}}：</span>
                 <label>BTC</label>
                 <input type="text">
                 <span class="legalMoney">￥0.41</span>
@@ -455,10 +455,10 @@
                 </div>
               </div>
               <div class="inputItem">
-                <span class="fcB">数量：</span>
+                <span class="fcB">{{$t('tradingCenter.amount')}}：</span>
                 <label>XRP</label>
                 <input type="text">
-                <span class="most">最多购买<span>0</span></span>
+                <span class="most">{{$t('tradingCenter.maxBuy')}}<span>0</span></span>
                 <!-- <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
                   <i class="el-icon-caret-bottom"></i>
@@ -473,19 +473,19 @@
                 </div>
               </div>
               <div class="sumBox">
-                <span class="fcB">交易额 ： </span>
+                <span class="fcB">{{$t('tradingCenter.total')}} ： </span>
                 <span class="sum">0.00000000000<span>BTC</span></span>
               </div>
-              <el-button class="buy" type="success">买入</el-button>
+              <el-button class="buy" type="success">{{$t('tradingCenter.buy')}}</el-button>
             </div>
 
             <div class="dealItem">
               <div class="dealT">
-                <span class="f-fl">卖出 XRP</span>
+                <span class="f-fl">{{$t('tradingCenter.sell')}} XRP</span>
                 <span class="f-fr"><i class="el-icon-edit"></i>__BTC</span>
               </div>
               <div class="inputItem">
-                <span class="fcB">价格：</span>
+                <span class="fcB">{{$t('tradingCenter.price')}}：</span>
                 <label>BTC</label>
                 <input type="text">
                 <span class="legalMoney">￥0.41</span>
@@ -495,10 +495,10 @@
                 </div>
               </div>
               <div class="inputItem">
-                <span class="fcB">数量：</span>
+                <span class="fcB">{{$t('tradingCenter.amount')}}：</span>
                 <label>XRP</label>
                 <input type="text">
-                <span class="most">最多购买<span>0</span></span>
+                <span class="most">{{$t('tradingCenter.maxBuy')}}<span>0</span></span>
                 <!-- <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
                   <i class="el-icon-caret-bottom"></i>
@@ -513,10 +513,10 @@
                 </div>
               </div>
               <div class="sumBox">
-                <span class="fcB">交易额 ： </span>
+                <span class="fcB">{{$t('tradingCenter.total')}} ： </span>
                 <span class="sum">0.00000000000<span>BTC</span></span>
               </div>
-              <el-button class="sell" type="success">卖出</el-button>
+              <el-button class="sell" type="success">{{$t('tradingCenter.sell')}}</el-button>
             </div>
           </div>
         </div>
@@ -856,7 +856,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$baseColor : #F5A623;
+$baseColor : #FC9217;
 //基础样式
 .tradingCenterBox{
   .hoverB{

@@ -208,7 +208,7 @@ export default {
   font-size:24px;
 }
 .doubleSelect{
-  border: 1px solid #F5A623;
+  border: 1px solid #FC9217;
   display: flex;
   margin-bottom: 30px;
   li{
@@ -218,13 +218,13 @@ export default {
     line-height: 40px;
     font-size: 14px;
     text-align: center;
-    color: #F5A623;
+    color: #FC9217;
     &:nth-child(1){
-      border-right: 1px solid #F5A623;
+      border-right: 1px solid #FC9217;
     }
   }
   li.active{
-    background: #F5A623;
+    background: #FC9217;
     color: #ffffff;
   }
 }
@@ -238,7 +238,7 @@ export default {
     .tips{
       margin-bottom: 40px;
       a{
-        color: #F5A623;
+        color: #FC9217;
       }
     }
   }

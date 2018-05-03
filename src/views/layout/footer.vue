@@ -5,25 +5,25 @@
       <div class="fTop">
         <ul class="linkList">
           <li>
-            <a href="#">关于我们</a>
+            <a href="#">{{$t('home.about')}}</a>
           </li>
           <li>
-            <router-link to="/terms">服务协议</router-link>
+            <router-link to="/terms">{{$t('home.terms')}}</router-link>
           </li>
           <!-- <li>
             <a href="#">隐私声明</a>
           </li> -->
           <li>
-            <a href="#">费率标准</a>
+            <a href="#">{{$t('home.fees')}}</a>
           </li>
           <li>
-            <a href="#">API文档</a>
+            <a href="#">{{$t('home.api')}}</a>
           </li>
           <li>
-            <a href="#">上币申请</a>
+            <a href="#">{{$t('home.applyToList')}}</a>
           </li>
           <li>
-            <a href="#">联系我们</a>
+            <a href="#">{{$t('home.contact')}}</a>
           </li>
         </ul>
         <ul class="iconList">
@@ -40,7 +40,7 @@
         </div>
         <ul class="priceList">
           <li>
-            <span class="name">24h&nbsp;成交额</span><span class="num">277,050.93</span>
+            <span class="name">24h&nbsp;{{$t('home.volume')}}</span><span class="num">277,050.93</span>
           </li>
           <li>
             <span class="name">BNB&nbsp;/&nbsp;</span><span class="num">277,050.93</span>

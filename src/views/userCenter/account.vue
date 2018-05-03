@@ -443,7 +443,7 @@ export default {
     }
     .attest{
         .toattest {
-            color: #f5a623;
+            color: #FC9217;
             font-size: 14px;
             padding-right: 10px;
             line-height: 26px;
@@ -483,6 +483,7 @@ export default {
             .title{
                 font-size: 15px;
                 vertical-align: middle;
+                line-height: 30px;
             }
         }
         .tips{

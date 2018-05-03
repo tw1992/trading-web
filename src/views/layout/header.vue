@@ -7,7 +7,7 @@
         mode="horizontal"
         @select="handleSelect"
         text-color="#333333"
-        active-text-color="#F5A623">
+        active-text-color="#FC9217">
           <el-menu-item index="/Home" class="logo"><img src="../../assets/img/logo.png" alt="logo"></el-menu-item>
           <el-menu-item index="/tradingCenter/1">{{$t('route.tradingCenter')}}</el-menu-item>
           <el-menu-item index="" class="blank" disabled></el-menu-item>
