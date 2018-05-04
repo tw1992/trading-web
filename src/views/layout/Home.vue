@@ -504,10 +504,10 @@ export default {
           color: #cccccc;
         }
         .green{
-          color: #70a800;
+          color: #3ABC56;
         }
         .red{
-          color: #ea0070;
+          color: #F73946;
         }
         .newPriceR{
           color: #999999

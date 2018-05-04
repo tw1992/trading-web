@@ -6,21 +6,21 @@
       </router-link>
       <p class="time">2018-04-01    12:00:04</p>
       <div class="block"></div>
-      <ul class="fz14 marketList">
+      <ul class="fz12 marketList">
         <li>{{$t('home.lastPrice')}}<span style="margin:0 2px;" class="fb16 red">6948.32</span>≈ 44851.40 CNY</li>
         <li>{{$t('tradingCenter.change')}}<span class="green"> +0.22%</span></li>
         <li>{{$t('home.high')}} 6984.99</li>
         <li>{{$t('home.low')}} 6868.67</li>
         <li>24H{{$t('home.volume')}} 13728 BTC</li>
       </ul>
-      <div class="goodsBox fz16 white">
+      <div class="goodsBox fz14 white">
         <div class="showGoods options">BTC/USDT<i class="el-icon-caret-bottom baseColor"></i></div>
       </div>
-      <div class="userBox fz16 white">
+      <div class="userBox fz14 white">
         <router-link to="/login">{{$t('route.login')}}</router-link>
         <router-link to="/register">{{$t('route.register')}}</router-link>
       </div>
-      <div class="langsBox fz16 white">
+      <div class="langsBox fz14 white">
         <div class="showLangs options">{{$t('route.lang')}}<i class="el-icon-arrow-down"></i></div>
       </div>
     </div>
@@ -48,32 +48,32 @@
 										<colgroup style="width: 8%"></colgroup>
 										<colgroup style="width: 8%"></colgroup>
 										<colgroup style="width: 8%"></colgroup>
-										<colgroup style="width: 11%"></colgroup>
-										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
 										<colgroup style="width: 9%"></colgroup>
 										<colgroup style="width: 11%"></colgroup>
 										<colgroup style="width: 11%"></colgroup>
 										<colgroup style="width: 13%"></colgroup>
 								<tbody>
                   <tr>
-									<th style="padding-left: 24px;">时间</th>
-									<th>市场</th>
-									<th>类型</th>
-									<th>方向</th>
-									<th>价格</th>
-									<th>数量</th>
-									<th>成交率%</th>
-									<th>成交金额</th>
-									<th>触发条件</th>
+									<th style="padding-left: 24px;">{{$t('tradingCenter.date')}}</th>
+									<th>{{$t('home.pair')}}</th>
+									<th>{{$t('tradingCenter.type')}}</th>
+									<th>{{$t('tradingCenter.side')}}</th>
+									<th>{{$t('tradingCenter.price')}}</th>
+									<th>{{$t('tradingCenter.amount')}}</th>
+									<th>{{$t('tradingCenter.filled')}}%</th>
+									<th>{{$t('tradingCenter.totalVal')}}</th>
+									<th>{{$t('tradingCenter.trigger')}}</th>
 									<th style="text-align: center;" class="cancels">
 										<span class="btn">{{$t('tradingCenter.cancelAll')}}</span>
 										<div class="btn iconfont-downsjsmall">
                       <i class="el-icon-more"></i>
                       <div class="cancelType">
                         <ul>
-                          <li>全部</li>
-                          <li>限价</li>
-                          <li>止盈止损</li>
+                          <li>{{$t('tradingCenter.all')}}</li>
+                          <li>{{$t('tradingCenter.limitOrder')}}</li>
+                          <li>{{$t('tradingCenter.stopLimitOrder')}}</li>
                         </ul>
                       </div>
 										</div>
@@ -89,8 +89,8 @@
 										<colgroup style="width: 8%"></colgroup>
 										<colgroup style="width: 8%"></colgroup>
 										<colgroup style="width: 8%"></colgroup>
-										<colgroup style="width: 11%"></colgroup>
-										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 9%"></colgroup>
 										<colgroup style="width: 9%"></colgroup>
 										<colgroup style="width: 11%"></colgroup>
 										<colgroup style="width: 11%"></colgroup>
@@ -118,19 +118,19 @@
             <div class="slider" v-show="orderSelect == 2">
               <div class="scopeBox">
                 <ul class="scopeList">
-                  <li><div class="options">当日</div></li>
-                  <li><div class="options">一周</div></li>
-                  <li><div class="options">一个月</div></li>
-                  <li><div class="options">三个月</div></li>
+                  <li><div class="options">{{$t('tradingCenter.nowDay')}}</div></li>
+                  <li><div class="options">{{$t('tradingCenter.oneWeek')}}</div></li>
+                  <li><div class="options">{{$t('tradingCenter.oneMonth')}}</div></li>
+                  <li><div class="options">{{$t('tradingCenter.threeMonth')}}</div></li>
                 </ul>
                 <div class="timeBox">
-                  <span class="lable">起止日期</span>
+                  <span class="lable">{{$t('tradingCenter.form')}}</span>
                   <el-date-picker
                     v-model="startTime"
                     type="date"
                     size="mini"
                     prefix-icon="el-icon-caret-bottom"
-                    placeholder="选择日期">
+                    :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
                   <div class="line"></div>
                   <el-date-picker
@@ -138,16 +138,16 @@
                     type="date"
                     size="mini"
                     prefix-icon="el-icon-caret-bottom"
-                    placeholder="选择日期">
+                    :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
-                  <div class="searchTime">搜索</div>
+                  <div class="searchTime">{{$t('button.search')}}</div>
                 </div>
               </div>
               <table class="table tableHead">
-										<colgroup style="width: 9%"></colgroup>
-										<colgroup style="width: 9%"></colgroup>
-										<colgroup style="width: 9%"></colgroup>
-										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 7%"></colgroup>
+										<colgroup style="width: 5%"></colgroup>
+										<colgroup style="width: 7%"></colgroup>
 										<colgroup style="width: 9%"></colgroup>
 										<colgroup style="width: 9%"></colgroup>
 										<colgroup style="width: 9%"></colgroup>
@@ -157,17 +157,17 @@
 										<colgroup style="width: 9%"></colgroup>
 								<tbody>
                   <tr>
-									<th style="padding-left: 24px;">委托时间</th>
-									<th>市场</th>
-									<th>类型</th>
-									<th>方向</th>
-									<th>均价</th>
-									<th>价格</th>
+									<th style="padding-left: 24px;">{{$t('tradingCenter.comTime')}}</th>
+									<th>{{$t('home.pair')}}</th>
+									<th>{{$t('tradingCenter.type')}}</th>
+									<th>{{$t('tradingCenter.side')}}</th>
+									<th>{{$t('tradingCenter.avg')}}</th>
+									<th>{{$t('tradingCenter.price')}}</th>
 									<th>Filled</th>
-									<th>数量</th>
-                  <th>成交金额</th>
-									<th>触发条件</th>
-									<th>状态</th>
+									<th>{{$t('tradingCenter.amount')}}</th>
+                  <th>{{$t('tradingCenter.totalVal')}}</th>
+									<th>{{$t('tradingCenter.trigger')}}</th>
+									<th>{{$t('tradingCenter.status')}}</th>
 
 								</tr>
 								</tbody>
@@ -175,10 +175,10 @@
               <div class="tableBox" style="height: 140px;">
                 <div class="tbody">
 									<table class="table table-strip">
-										<colgroup style="width: 9%"></colgroup>
-										<colgroup style="width: 9%"></colgroup>
-										<colgroup style="width: 9%"></colgroup>
-										<colgroup style="width: 9%"></colgroup>
+										<colgroup style="width: 11%"></colgroup>
+										<colgroup style="width: 7%"></colgroup>
+										<colgroup style="width: 5%"></colgroup>
+										<colgroup style="width: 7%"></colgroup>
 										<colgroup style="width: 9%"></colgroup>
 										<colgroup style="width: 9%"></colgroup>
 										<colgroup style="width: 9%"></colgroup>
@@ -210,19 +210,19 @@
             <div class="slider" v-show="orderSelect == 3">
               <div class="scopeBox">
                 <ul class="scopeList">
-                  <li><div class="options">当日</div></li>
-                  <li><div class="options">一周</div></li>
-                  <li><div class="options">一个月</div></li>
-                  <li><div class="options">三个月</div></li>
+                   <li><div class="options">{{$t('tradingCenter.nowDay')}}</div></li>
+                  <li><div class="options">{{$t('tradingCenter.oneWeek')}}</div></li>
+                  <li><div class="options">{{$t('tradingCenter.oneMonth')}}</div></li>
+                  <li><div class="options">{{$t('tradingCenter.threeMonth')}}</div></li>
                 </ul>
                 <div class="timeBox">
-                  <span class="lable">起止日期</span>
+                  <span class="lable">{{$t('tradingCenter.form')}}</span>
                   <el-date-picker
                     v-model="startTime"
                     type="date"
                     size="mini"
                     prefix-icon="el-icon-caret-bottom"
-                    placeholder="选择日期">
+                    :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
                   <div class="line"></div>
                   <el-date-picker
@@ -230,38 +230,38 @@
                     type="date"
                     size="mini"
                     prefix-icon="el-icon-caret-bottom"
-                    placeholder="选择日期">
+                    :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
-                  <div class="searchTime">搜索</div>
+                  <div class="searchTime">{{$t('button.search')}}</div>
                 </div>
               </div>
               <table class="table tableHead">
-										<colgroup style="width: 14%"></colgroup>
-										<colgroup style="width: 14%"></colgroup>
-										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 20%"></colgroup>
+										<colgroup style="width: 10%"></colgroup>
+										<colgroup style="width: 10%"></colgroup>
 										<colgroup style="width: 14%"></colgroup>
 										<colgroup style="width: 14%"></colgroup>
 										<colgroup style="width: 14%"></colgroup>
 										<colgroup style="width: 14%"></colgroup>
 								<tbody>
                   <tr>
-									<th style="padding-left: 24px;">成交时间</th>
-									<th>市场</th>
-									<th>方向</th>
-									<th>成交均价</th>
-									<th>数量</th>
-                  <th>成交金额</th>
-									<th>手续费</th>
+									<th style="padding-left: 24px;">{{$t('tradingCenter.finishTime')}}</th>
+									<th>{{$t('home.pair')}}</th>
+									<th>{{$t('tradingCenter.side')}}</th>
+									<th>{{$t('tradingCenter.finishPrice')}}</th>
+									<th>{{$t('tradingCenter.finishFilled')}}</th>
+                  <th>{{$t('tradingCenter.totalVal')}}</th>
+									<th>{{$t('tradingCenter.fee')}}</th>
 
 								</tr>
 								</tbody>
               </table>
-              <div class="tableBox" style="height: 140px;">
+              <div class="tableBox" style="height: 156px;">
                 <div class="tbody">
 									<table class="table table-strip">
-										<colgroup style="width: 14%"></colgroup>
-										<colgroup style="width: 14%"></colgroup>
-										<colgroup style="width: 14%"></colgroup>
+										<colgroup style="width: 20%"></colgroup>
+										<colgroup style="width: 10%"></colgroup>
+										<colgroup style="width: 10%"></colgroup>
 										<colgroup style="width: 14%"></colgroup>
 										<colgroup style="width: 14%"></colgroup>
 										<colgroup style="width: 14%"></colgroup>
@@ -291,12 +291,12 @@
 										<colgroup style="width: 20%"></colgroup>
 										<colgroup style="width: 20%"></colgroup>
 								<tbody>
-                  <tr>
-									<th style="padding-left: 24px;">币种</th>
-									<th>总额</th>
-									<th>可用余额</th>
-									<th>下单冻结</th>
-									<th>BTC估值</th>
+                  <tr style="line-height:22px;">
+									<th style="padding-left: 24px;">{{$t('tradingCenter.coin')}}</th>
+									<th>{{$t('tradingCenter.totalBalance')}}</th>
+									<th>{{$t('tradingCenter.availableBalance')}}</th>
+									<th>{{$t('tradingCenter.inOrder')}}</th>
+									<th>BTC{{$t('tradingCenter.value')}}</th>
 								</tr>
 								</tbody>
               </table>
@@ -349,9 +349,9 @@
             <table class="table">
 							<tbody>
                 <tr>
-                  <th class="f-left fz14">{{$t('tradingCenter.price')}}(BTC)</th>
-                  <th class="f-center fz15">{{$t('tradingCenter.amount')}}(IOST)</th>
-                  <th class="f-right fz14">{{$t('tradingCenter.sum')}}(BTC)</th>
+                  <th class="f-left fz13">{{$t('tradingCenter.price')}}(BTC)</th>
+                  <th class="f-center fz13">{{$t('tradingCenter.amount')}}(IOST)</th>
+                  <th class="f-right fz13">{{$t('tradingCenter.sum')}}(BTC)</th>
                 </tr>
 							</tbody>
               <colgroup style="width:30%;"></colgroup>
@@ -406,7 +406,7 @@
 							<tbody>
                 <tr>
                   <th class="f-left fz13">{{$t('tradingCenter.price')}}(BTC)</th>
-                  <th class="f-center fz13">{{$t('tradingCenter.amount')}}(IOST)</th>
+                  <th class="f-center fz13">XVG</th>
                   <th class="f-right fz13">{{$t('tradingCenter.time')}}</th>
                 </tr>
 							</tbody>
@@ -864,6 +864,9 @@ $baseColor : #FC9217;
       font-weight: 600;
     }
   }
+  .fz12{
+    font-size: 12px;
+  }
   .fz13{
     font-size: 13px;
   }
@@ -1111,7 +1114,8 @@ $baseColor : #FC9217;
               }
               .searchTime{
                 display: block;
-                width: 38px;
+                // width: 38px;
+                padding: 0 4px;
                 height: 20px;
                 line-height: 20px;
                 text-align: center;
@@ -1122,7 +1126,7 @@ $baseColor : #FC9217;
               }
             }
             .tableBox{
-              height:180px;
+              height:170px;
               overflow-y: auto;
             }
           }
@@ -1223,7 +1227,7 @@ $baseColor : #FC9217;
       }
     }
     .tradMainR{
-      width: 654px;
+      width: 530px;
       height: 100%;
       margin-left: 8px;
       display: flex;
@@ -1239,6 +1243,7 @@ $baseColor : #FC9217;
           
           th{
             padding: 2px 12px;
+            font-weight: 500;
           }
           // th:nth-child(3){
           //   padding-right: 12px;
@@ -1279,7 +1284,7 @@ $baseColor : #FC9217;
         }
         .marketL{
           height: 100%;
-          width: 346px;
+          width: 280px;
           display: flex;
           flex-direction: column;
           margin-right: 8px;
@@ -1381,7 +1386,7 @@ $baseColor : #FC9217;
         }
         .marketR{
           height: 100%;
-          width: 300px;
+          width: 248px;
           display: flex;
           flex-direction: column;
           .newmarket{
@@ -1398,11 +1403,11 @@ $baseColor : #FC9217;
         
         .dealbox{
           flex: 1;
-          padding: 0 24px;
+          padding: 0 14px;
           display: flex;
           justify-content: space-between;
           .dealItem{
-            width: 288px;
+            width: 240px;
             .dealT{
               height: 28px;
               line-height: 28px;
@@ -1419,7 +1424,7 @@ $baseColor : #FC9217;
               input{
                 padding: 0 68px 0 18px;
                 box-sizing: border-box;
-                width: 226px;
+                width: 180px;
                 height: 32px;
                 float: right;
                 background: #424C55;
@@ -1511,12 +1516,12 @@ $baseColor : #FC9217;
               overflow: hidden;
               .numList{
                 float: right;
-                width: 226px;
+                width: 180px;
                 display: flex;
                 justify-content: space-between;
-                margin: 10px 0;
+                margin: 6px 0;
                 .options{
-                  width: 40px;
+                  width: 37px;
                   height: 20px;
                   line-height: 20px;
                   display: block;

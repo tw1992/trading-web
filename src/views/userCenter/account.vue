@@ -45,8 +45,8 @@
                         <div class="switchBtn" @click="switchClick('phoneFlag')"></div>
                         <el-switch
                         v-model="phoneFlag"
-                        active-color="#13ce66"
-                        inactive-color="#ff4949">
+                        active-color="#F73946"
+                        inactive-color="#3ABC56">
                         </el-switch>
                     </div>
                 </div>
@@ -81,8 +81,8 @@
                             <el-switch
                             @change="googleClick"
                             v-model="googleFlag"
-                            active-color="#13ce66"
-                            inactive-color="#ff4949">
+                            active-color="#F73946"
+                            inactive-color="#3ABC56">
                             </el-switch>
                         </div>
                 </div>

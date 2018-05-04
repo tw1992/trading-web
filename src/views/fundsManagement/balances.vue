@@ -1,7 +1,7 @@
 <template>
   <div class="balancesBox">
     <p class="title">
-      我的资产
+      {{$t('route.balances')}}
     </p>
     <div class="balT">
       <div class="titem">
