@@ -90,7 +90,26 @@ export default {
     availableBalance: "Available Balance",
     inOrder: "In Order",
     value: " Value"
-
+  },
+  funds: {
+    estimatedValue: "Estimated Value",
+    hideSmallBalances: "Hide Small balances",
+    operation: "Operation",
+    deposit: "Deposit",
+    withdrawal: "Withdrawal",
+    trade: "Trade",
+    placeHolder: "Please input keyword of the coin",
+    important: "Send only change to this deposit address.Sending any other currency to this address may result in the loss of your deposit.",
+    showQRCode: "Show QR Code",
+    copyAddress: "Copy Address",
+    tips: "Tips",
+    tips1a: "Notice: Coins will be deposited immediately after ",
+    tips1b: " network confirmation",
+    tips2a: "After making a deposit, you can track its progress on the",
+    tips2b: "page.",
+    history: " history ",
+    depositAddress: " Deposit Address",
+    whats: "What's ",
   },
   button:{
     search: "Search",

@@ -91,6 +91,27 @@ export default {
     inOrder: "下单冻结",
     value: "估值"
   },
+  funds: {
+    estimatedValue: "总当前估值",
+    hideSmallBalances: "隐藏小额资产",
+    operation: "操作",
+    deposit: "充值",
+    withdrawal: "提现",
+    trade: "交易",
+    placeHolder: "请输入币种关键字",
+    important: "禁止向change地址充值除change之外的资产，任何充入change地址的非change资产将不可找回。",
+    showQRCode: "展示二维码",
+    copyAddress: "复制到剪贴板",
+    tips: "温馨提示",
+    tips1a: "使用change地址充值需要",
+    tips1b: "个网络确认才能到账。",
+    tips2a: "充值完成后，你可以进入",
+    tips2b: "页面跟踪进度。",
+    history: "充值提现记录",
+    depositAddress: "充值地址",
+    whats: "什么是",
+    
+  },
   button:{
     search: "搜索",
   },

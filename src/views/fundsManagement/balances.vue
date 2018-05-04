@@ -11,10 +11,10 @@
           v-model="search">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
-        <el-checkbox v-model="hidesmall">隐藏小额资产</el-checkbox>
+        <el-checkbox v-model="hidesmall">{{$t('funds.hideSmallBalances')}}</el-checkbox>
       </div>
       <div class="titem">
-        <p class="sum">总当前估值：0.00000000 BTC / &yen;0.00</p>
+        <p class="sum">{{$t('funds.estimatedValue')}}：0.00000000 BTC / &yen;0.00</p>
       </div>
     </div>
     <div class="orderBox">
@@ -23,30 +23,30 @@
         style="width: 100%">
         <el-table-column
           class-name = "firstCol"
-          label="币种"
+          :label="$t('tradingCenter.coin')"
           prop="goods">
         </el-table-column>
         <el-table-column
-          label="总额"
+          :label="$t('tradingCenter.totalBalance')"
           prop="sum">
         </el-table-column>
         <el-table-column
-          label="可用余额"
+          :label="$t('tradingCenter.availableBalance')"
           prop="usable">
         </el-table-column>
         <el-table-column
-          label="下单冻结"
+          :label="$t('tradingCenter.inOrder')"
           prop="freeze">
         </el-table-column>
         <el-table-column
-          label="BTC估值"
+          :label="'BTC'+$t('tradingCenter.value')"
           prop="appraisement">
         </el-table-column>
-        <el-table-column class-name = "operation" label="操作">
+        <el-table-column class-name = "operation" width="280" :label="$t('funds.operation')">
           <template slot-scope="scope">
-            <router-link to="">充值</router-link>
-            <router-link to="">提现</router-link>
-            <router-link to="">交易</router-link>
+            <router-link to="">{{$t('funds.deposit')}}</router-link>
+            <router-link to="">{{$t('funds.withdrawal')}}</router-link>
+            <router-link to="">{{$t('funds.trade')}}</router-link>
           </template>
         </el-table-column>
       </el-table>

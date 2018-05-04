@@ -1,7 +1,7 @@
 <template>
   <div class="depositsBox">
     <p class="title">
-      充值
+      {{$t('funds.deposit')}}
     </p>
 
     <div class="depLbox">
@@ -10,7 +10,7 @@
         popper-class="my-autocomplete"
         v-model="state3"
         :fetch-suggestions="querySearch"
-        placeholder="请输入币种关键字"
+        :placeholder="$t('funds.placeHolder')"
         @select="handleSelect">
         <template slot-scope="{ item }">
           <div class="name">{{ item.value }}</div>
@@ -19,40 +19,40 @@
       <div class="priceBox">
         <ul class="priceList">
           <li>
-            <span class="name">总额</span>
+            <span class="name">{{$t('tradingCenter.totalBalance')}}</span>
             <span class="num">0.00000000 ADA</span>
           </li>
           <li>
-            <span class="name">下单冻结</span>
+            <span class="name">{{$t('tradingCenter.inOrder')}}</span>
             <span class="num">0.00000000 ADA</span>
           </li>
           <li>
-            <span class="name">可用余额</span>
+            <span class="name">{{$t('tradingCenter.availableBalance')}}</span>
             <span class="num">0.00000000 ADA</span>
           </li>
         </ul>
-        <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>什么是ADA？</span></a>
+        <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>{{$t('funds.whats')}}ADA？</span></a>
       </div>
 
       <div class="addBox">
-        <p class="addTitle">ADA充值地址</p>
+        <p class="addTitle">ADA{{$t('funds.depositAddress')}}</p>
         <p class="add">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>
-        <p class="warning">禁止向ADA地址充值除ADA之外的资产，任何充入ADA地址的非ADA资产将不可找回。</p>
+        <p class="warning">{{$t('funds.important')}}</p>
       </div>
       <div class="btnBox">
-        <a href="javascript:;" class="copy"><i class="iconfont icon-fuzhi"></i>复制到剪贴板</a>
-        <a href="javascript:;" class="showcode" @click="codeDialog = true"><i class="iconfont icon-erweima"></i><span>展示二维码</span></a>
+        <a href="javascript:;" class="copy"><i class="iconfont icon-fuzhi"></i>{{$t('funds.copyAddress')}}</a>
+        <a href="javascript:;" class="showcode" @click="codeDialog = true"><i class="iconfont icon-erweima"></i><span>{{$t('funds.showQRCode')}}</span></a>
       </div>
       <div class="tipsBox">
-        <p class="tipsT">温馨提示</p>
+        <p class="tipsT">{{$t('funds.tips')}}</p>
         <ul class="tipsList">
           <li>
             <span class="dot"></span>
-            <p>使用ADA地址充值需要<span class="baseColor">15</span>个网络确认才能到账。</p>
+            <p>{{$t('funds.tips1a')}}<span class="baseColor">15</span>{{$t('funds.tips1b')}}</p>
           </li>
           <li>
             <span class="dot"></span>
-            <p>充值完成后，你可以进入<router-link class="baseColor" to="">充值提现记录</router-link>页面跟踪进度。</p>
+            <p>{{$t('funds.tips2a')}}<router-link class="baseColor" to="">{{$t('funds.history')}}</router-link>{{$t('funds.tips2b')}}</p>
           </li>
         </ul>
       </div>
@@ -249,7 +249,7 @@
 
     <!-- 二维码弹窗 -->
     <el-dialog
-        title="ADA充值地址"
+        :title="'ADA'+$t('funds.depositAddress')"
         :visible.sync="codeDialog"
         custom-class="baseDialog codeDialog"
         center>
