@@ -1,11 +1,11 @@
 <template>
   <div class="historyBox">
     <p class="title">
-      成交记录
+      {{$t('route.orderHistory')}}
     </p>
     <div class="searchBox">
       <div class="searchItem">
-        <span class="searchLabel">时间：</span>
+        <span class="searchLabel">{{$t('tradingCenter.date')}}：</span>
         <el-date-picker
           v-model="time"
           size="mini"
@@ -16,7 +16,7 @@
         </el-date-picker>
       </div>
       <div class="searchItem">
-        <span class="searchLabel">交易区：</span>
+        <span class="searchLabel">{{$t('funds.pair')}}：</span>
         <el-select size="mini" v-model="trade" placeholder="请选择">
           <el-option
             v-for="item in tradeList"
@@ -27,7 +27,7 @@
         </el-select>
       </div>
       <div class="searchItem">
-        <span class="searchLabel">币种：</span>
+        <span class="searchLabel">{{$t('tradingCenter.coin')}}：</span>
         <el-select size="mini" v-model="currency" placeholder="请选择">
           <el-option
             v-for="item in currencyList"
@@ -38,7 +38,7 @@
         </el-select>
       </div>
       <div class="searchItem">
-        <span class="searchLabel">方向：</span>
+        <span class="searchLabel">{{$t('tradingCenter.side')}}：</span>
         <el-select size="mini" v-model="direction" placeholder="请选择">
           <el-option
             v-for="item in directionList"
@@ -49,11 +49,11 @@
         </el-select>
       </div>
       <div class="searchItem">
-        <el-button type="primary" size="mini">搜索</el-button>
-        <el-button size="mini">重置</el-button>
+        <el-button type="primary" size="mini">{{$t('button.search')}}</el-button>
+        <el-button size="mini">{{$t('button.reset')}}</el-button>
       </div>
       <div class="searchItem export">
-        <a href="javascript:;">导出历史委托记录<i class="iconfont icon-excel"></i></a>
+        <a href="javascript:;">{{$t('funds.exportCT')}}<i class="iconfont icon-excel"></i></a>
       </div>
     </div>
 
@@ -64,32 +64,32 @@
         
         <el-table-column
           class-name="firstCol"
-          label="时间"
+          :label="$t('tradingCenter.date')"
           width="180"
           prop="time">
         </el-table-column>
         <el-table-column
-          label="市场"
+          :label="$t('home.pair')"
           prop="goods">
         </el-table-column>
         <el-table-column
-          label="方向"
+          :label="$t('tradingCenter.side')"
           prop="direction">
         </el-table-column>
         <el-table-column
-          label="均价"
+          :label="$t('funds.price')"
           prop="prices">
         </el-table-column>
         <el-table-column
-          label="已成交数量"
+          :label="$t('funds.filled')"
           prop="num">
         </el-table-column>
         <el-table-column
-          label="手续费"
+          :label="$t('tradingCenter.fee')"
           prop="sum">
         </el-table-column>
         <el-table-column
-          label="金额"
+          :label="$t('tradingCenter.sum')"
           prop="sum">
         </el-table-column>
       </el-table>

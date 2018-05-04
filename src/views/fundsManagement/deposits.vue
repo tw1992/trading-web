@@ -37,7 +37,7 @@
       <div class="addBox">
         <p class="addTitle">ADA{{$t('funds.depositAddress')}}</p>
         <p class="add">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>
-        <p class="warning">{{$t('funds.important')}}</p>
+        <p class="warning">{{$t('funds.importantTip')}}</p>
       </div>
       <div class="btnBox">
         <a href="javascript:;" class="copy"><i class="iconfont icon-fuzhi"></i>{{$t('funds.copyAddress')}}</a>
@@ -60,16 +60,16 @@
     </div>
     <div class="depRbox">
       <div class="depRtitle">
-        <div class="titleL">充值记录</div>
+        <div class="titleL">{{$t('funds.Dhistory')}}</div>
         <div class="titleR">
           <el-popover
             ref="popover4"
             width="320"
             trigger="click">
-            <p>如果长时间未到账，有可能是因为区块拥堵或转出平台未成功转出。 <a href="javascript:;" class="baseColor">了解更多</a></p>
+            <p>{{$t('funds.notip')}} <a href="javascript:;" class="baseColor">{{$t('funds.more')}}</a></p>
           </el-popover>
-          <a href="javascript:;" class="baseColor showtip" v-popover:popover4>充值未到账<i class="el-icon-question"></i></a>
-          <a href="javascript:;" class="more">更多</a>
+          <a href="javascript:;" class="baseColor showtip" v-popover:popover4>{{$t('funds.notArrive')}}<i class="el-icon-question"></i></a>
+          <a href="javascript:;" class="more">{{$t('funds.viewAll')}}</a>
         </div>
       </div>
 

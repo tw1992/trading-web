@@ -1,7 +1,7 @@
 <template>
   <div class="depositsBox">
     <p class="title">
-      提现
+      {{$t('route.withdrawals')}}
     </p>
 
     <div class="depLbox">
@@ -10,7 +10,7 @@
         popper-class="my-autocomplete"
         v-model="state3"
         :fetch-suggestions="querySearch"
-        placeholder="请输入币种关键字"
+        :placeholder="$t('funds.placeHolder')"
         @select="handleSelect">
         <template slot-scope="{ item }">
           <div class="name">{{ item.value }}</div>
@@ -19,37 +19,37 @@
       <div class="priceBox">
         <ul class="priceList">
           <li>
-            <span class="name">总额</span>
+            <span class="name">{{$t('tradingCenter.totalBalance')}}</span>
             <span class="num">0.00000000 ADA</span>
           </li>
           <li>
-            <span class="name">下单冻结</span>
+            <span class="name">{{$t('tradingCenter.inOrder')}}</span>
             <span class="num">0.00000000 ADA</span>
           </li>
           <li>
-            <span class="name">可用余额</span>
+            <span class="name">{{$t('tradingCenter.availableBalance')}}</span>
             <span class="num">0.00000000 ADA</span>
           </li>
         </ul>
-        <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>什么是ADA？</span></a>
+        <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>{{$t('funds.whats')}}ADA？</span></a>
       </div>
 
       <div class="tipsBox">
-        <p class="tipsT careful">注意</p>
+        <p class="tipsT careful">{{$t('funds.important')}}</p>
         <ul class="tipsList">
           <li>
-            <span class="dot careful"></span>
-            <p class="careful">最小提现数量为8.4ADA</p>
+            
+            <p class="careful"><span class="dot careful"></span>{{$t('funds.importantTip1')}}8.4ADA</p>
           </li>
           <li>
-            <span class="dot careful"></span>
-            <p class="careful">请勿直接提现至众筹或ICO地址,我们不会处理未来货币的发放</p>
+            
+            <p class="careful"><span class="dot careful"></span>{{$t('funds.importantTip2')}}</p>
           </li>
         </ul>
       </div>
 
       <div class="siteBox">
-        <p class="siteTitle">ADA提现地址</p>
+        <p class="siteTitle">ADA{{$t('funds.withdrawalAddress')}}</p>
         <p class="siteTips">请在下方输入本次提现地址</p>
         <el-form :model="siteForm" status-icon :rules="siteForm.rules" ref="siteForm" class="siteForm">
           <div class="formT">
@@ -62,7 +62,7 @@
             </el-form-item>
           </div>
           <div class="formTip">
-            提现数量
+            {{$t('funds.amount')}}
           </div>
           <el-form-item prop="num">
             <el-input v-model.number="siteForm.num" placeholder="请输入内容">
@@ -70,25 +70,24 @@
             </el-input>
           </el-form-item>
           <div class="formTip">
-            <span>手续费:  0.00000000</span>
-            <span>实际到账:  0.00000000</span>
+            <span>{{$t('funds.transactionFee')}}:  0.00000000</span>
+            <span>{{$t('funds.youWillGet')}}:  0.00000000</span>
           </div>
           <el-form-item>
-            <el-button class="submit" type="primary" @click="submitForm('siteForm')">提交</el-button>
+            <el-button class="submit" type="primary" @click="submitForm('siteForm')">{{$t('button.submit')}}</el-button>
           </el-form-item>
         </el-form>
       </div>
       
       <div class="tipsBox">
-        <p class="tipsT">温馨提示</p>
+        <p class="tipsT">{{$t('funds.tips')}}</p>
         <ul class="tipsList">
           <li>
-            <span class="dot"></span>
-            <p>提现请求申请成功后,请去邮箱点击链接确认本次操作。</p>
+            <p><span class="dot"></span>{{$t('funds.tips3')}}</p>
           </li>
           <li>
             <span class="dot"></span>
-            <p>充值完成后，你可以进入<router-link class="baseColor" to="">充值提现记录</router-link>页面跟踪进度。</p>
+            <p>{{$t('funds.tips4a')}}<router-link class="baseColor" to="">{{$t('funds.history')}}</router-link>{{$t('funds.tips2b')}}</p>
           </li>
         </ul>
       </div>
@@ -96,16 +95,16 @@
     </div>
     <div class="depRbox">
       <div class="depRtitle">
-        <div class="titleL">提现记录</div>
+        <div class="titleL">{{$t('funds.Whistory')}}</div>
         <div class="titleR">
           <el-popover
             ref="popover5"
             width="320"
             trigger="click">
-            <p>如果长时间未收到邮件，请尝试在垃圾邮件或其他文件中查找。 <a href="javascript:;" class="baseColor">仍未收到</a></p>
+            <p>{{$t('funds.mailtip')}} <a href="javascript:;" class="baseColor">{{$t('funds.notReceived')}}</a></p>
           </el-popover>
-          <a href="javascript:;" class="baseColor showtip" v-popover:popover5>未收到确认邮件<i class="el-icon-question"></i></a>
-          <a href="javascript:;" class="more">更多</a>
+          <a href="javascript:;" class="baseColor showtip" v-popover:popover5>{{$t('funds.theMail')}} <i class="el-icon-question"></i></a>
+          <a href="javascript:;" class="more">{{$t('funds.viewAll')}}</a>
         </div>
       </div>
       <ul class="depList">

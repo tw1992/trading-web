@@ -36,7 +36,7 @@
       padding: 34px 30px 120px 30px;
       .selectInput{
         width: 100%;
-        margin-bottom: 134px;
+        margin-bottom: 100px;
         .el-input{
           input{
             border-radius: 0;
@@ -104,6 +104,7 @@
         }
       }
       .tipsBox{
+        margin-bottom: 10px;
         .tipsT{
           font-weight: 600;
           line-height: 30px;
@@ -112,7 +113,7 @@
         .tipsList{
           font-size: 12px;
           color: #999999;
-          line-height: 30px;
+          
           .dot{
             display: inline-block;
             width: 10px;
@@ -124,6 +125,8 @@
           }
           p{
             display: inline-block;
+            margin-top: 10px;
+            line-height: 16px;
           }
         }
       }

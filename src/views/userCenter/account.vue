@@ -1,11 +1,11 @@
 <template>
     <div class="accBox">
-        <p class="topTip">安全建议：检查访问网址、开启二次验证、不要给他人转账和透露密码信息等。</p>
+        <p class="topTip">{{$t('user.recommendations')}}</p>
         <div class="emailBox">
             <div class="email">
                 <p class="name">{{userInfo.email}}</p>
                 <p class="lastLogin">
-                    <span class="time">最后登录时间: {{tableData[0]?tableData[0].time:""}}</span>
+                    <span class="time">{{$t('user.LastloginTime')}}: {{tableData[0]?tableData[0].time:""}}</span>
                     <span class="IP">IP: {{tableData[0]?tableData[0].ip:""}}</span>
                 </p>
                 <p class="UID">UID: {{userInfo.id}}</p>
@@ -20,14 +20,14 @@
                     <div class="boxL">
                         <p class="titles">
                             <i class="iconfont icon-suozi"></i>
-                            <span class="title">登录密码</span>
+                            <span class="title">{{$t('user.loginPassword')}}</span>
                         </p>
                         <p class="tips" style="font-size:16px;">
                             * * * * * *
                         </p>
                     </div>
                     <div class="boxR">
-                        <el-button type="primary" @click="changePwdDialog = true">修改</el-button>
+                        <el-button type="primary" @click="changePwdDialog = true">{{$t('user.change')}}</el-button>
                     </div>
                     
                 </div>
@@ -35,10 +35,10 @@
                     <div class="boxL">
                         <p class="titles">
                             <i class="iconfont icon-shouji"></i>
-                            <span class="title">手机验证</span>
+                            <span class="title">{{$t('user.SMSAuthentication')}}</span>
                         </p>
                         <p class="tips">
-                        提现,修改密码及安全设置时,用以收取短信验证
+                        {{$t('user.SMStips')}}
                         </p>
                     </div>
                     <div class="boxR">
@@ -59,21 +59,21 @@
                                 <span class="title">API</span>
                             </p>
                             <p class="tips">
-                                创建API密钥可以让您借助第三方网站或移动应用使用币加的行情查询，实时交易等服务。请参阅API文档了解如何使用您的API Keys
+                               {{$t('user.APItips')}}
                             </p>
                         </div>
                         <div class="boxR">
-                            <el-button type="primary">启用</el-button>
+                            <el-button type="primary">{{$t('user.enable')}}</el-button>
                         </div>
                 </div>
                 <div class="GoogleBox itemBox">
                         <div class="boxL">
                             <p class="titles">
                                 <i class="iconfont icon-APIwendang"></i>
-                                <span class="title">谷歌验证</span>
+                                <span class="title">{{$t('user.GoogleAuthentication')}}</span>
                             </p>
                             <p class="tips">
-                                提现,修改密码及安全设置时,用以收取短信验证
+                                {{$t('user.Googletips')}}
                             </p>
                         </div>
                         <div class="boxR">
@@ -89,14 +89,15 @@
             </div>
         </div>
         <div class="tableBox">
-                <p class="tabTip">最近登录</p>
+                <p class="tabTip">{{$t('user.lastlogin')}}</p>
                 <el-table
                 :data="tableData"
                 class="latelyTab"
                 style="width: 100%">
+                <span slot="empty">{{$t('home.noData')}}</span>
                 <el-table-column
                 prop="time"
-                label="登录时间"
+                :label="$t('user.date')"
                 class-name="firstCol">
                 </el-table-column>
                 <el-table-column
@@ -105,7 +106,7 @@
                 </el-table-column>
                 <el-table-column
                 prop="address"
-                label="登录所在地">
+                :label="$t('user.Location')">
                 </el-table-column>
             </el-table>
         </div>
@@ -203,24 +204,25 @@
 
         <!-- 风险提示 -->
         <el-dialog
-            title="风险提示"
+            :title="$t('Dialog.riskwarning')"
             :show-close = "false"
             :visible.sync="riskDialog"
             width="30%"
-            custom-class="baseDialog"
+            :close-on-click-modal="false"
+            custom-class="baseDialog riskwarning"
             class="right"
             center>
             <div class="flexBox">
-                <p class="tips">为了您的账号安全,我们建议您开启双重验证.</p>
-                <p class="tips">请您选择合适的验证方式.</p>
+                <p class="tips">{{$t('Dialog.riskwarningtip1')}}</p>
+                <p class="tips">{{$t('Dialog.riskwarningtip2')}}</p>
                 <div class="startBox">
                     <a href="javascript:;" @click="riskDialog = false;googleAddDialog = true"><img src="../../assets/img/google.png"></a>
                     <a href="javascript:;" @click="riskDialog = false;phoneDialog = true"><img src="../../assets/img/phone.png"></a>
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
-                <span class="tips">我已知晓风险</span>
-                <el-button :style="{fontSize:'12px'}" type="primary" size="mini" @click="riskDialog = false">暂不设置</el-button>
+                <span class="tips">{{$t('Dialog.understand')}}</span>
+                <el-button :style="{fontSize:'12px'}" type="primary" size="mini" @click="riskDialog = false">{{$t('Dialog.skipfornow')}}</el-button>
             </span>
         </el-dialog>
     </div>
@@ -402,6 +404,12 @@ export default {
 </script>
 
 <style lang='scss'>
+.accBox{
+    .riskwarning{
+        width: 540px !important;
+    }
+}
+
 .accBox {
   width: 1200px;
   margin: auto;

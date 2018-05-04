@@ -1,7 +1,7 @@
 <template>
 <div class="openBox">
   <p class="title">
-    当前委托
+    {{$t('route.openOrders')}}
   </p>
   <div class="orderBox">
     <el-table
@@ -10,22 +10,22 @@
       
       <el-table-column
         class-name="firstCol"
-        label="时间"
+        :label="$t('tradingCenter.date')"
         width="180"
         prop="time">
       </el-table-column>
       <el-table-column
-        label="市场"
+        :label="$t('home.pair')"
         width="60"
         prop="goods">
       </el-table-column>
       <el-table-column
-        label="类型"
+        :label="$t('tradingCenter.type')"
         width="60"
         prop="type">
       </el-table-column>
       <el-table-column
-        label="方向"
+        :label="$t('tradingCenter.side')"
         width="80">
         <template slot-scope="scope">
           <span :class="scope.row.direction=='卖出'?'red':'green'">{{ scope.row.direction }}</span>
@@ -33,25 +33,25 @@
       </el-table-column>
       <el-table-column
         width="160"
-        label="价格"
+        :label="$t('tradingCenter.price')"
         prop="prices">
       </el-table-column>
       <el-table-column
         width="160"
-        label="委托数量"
+        :label="$t('tradingCenter.amount')"
         prop="num">
       </el-table-column>
       <el-table-column
-        label="成交率%"
+        :label="$t('tradingCenter.filled')+'%'"
         width="120"
         prop="probability">
       </el-table-column>
       <el-table-column
-        label="金额"
+        :label="$t('tradingCenter.sum')"
         prop="sum">
       </el-table-column>
       <el-table-column
-        label="触发"
+        :label="$t('tradingCenter.trigger')"
         prop="condition">
       </el-table-column>
       <el-table-column label="查看详情" width="100" type="expand">

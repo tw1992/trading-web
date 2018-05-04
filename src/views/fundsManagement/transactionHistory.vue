@@ -1,19 +1,19 @@
 <template>
   <div class="transactionBox">
     <p class="title">
-      充值提现记录
+      {{$t('route.transactionHistory')}}
     </p>
 
     <div class="selectBox">
       <ul class="select">
-        <li :class="activeIdx == '0'?'active':''" @click="changeActive(0)"><a href="javascript:;">充值</a></li>
+        <li :class="activeIdx == '0'?'active':''" @click="changeActive(0)"><a href="javascript:;">{{$t('funds.deposit')}}</a></li>
         <li class="line active"></li>
-        <li :class="activeIdx == '1'?'active':''" @click="changeActive(1)"><a href="javascript:;">提现</a></li>
+        <li :class="activeIdx == '1'?'active':''" @click="changeActive(1)"><a href="javascript:;">{{$t('funds.withdrawal')}}</a></li>
       </ul>
 
       <div class="export">
-        <a v-show="activeIdx == 0" href="javascript:;">导出充值记录<i class="iconfont icon-excel"></i></a>
-        <a v-show="activeIdx == 1" href="javascript:;">导出提现记录<i class="iconfont icon-excel"></i></a>
+        <a v-show="activeIdx == 0" href="javascript:;">{{$t('funds.exportD')}}<i class="iconfont icon-excel"></i></a>
+        <a v-show="activeIdx == 1" href="javascript:;">{{$t('funds.exportW')}}<i class="iconfont icon-excel"></i></a>
       </div>
     </div>
 
@@ -67,7 +67,7 @@
           
           <el-table-column
             class-name="firstCol"
-            label="状态"
+            :label="$t('tradingCenter.status')"
             width="120">
             <template slot-scope="scope">
               <span class="success" v-if="scope.row.state == 1">成功</span>
@@ -76,22 +76,22 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="币种"
+            :label="$t('tradingCenter.coin')"
             width="120"
             prop="goods">
           </el-table-column>
           <el-table-column
-            label="数量"
+            :label="$t('tradingCenter.amount')"
             width="180"
             prop="num">
           </el-table-column>
           <el-table-column
-            label="时间"
+            :label="$t('tradingCenter.date')"
             width="240"
             prop="time">
           </el-table-column>
           <el-table-column
-            label="信息">
+            :label="$t('funds.information')">
             <template slot-scope="scope">
               <div class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.message.add}}</p></div>
               <div class="tdItem"><p class="tdname">Txid</p><p class="tdmain">{{scope.row.message.Txid}}</p></div>
@@ -200,7 +200,8 @@ export default {
     display: flex;
     margin-bottom: 20px;
     li{
-      width: 80px;
+      // width: 80px;
+      padding: 0 12px;
       height: 30px;
       line-height: 30px;
       border: 1px solid #cccccc;
@@ -221,6 +222,7 @@ export default {
     .line{
       width: 0;
       border-left: 1px solid #cccccc;
+      padding: 0;
     }
     li.active{
       border-color: #FC9217;
