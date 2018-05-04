@@ -1,0 +1,18 @@
+{
+  "name": "data-screen-middle",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "zc",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "dateformat": "^3.0.2",
+    "express": "^4.16.2",
+    "node-schedule": "^1.3.0",
+    "socket.io": "^2.0.4"
+  }
+}
