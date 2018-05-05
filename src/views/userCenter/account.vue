@@ -512,8 +512,8 @@ export default {
             margin-right: 30px;
         }
         .switchBtn{
-            width: 56%;
-            height: 26%;
+            width: 58%;
+            height: 28%;
             position: absolute;
             left: 0;
             top: 36%;
