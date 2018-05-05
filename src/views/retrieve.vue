@@ -7,7 +7,7 @@
         <el-form :model="retrieveForm" size="small" :rules="rules" ref="retrieveForm" class="loginForm formbase">
             <div class="formT">
             <div class="formTitle">
-                找回密码
+                {{$t('login.resetPassword')}}
             </div>
             <el-form-item prop="email">
                 <el-input
@@ -20,26 +20,26 @@
             </div>
             <div class="formB">
                 <el-form-item>
-                    <el-button type="primary" class="submitBtn" @click="submitForm('retrieveForm')">下一步</el-button>
+                    <el-button type="primary" class="submitBtn" @click="submitForm('retrieveForm')">{{$t('login.submit')}}</el-button>
                 </el-form-item>
                 
             </div>
             
             </el-form>
         <div class="linkList">
-            <div class="toLogin"><router-link to="/login">返回登录</router-link></div>
+            <div class="toLogin"><router-link to="/login">{{$t('login.login2')}}</router-link></div>
         </div>
     </div>
 
     <div class="sendBox" v-if="sendFlag">
         <div class="logoBox">
-            <p class="logo">LOGO</p>
+           <img class="logo" src="../assets/img/logo.png" alt="logo">
         </div>
         <div class="line">
-            <span class="title">重置密码确认</span>
+            <span class="title">{{$t('login.resetLoginPassword')}}</span>
         </div>
         <div class="tipBox">
-            <p class="tip">已向您的邮箱发送了一封重置密码的邮件,点击邮件中的<span class="link">链接</span>去重置登录密码.</p>
+            <p class="tip">{{$t('login.wesent')}}</p>
             <p class="tip">如果长时间未收到邮件,请尝试垃圾邮箱中寻找.</p>
         </div>
     </div>
@@ -67,7 +67,7 @@ export default {
         rules:{
           email:[{ validator: validateEmail, trigger: 'blur' }]
         },
-        sendFlag:false,
+        sendFlag:true,
       };
     },
     methods: {
@@ -85,9 +85,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
-@import "../styles/login.scss";
-</style>
+
 
 <style lang="scss" scoped>
 .iconfont{
@@ -110,18 +108,26 @@ export default {
     }
     .line{
         width: 480px;
-        border-top: 1px solid #979797;
         position: relative;
         margin: 30px 0 50px;
+        text-align: center;
+        &::after{
+            display: inline-block;
+            content: " ";
+            width: 100%;
+            height: 1px;
+            background: #979797;
+            position: absolute;
+            left: 0;
+            top: 50%;
+        }
         .title{
             font-family: PingFangSC-Regular;
-            position: absolute;
+            position: relative;
+            z-index: 5;
             font-size:16px;
             padding:0 20px;
             background: #ffffff;
-            top:-12px;
-            left: 172px;
-
         }  
     }
     .tipBox{
@@ -138,4 +144,7 @@ export default {
 }
 </style>
 
+<style lang="scss">
+@import "../styles/login.scss";
+</style>
 

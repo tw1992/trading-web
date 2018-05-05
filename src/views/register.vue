@@ -7,18 +7,18 @@
       <el-form :model="registerForm" size="small" :rules="rules" ref="registerForm" class="loginForm formbase">
         <div class="formT">
           <div class="formTitle">
-            注册
+            {{$t('login.register1')}}
           </div>
           <el-form-item prop="email">
             <el-input
-              placeholder="邮箱地址"
+              :placeholder="$t('login.email')"
               v-model="registerForm.email">
               <i slot="prefix" class="iconfont icon-youjian1"></i>
             </el-input>
           </el-form-item>
           <el-form-item prop="pass">
             <el-input
-              placeholder="密码"
+              :placeholder="$t('login.password')"
               type="password"
               v-model="registerForm.password">
               <i slot="prefix" class="iconfont icon-suozi"></i>
@@ -26,7 +26,7 @@
           </el-form-item>
           <el-form-item prop="pass2">
             <el-input
-              placeholder="确认密码"
+              :placeholder="$t('login.confirmPassword')"
               type="password"
               v-model="registerForm.password2">
               <i slot="prefix" class="iconfont icon-suozi"></i>
@@ -34,23 +34,23 @@
           </el-form-item>
           <el-form-item class="recommend">
             <el-input
-              placeholder="推荐人（选填）"
+              :placeholder="$t('login.referralID')"
               v-model="registerForm.recommend">
               <i slot="prefix" class="iconfont icon-wo"></i>
             </el-input>
           </el-form-item>
           <el-form-item prop="consent" class="consent">
-            <el-checkbox v-model="registerForm.consent">我已阅读并同意币加<router-link class="service" to="">服务条款</router-link></el-checkbox>
+            <el-checkbox v-model="registerForm.consent">{{$t('login.Iagree')}}<router-link class="service" to="">{{$t('login.termsOfUse')}}</router-link></el-checkbox>
           </el-form-item>
         </div>
         <div class="formB">
           <el-form-item>
-            <el-button type="primary" class="submitBtn" @click="submitForm('registerForm')">注册</el-button>
+            <el-button type="primary" class="submitBtn" @click="submitForm('registerForm')">{{$t('login.register1')}}</el-button>
           </el-form-item>
           </div>
       </el-form>
       <div class="linkList">
-        <div class="toLogin"><span>已有账号? </span><router-link to="/login">马上登录</router-link></div>
+        <div class="toLogin"><span>{{$t('login.alreadyRegistered')}}</span><router-link to="/login">{{$t('login.login1')}}</router-link></div>
       </div>
     </div>
     <p class="footer">@  2017-2018   coin plus.com  All  Rights  Reserved</p>

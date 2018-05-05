@@ -1,43 +1,43 @@
 <template>
     <div class="attesBox">
-        <p class="topTip">安全建议：检查访问网址、开启二次验证、不要给他人转账和透露密码信息等。</p>
+        <p class="topTip">{{$t('user.recommendations')}}</p>
         <div class="googleBox">
             <div class="stepsBox">
                 <el-steps :active="steps" align-center>
-                    <el-step title="下载APP"><span slot="icon"></span></el-step>
-                    <el-step title="扫描及备份密匙"><span slot="icon"></span></el-step>
-                    <el-step title="绑定谷歌认证"><span slot="icon"></span></el-step>
+                    <el-step :title="$t('user.downloadApp')"><span slot="icon"></span></el-step>
+                    <el-step :title="$t('user.backupKey')"><span slot="icon"></span></el-step>
+                    <el-step :title="$t('user.enableGoogleAuthentication')"><span slot="icon"></span></el-step>
                 </el-steps>
             </div>
 
             <div class="step1 stepItem" v-show="steps == 1">
                 <img class="logo" src="../../assets/img/appstore.png">
                 <img class="logo" src="../../assets/img/googlePlay.png">
-                <el-button type="primary" size="mini" class="btnBase" @click="steps++">下一步</el-button>
+                <el-button type="primary" size="mini" class="btnBase" @click="steps++">{{$t('user.nextStep')}}</el-button>
             </div>
             <div class="step2 stepItem" v-show="steps == 2">
                 <p class="tips">谷歌二次验证16位密钥</p>
                 <p class="theKey">UDFH478ITJ39JKRU</p>
                 <div class="yardBox">
                     <img src="../../assets/img/pic.jpg" class="yard">
-                    <p class="tips">试用谷歌验证器APP</p>
-                    <p class="tips">扫描该二维码</p>
+                    <p class="tips">{{$t('user.useGoogleAPP1')}}</p>
+                    <p class="tips">{{$t('user.useGoogleAPP2')}}</p>
                 </div>
                 <p class="tips">请将16位密钥备份，并保存在安全的地方。如遇手机丢失，你可以通过该密钥恢复你的谷歌验证。</p>
-                <p class="tips notice">注意: 通过人工客服重置你的谷歌验证需提交工单，可能需要至少7天时间来处理。</p>
-                <el-button type="primary" size="mini" class="btnBase" @click="steps++">下一步</el-button>
+                <p class="tips notice">{{$t('funds.important')}}: {{$t('user.Resetting')}}</p>
+                <el-button type="primary" size="mini" class="btnBase" @click="steps++">{{$t('user.nextStep')}}</el-button>
             </div>
             <div class="step3 stepItem" v-show="steps == 3">
-                <el-form :model="googleForm" size="small" label-width="120px" label-position="left" :rules="rules" ref="googleForm" class="formbase">
+                <el-form :model="googleForm" size="small" label-width="210px" label-position="right" :rules="rules" ref="googleForm" class="formbase">
                     <div class="formT">
-                    <el-form-item prop="email" label="16位密钥">
+                    <el-form-item prop="email" :label="$t('user.key')">
                         <el-input
                         class="inputBase"
                         placeholder=""
                         v-model="googleForm.email">
                         </el-input>
                     </el-form-item>
-                    <el-form-item prop="pass" label="登录密码">
+                    <el-form-item prop="pass" :label="$t('Dialog.loginPassword')">
                         <el-input
                         class="inputBase"
                         placeholder=""
@@ -45,7 +45,7 @@
                         v-model="googleForm.pass">
                         </el-input>
                     </el-form-item>
-                    <el-form-item prop="verification" label="谷歌验证码">
+                    <el-form-item prop="verification" :label="$t('Dialog.googleAuthenticationCode')">
                         <el-input
                         class="inputBase"
                         placeholder=""
@@ -243,7 +243,7 @@ export default {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                width: 600px;
+                // width: 600px;
                 .inputBase{
                     width: 300px;
                 }

@@ -49,7 +49,9 @@
         <el-submenu index="changeLang">
             <template slot="title">{{$t('route.lang')}}</template>
             <el-menu-item index="" :disabled="language==='zh'" @click="handleSetLanguage('zh')">简体中文</el-menu-item>
+            <el-menu-item index="" :disabled="language==='tw'" @click="handleSetLanguage('tw')">繁体中文</el-menu-item>
             <el-menu-item index="" :disabled="language==='en'" @click="handleSetLanguage('en')">English</el-menu-item>
+            
         </el-submenu>
         </el-menu>
         </el-col>

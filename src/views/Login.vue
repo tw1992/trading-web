@@ -7,18 +7,18 @@
       <el-form :model="loginForm" size="small" :rules="rules" ref="loginForm" class="loginForm formbase">
         <div class="formT">
           <div class="formTitle">
-            登录
+            {{$t('login.login')}}
           </div>
           <el-form-item prop="email">
             <el-input
-              placeholder="邮箱地址"
+              :placeholder="$t('login.email')"
               v-model="loginForm.email">
               <i slot="prefix" class="iconfont icon-youjian1"></i>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
             <el-input
-              placeholder="密码"
+              :placeholder="$t('login.password')"
               type="password"
               v-model="loginForm.password">
               <i slot="prefix" class="iconfont icon-suozi"></i>
@@ -27,13 +27,13 @@
         </div>
         <div class="formB">
           <el-form-item>
-            <el-button type="primary" class="submitBtn" @click="submitForm('loginForm')">登录</el-button>
+            <el-button type="primary" class="submitBtn" @click="submitForm('loginForm')">{{$t('login.login')}}</el-button>
           </el-form-item>
           </div>
       </el-form>
       <div class="linkList">
-        <router-link to="/retrieve">忘记密码</router-link>
-        <div class="register"><span>还没有账号? </span><router-link to="/register">马上注册</router-link></div>
+        <router-link to="/retrieve">{{$t('login.forgotPassword')}}</router-link>
+        <div class="register"><span>{{$t('login.NotonBJEXyet')}}</span><router-link to="/register">{{$t('login.register')}}</router-link></div>
       </div>
     </div>
     <p class="footer">@  2017-2018   coin plus.com  All  Rights  Reserved</p>

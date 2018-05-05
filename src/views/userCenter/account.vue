@@ -11,7 +11,7 @@
                 <p class="UID">UID: {{userInfo.id}}</p>
             </div>
             <div class="attest">
-                <router-link class="toattest" to="/autonym">未实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
+                <router-link class="toattest" to="/autonym">{{$t('user.unverified')}}&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
             </div>
         </div>
         <div class="otherBox">
@@ -113,39 +113,39 @@
 
         <!-- 修改密码 -->
         <el-dialog
-            title="修改密码"
+            :title="$t('Dialog.modifyPassword')"
             :visible.sync="changePwdDialog"
             width="30%"
             custom-class="baseDialog changePwd"
             center>
             <el-form :model="changePwdForm" status-icon :rules="changePwdForm.rules" ref="changePwdForm">
-                <el-form-item label="原密码" prop="pwd1">
+                <el-form-item :label="$t('Dialog.oldPassword')" prop="pwd1">
                     <el-input class="inputBase" type="password" placeholder="请输入原密码" v-model="changePwdForm.pwd1" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="新密码" prop="newpwd1">
+                <el-form-item :label="$t('Dialog.newPassword')" prop="newpwd1">
                     <el-input class="inputBase" type="password" placeholder="(至少8个字符,必须包含大小写字母和数字)" v-model="changePwdForm.newpwd1" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="确认新密码" prop="newpwd2">
+                <el-form-item :label="$t('Dialog.confirmPassword')" prop="newpwd2">
                     <el-input class="inputBase" type="password" placeholder="请再次输入新密码" v-model="changePwdForm.newpwd2" auto-complete="off"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="mini" @click="changePwdDialog = false">确认</el-button>
+                <el-button type="primary" size="mini" @click="changePwdDialog = false">{{$t('Dialog.confirm')}}</el-button>
             </span>
         </el-dialog>
 
         <!-- 开启/解除 手机验证 -->
         <el-dialog
-            :title="(phoneFlag?'解除':'开启') + '手机验证'"
+            :title="(phoneFlag?$t('Dialog.disable'):$t('Dialog.open')) + $t('Dialog.SMSAuthentication')"
             :visible.sync="phoneDialog"
             width="30%"
             custom-class="baseDialog changePwd"
             center>
             <el-form :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
-                <el-form-item label="登录密码" prop="pwd">
+                <el-form-item :label="$t('Dialog.loginPassword')" prop="pwd">
                     <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="phoneForm.pwd" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="您的手机号" prop="phone">
+                <el-form-item :label="$t('Dialog.phoneNumber')" prop="phone">
                     <el-input placeholder="(仅限中国大陆)" v-model="phoneForm.phone" type="tel" auto-complete="off" class="inputBase input-with-select">
                         <el-select v-model="phoneForm.select" slot="prepend" placeholder="请选择">
                         <el-option label="+86" value="+86"></el-option>
@@ -154,20 +154,20 @@
                         </el-select>
                     </el-input>
                 </el-form-item>
-                <el-form-item label="验证码" class="verCode" prop="verCode">
+                <el-form-item :label="$t('Dialog.SMSAuthenticationCode')" class="verCode" prop="verCode">
                     <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.newpwd" auto-complete="off"></el-input>
-                    <a v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">获取</a>
+                    <a v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
                     <span v-show="!VerCodeFlag">{{verCodeTime}} S</span>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="mini" @click="changePwdDialog = false">确认</el-button>
+                <el-button type="primary" size="mini" @click="changePwdDialog = false">{{$t('Dialog.confirm')}}</el-button>
             </span>
         </el-dialog>
 
         <!-- 开启谷歌验证 -->
         <el-dialog
-            title="开启谷歌验证"
+            :title="$t('Dialog.enableGoogleAuthentication')"
             :visible.sync="googleAddDialog"
             width="30%"
             custom-class="baseDialog"
@@ -178,7 +178,7 @@
                 <p class="tips">并可以访问苹果商店或谷歌商店</p>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="mini" @click="googleStart()">开始</el-button>
+                <el-button type="primary" size="mini" @click="googleStart()">{{$t('Dialog.begin')}}</el-button>
             </span>
         </el-dialog>
 
