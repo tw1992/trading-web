@@ -1,5 +1,7 @@
 import { setEmail,getEmail,getToken,setToken } from '@/utils/auth'  
+import vuexAlong from 'vuex-along'
 import axios from '../../api/axios'
+import router from '../../routes'
 
 const user = {
   state: {
@@ -22,25 +24,44 @@ const user = {
   actions: {
     // 登录  
     Login({ commit }, userInfo) {  
-        console.log(userInfo)
+        //console.log(userInfo)
         var loginData = {};
         loginData.email = userInfo.email.trim();   
         loginData.password = userInfo.password.trim();    
         return new Promise((resolve, reject) => {  
             axios.post("/api/auth/login", loginData).then(response => {  
                 const data = response.data;  
-                commit('SET_EMAIL', loginData.email);  
-                commit('SET_TOKEN', data.token);  
+                console.log(response)
+                commit('SET_EMAIL', loginData.email); 
                 setEmail(loginData.email);  
-                setToken(data.token);  
-                localStorage.email = loginData.email;
-                localStorage.token = data.token;
+                if(response.code == 0){
+                    commit('SET_TOKEN', data.token);  
+                    setToken(data.token);
+                }
+                  
+                // localStorage.email = loginData.email;
+                // localStorage.token = data.token;
                 resolve(response); 
             }).catch(error => { 
                 reject(error) 
             }) 
         }) 
     },  
+    phoneLogin({ commit }, userInfo) { 
+        return new Promise((resolve, reject) => {  
+            axios.post("api/auth/2fa", userInfo).then(response => {  
+                const data = response.data;  
+                console.log(response)
+                if(response.code == 0){
+                    commit('SET_TOKEN', data.token);  
+                    setToken(data.token);
+                }
+                resolve(response); 
+            }).catch(error => { 
+                reject(error) 
+            }) 
+        }) 
+    },
     // 注册   
     Regist({ commit }, userInfo) {   
         var data = {};
@@ -58,14 +79,17 @@ const user = {
     },   
       // 登出   
     LogOut({ commit, state }) {  
+        var _this = this;
         return new Promise((resolve, reject) => { 
             axios.get('/api/auth/logout', '').then(response => {   
                 setEmail('');  
                 setToken(false);  
                 commit('SET_EMAIL', '');  
                 commit('SET_TOKEN', false);
-                localStorage.removeItem("email");
-                localStorage.removeItem("token");
+                vuexAlong.clean()
+                router.replace({ //跳转到home
+                    path: '/'
+                });
                 resolve(response);  
             }).catch(error => {   
                 reject(error) 
@@ -73,14 +97,14 @@ const user = {
         })  
     },
     //从localstorage里取email和token
-    initLogin({ commit }) {
-        return new Promise(resolve => {  
-            var email = localStorage.email || "";
-            var token = localStorage.token || false;
-            commit('SET_EMAIL', email);  
-            commit('SET_TOKEN', token);
-        })
-    },
+    // initLogin({ commit }) {
+    //     return new Promise(resolve => {  
+    //         var email = localStorage.email || "";
+    //         var token = localStorage.token || false;
+    //         commit('SET_EMAIL', email);  
+    //         commit('SET_TOKEN', token);
+    //     })
+    // },
     //前端登出
     FedLogOut({ commit }) {   
         return new Promise(resolve => {  
@@ -88,8 +112,10 @@ const user = {
             setToken(false);  
             commit('SET_EMAIL', '');  
             commit('SET_TOKEN', false);  
-            localStorage.removeItem("email");
-            localStorage.removeItem("token");
+            vuexAlong.clean();
+            router.replace({ //跳转到home
+                path: '/'
+            });
             resolve()  
         })  
     },

@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import axios from '../api/axios'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -57,8 +58,11 @@ export default {
           var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
           if (!reg.test(value)) {
             callback(new Error('请输入正确的邮箱'));
+          }else{
+              callback();
           }
         }
+        
       };
       return {
         retrieveForm:{
@@ -67,14 +71,21 @@ export default {
         rules:{
           email:[{ validator: validateEmail, trigger: 'blur' }]
         },
-        sendFlag:true,
+        sendFlag:false,
       };
     },
     methods: {
       submitForm(formName) {
+          console.log(0)
+        var _this = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            axios.post('/api/auth/password_reset',{email:this.retrieveForm.email}).then(function(res){  
+                console.log(res);
+                _this.sendFlag = true;
+            }).catch(function (res){  
+                console.log(res);
+            }); 
           } else {
             console.log('error submit!!');
             return false;

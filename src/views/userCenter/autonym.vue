@@ -38,10 +38,11 @@
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="https://upload.qiniup.com"
                             :show-file-list="false"
                             :on-success="handleAvatarSuccess"
-                            :before-upload="beforeAvatarUpload">
+                            :before-upload="beforeAvatarUpload"
+                            :data="postData">
                             <img v-if="imageUrl" :src="imageUrl" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
@@ -58,10 +59,11 @@
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="https://upload.qiniup.com"
                             :show-file-list="false"
                             :on-success="handleAvatarSuccess"
-                            :before-upload="beforeAvatarUpload">
+                            :before-upload="beforeAvatarUpload"
+                            :data="postData">
                             <img v-if="imageUrl" :src="imageUrl" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
@@ -78,10 +80,11 @@
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="https://upload.qiniup.com"
                             :show-file-list="false"
                             :on-success="handleAvatarSuccess"
-                            :before-upload="beforeAvatarUpload">
+                            :before-upload="beforeAvatarUpload"
+                            :data="postData">
                             <img v-if="imageUrl" :src="imageUrl" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
@@ -226,6 +229,9 @@ export default {
           pass:[{  message: '请输入密码', trigger: 'blur' },]
         },
         finishFlag: false,
+        postData: {
+            token: ''
+        }
     };
   },
   methods: {

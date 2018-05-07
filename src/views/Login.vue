@@ -46,8 +46,9 @@
         center>
         <el-form :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
             <el-form-item label="验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
-                <a href="javascript:;">获取</a>
+                <el-input class="inputBase" @input="phoneLogin(phoneForm.verCode)" placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+                <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
+                <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -66,7 +67,7 @@
         <el-form :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm">
             <el-form-item label="谷歌验证码" class="verCode" prop="verCode">
                 <el-input class="inputBase" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
-                <a href="javascript:;">获取</a>
+                <a class="verBtn" href="javascript:;">获取</a>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -90,13 +91,14 @@
         <el-form v-show="doubleSelect == 1" :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm">
             <el-form-item label="谷歌验证码" class="verCode" prop="verCode">
                 <el-input class="inputBase" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
-                <a href="javascript:;">获取</a>
+                <a class="verBtn" href="javascript:;">获取</a>
             </el-form-item>
         </el-form>
         <el-form v-show="doubleSelect == 2" :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
             <el-form-item label="验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
-                <a href="javascript:;">获取</a>
+                <el-input class="inputBase" @input="phoneLogin(phoneForm.verCode)"  placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+                <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
+                <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -114,6 +116,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import VueRouter from 'vue-router'
+import axios from '../api/axios'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -136,10 +139,12 @@ export default {
           email:[{ validator: validateEmail, trigger: 'blur' }],
           password:[{ required: true, message: '请输入密码', trigger: 'blur' },],
         },
-
+        VerCodeFlag: true,
+        verCodeTime: 60,
         phoneDialog: false,  //手机验证
         phoneForm: {
           verCode: '',
+          phone: '',
           rules: {
             verCode: { required: true, message: '请输入验证码', trigger: 'blur' }
           }
@@ -153,6 +158,8 @@ export default {
         },
         doubleDialog: false,
         doubleSelect: 1,
+        loginToken: "",
+        twoFactorAuthType: "",
       };
     },
     methods: {
@@ -161,19 +168,33 @@ export default {
           if (valid) {
             this.$store.dispatch('Login', this.loginForm).then((res) => {  
               console.log(res)
+              if(res.code == 100){    //双重验证
+                this.loginToken = res.data.loginToken;
+                this.twoFactorAuthType = res.data.twoFactorAuthType;
+                this.phoneForm.phone = res.data.mobile;
+                if(this.twoFactorAuthType == "MOBILE"){
+                  this.phoneDialog = true;
+                }else if(this.twoFactorAuthType == "GOOGLE"){
+                  this.googleDialog = true;
+                }else if(this.twoFactorAuthType == "BOTH"){
+                  this.doubleDialog = true;
+                }
+              }else{
+                this.$message({
+                  message: '登录成功',
+                  type: 'success'
+                });
+                var _this = this;
+                setTimeout(()=>{
+                  let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
+                  console.log(redirect)
+                  _this.$router.push({ path: redirect })
+                  console.log(123)
+                },2000)
+              }
               //this.loading = false;  
               //this.$router.push({path: '/login'});  
-              this.$message({
-                message: '登录成功',
-                type: 'success'
-              });
-              var _this = this;
-              setTimeout(()=>{
-                let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
-                console.log(redirect)
-                _this.$router.push({ path: redirect })
-                console.log(123)
-              },2000)
+              
             }).catch((e) => {  
               //this.loading = false  
               // console.log("err")
@@ -185,6 +206,57 @@ export default {
           }
         });
       },
+      getVerificationCode(mobile) {     //获取验证码
+        var _this = this;
+        axios.get(`/api/sms/to_mobile/${mobile}`).then(function(res){  
+            console.log(res);
+            _this.VerCodeFlag = false;
+            _this.verCodeTime = 60;
+            _this.verCodeTimeStart ();
+            _this.phoneForm.smsId = res.data.smsId;
+        }).catch(function (res){  
+            console.log(res);
+        });  
+      },
+      verCodeTimeStart (){              //验证码计时器
+        var _this = this;
+        var timer = setInterval(()=>{
+          if(_this.verCodeTime>1){
+              _this.verCodeTime--;
+          }else{
+              clearInterval(timer);
+              this.VerCodeFlag = true;
+          }
+        },1000)
+      },
+      phoneLogin(verCode) {
+        var smsCode = verCode.trim();
+        if(smsCode.length == 6){
+          var phoneLoginDate = {
+            loginToken: this.loginToken,
+            twoFactorAuthType: 'MOBILE',
+            smsId: this.phoneForm.smsId,
+            smsCode: smsCode
+          };
+          this.$store.dispatch('phoneLogin', phoneLoginDate).then((res) => {
+            this.$message({
+              message: '登录成功',
+              type: 'success'
+            });
+            var _this = this;
+            setTimeout(()=>{
+              let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
+              console.log(redirect)
+              _this.$router.push({ path: redirect })
+            },2000)
+          }).catch((e) => {  
+            //this.loading = false  
+            // console.log("err")
+            // console.log(e)
+          })
+        }
+        
+      }
     },
     computed: {
     ...mapGetters([

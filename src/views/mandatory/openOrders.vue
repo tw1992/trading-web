@@ -104,6 +104,7 @@
 
 
 <script>
+import axios from '../../api/axios'
   export default {
     data() {
       return {
@@ -205,6 +206,18 @@
           }]
         }]
       }
+    },
+    methods: {
+
+    },
+    created() {
+      var _this = this;
+      axios.get('/api/finance/entrusting').then(function(res){  
+          console.log(res);
+          _this.tableData = res.data;
+      }).catch(function (res){  
+          console.log(res);
+      }); 
     }
   }
 </script>

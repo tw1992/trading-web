@@ -155,13 +155,13 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="$t('Dialog.SMSAuthenticationCode')" class="verCode" prop="verCode">
-                    <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.newpwd" auto-complete="off"></el-input>
-                    <a v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
-                    <span v-show="!VerCodeFlag">{{verCodeTime}} S</span>
+                    <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+                    <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
+                    <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="mini" @click="changePwdDialog = false">{{$t('Dialog.confirm')}}</el-button>
+                <el-button type="primary" size="mini" @click="openSMS()">{{$t('Dialog.confirm')}}</el-button>
             </span>
         </el-dialog>
 
@@ -253,6 +253,15 @@ export default {
           callback();
         }
       };
+      var valiVer = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入验证码'));
+        } else if (value.length != 6) {
+          callback(new Error('请输入正确的验证码!'));
+        } else {
+          callback();
+        }
+      };
     return {
       phoneFlag: false,
       googleFlag: false,
@@ -290,7 +299,7 @@ export default {
           rules: {
             pwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
             phone:[{ required: true, message: '请输入手机号', trigger: 'blur' }],
-            verCode:[{ required: true, message: '请输入验证码', trigger: 'blur' }],
+            verCode:[{ validator: valiVer, trigger: 'blur' }],
         }
       },
       tableData: [],            //登录历史
@@ -337,7 +346,7 @@ export default {
                     _this.VerCodeFlag = false;
                     _this.verCodeTime = 60;
                     _this.verCodeTimeStart ();
-                    phoneForm.smsId = res.data.smsId;
+                    _this.phoneForm.smsId = res.data.smsId;
                 }).catch(function (res){  
                     console.log(res);
                 });  
@@ -347,7 +356,6 @@ export default {
                     type: 'warning'
                     });
             }
-            
       },
       verCodeTimeStart (){              //验证码计时器
           var _this = this;
@@ -359,6 +367,47 @@ export default {
                   this.VerCodeFlag = true;
               }
           },1000)
+      },
+      openSMS() {                       //开启手机验证
+        var _this = this; 
+        this.$refs['phoneForm'].validate((valid) => {
+          if (valid) {
+            axios.post('/api/user/mobile',{
+                password: this.phoneForm.pwd,
+                smsId: this.phoneForm.smsId,
+                smsCode: this.phoneForm.verCode
+            }).then(function(res){  
+                console.log(res)
+                _this.phoneDialog = false;
+                _this.phoneFlag = true;
+            }).catch(function (res){  
+                console.log(res);
+            }); 
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      changePwd() {                     //修改密码
+        var _this = this; 
+        this.$refs['changePwdForm'].validate((valid) => {
+          if (valid) {
+            axios.post('/api/user/password_update',{
+                password: this.phoneForm.pwd,
+                newPassword: this.phoneForm.smsId,
+            }).then(function(res){  
+                console.log(res)
+                // _this.phoneDialog = false;
+                // _this.phoneFlag = true;
+            }).catch(function (res){  
+                console.log(res);
+            }); 
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       }
     },
     computed: {

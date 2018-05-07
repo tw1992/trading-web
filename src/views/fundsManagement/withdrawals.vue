@@ -217,7 +217,7 @@
             </el-form-item>
             <el-form-item label="验证码" class="verCode" prop="verCode">
                 <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.newpwd" auto-complete="off"></el-input>
-                <a href="javascript:;">获取</a>
+                <a class="verBtn" href="javascript:;">获取</a>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">

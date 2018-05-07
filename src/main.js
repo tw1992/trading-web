@@ -20,9 +20,9 @@ Vue.use(ElementUI, {
 
 
 // 页面刷新时，重新赋值token
-if (window.localStorage.getItem('token')) {
-  store.dispatch('initLogin');
-}
+// if (window.localStorage.getItem('token')) {
+//   store.dispatch('initLogin');
+// }
 
 
 Vue.config.productionTip = false

@@ -30,7 +30,7 @@
             <template slot="title">{{$t('route.account')}}</template>
             <el-menu-item index="/userCenter/account">{{email}}</el-menu-item>
             <el-menu-item index="">{{$t('route.assessment')}}</el-menu-item>
-            <el-menu-item index="">{{$t('route.logout')}}</el-menu-item>
+            <el-menu-item index="" @click="logout">{{$t('route.logout')}}</el-menu-item>
         </el-submenu>
         <!-- <el-menu-item index="">{{$t('route.join')}}</el-menu-item>
         <el-menu-item index="/helpCenter">{{$t('route.support')}}</el-menu-item>
@@ -77,13 +77,7 @@ export default {
     },
     //退出登录
     logout: function() {
-      var _this = this;
-      this.$confirm("确认退出吗?", "提示", {})
-        .then(() => {
-          sessionStorage.removeItem("user");
-          _this.$router.replace("/login");
-        })
-        .catch(() => {});
+      this.$store.dispatch('LogOut');
     },
     handleSetLanguage(lang) {
       
@@ -107,10 +101,12 @@ export default {
     }
   },
   mounted (){
-    this.$store.dispatch('initLogin');
+    // this.$store.dispatch('initLogin');
     console.log(this.email)
     console.log(this.token)
-    this.$store.dispatch('getUserInfo');
+    if(this.email){
+      this.$store.dispatch('getUserInfo');
+    }
   }
 };
 </script>

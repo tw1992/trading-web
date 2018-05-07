@@ -71,6 +71,17 @@ axios.interceptors.response.use(
                     case 100:
                         Message.error("Two Factor Auth");       //双重验证
                         break;
+                    case 10399:
+                    //errorObj.msg = "Token invalid";     //token无效
+                    Message.error('登录信息已失效，即将跳转至登录页面');
+                    store.dispatch('FedLogOut');
+                    setTimeout(function () {
+                        router.replace({ //跳转到登录页面
+                            path: 'login',
+                            query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                        });
+                    }, 3000);
+                        break;
                     case 10400:
                         Message.error("Invalid authentication credentials");    //无效的身份验证凭证
                         break;
@@ -79,15 +90,11 @@ axios.interceptors.response.use(
                         break;
                     case 10402:
                         //errorObj.msg = "Token has expired";     //token过期
-                        Message.error({
-                            message: '登录信息已失效，即将跳转至登录页面',
-                            type: 'error',
-                            duration: 3000
-                        });
+                        Message.error('登录信息已失效，即将跳转至登录页面');
                         store.dispatch('FedLogOut');
                         setTimeout(function () {
                             router.replace({ //跳转到登录页面
-                                path: 'login',
+                                path: '/login',
                                 query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
                             });
                         }, 3000);
