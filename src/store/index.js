@@ -7,7 +7,7 @@ import getters from './getters'
 
 Vue.use(Vuex)
 
-vuexAlong.watchSession(['user'],true);
+vuexAlong.watchSession(['user','app'],true);
 
 const store = new Vuex.Store({
   modules: {

@@ -228,6 +228,7 @@
 </template>
 
 <script>
+import axios from '../../api/axios'
 export default {
   data() {
       return {
@@ -252,7 +253,7 @@ export default {
               verCode:[{ required: true,min: 6, max: 6, message: '请输入6位动态数字', trigger: 'blur' }],
           }
         },
-        phoneDialog: true,
+        phoneDialog: false,
         phoneForm: {      //手机验证
           phone: "",
           verCode: "",
@@ -343,10 +344,20 @@ export default {
       },
       handleIconClick(ev) {
         console.log(ev);
+      },
+      getWithdrawHistory(coin_id) {
+        var _this = this;
+        axios.get(`/api/finance/record_withdraw/${coin_id}`).then(function(res){  
+            console.log(res);
+            //_this.tableData = res.data;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
       }
     },
     mounted() {
       this.restaurants = this.loadAll();
+      this.getWithdrawHistory(1)
     }
 }
 </script>
@@ -409,7 +420,7 @@ export default {
         margin: 20px 6px;;
       }
       .site{
-        width: 280px;
+        width: 316px;
       }
     }
     .submit{

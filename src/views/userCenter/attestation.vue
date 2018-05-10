@@ -17,9 +17,10 @@
             </div>
             <div class="step2 stepItem" v-show="steps == 2">
                 <p class="tips">谷歌二次验证16位密钥</p>
-                <p class="theKey">UDFH478ITJ39JKRU</p>
+                <p class="theKey">{{this.googleQR}}</p>
                 <div class="yardBox">
-                    <img src="../../assets/img/pic.jpg" class="yard">
+                    <!-- <img src="../../assets/img/pic.jpg" class="yard"> -->
+                    <vue-qr :text="googleQR" :size="150"></vue-qr>
                     <p class="tips">{{$t('user.useGoogleAPP1')}}</p>
                     <p class="tips">{{$t('user.useGoogleAPP2')}}</p>
                 </div>
@@ -30,26 +31,26 @@
             <div class="step3 stepItem" v-show="steps == 3">
                 <el-form :model="googleForm" size="small" label-width="210px" label-position="right" :rules="rules" ref="googleForm" class="formbase">
                     <div class="formT">
-                    <el-form-item prop="email" :label="$t('user.key')">
+                    <el-form-item prop="googleAuthenticatorSecret" :label="$t('user.key')">
                         <el-input
                         class="inputBase"
                         placeholder=""
-                        v-model="googleForm.email">
+                        v-model="googleForm.googleAuthenticatorSecret">
                         </el-input>
                     </el-form-item>
-                    <el-form-item prop="pass" :label="$t('Dialog.loginPassword')">
+                    <el-form-item prop="password" :label="$t('Dialog.loginPassword')">
                         <el-input
                         class="inputBase"
                         placeholder=""
                         type="password"
-                        v-model="googleForm.pass">
+                        v-model="googleForm.password">
                         </el-input>
                     </el-form-item>
-                    <el-form-item prop="verification" :label="$t('Dialog.googleAuthenticationCode')">
+                    <el-form-item prop="googleCode" :label="$t('Dialog.googleAuthenticationCode')">
                         <el-input
                         class="inputBase"
                         placeholder=""
-                        v-model="googleForm.verification">
+                        v-model="googleForm.googleCode">
                         </el-input>
                     </el-form-item>
                     </div>
@@ -79,48 +80,74 @@
 </template>
 
 <script>
+import VueQr from 'vue-qr'
+import axios from '../../api/axios'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请输入邮箱'));
+          callback(new Error('请输入密钥'));
         } else {
           var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
           if (!reg.test(value)) {
-            callback(new Error('请输入正确的邮箱'));
+            callback(new Error('请输入正确的密钥'));
           }
         }
       };
     return {
         steps: 1,
         googleForm:{
-          email:"",
-          pass:"",
-          verification:"",
+          googleAuthenticatorSecret:"",
+          password:"",
+          googleCode:"",
         },
         rules:{
-          email:[{ validator: validateEmail, trigger: 'blur' }],
-          pass:[{  message: '请输入密码', trigger: 'blur' },]
+          googleAuthenticatorSecret:[{ required: true, message: '请输入16位密钥', trigger: 'blur' }],
+          password:[{ required: true, message: '请输入密码', trigger: 'blur' },],
+          googleCode: [{ required: true, message: '请输入谷歌验证码', trigger: 'blur' },]
         },
         finishFlag: false,
+        googleQR: '',
+
     };
   },
   methods: {
       submitForm(formName) {
-        // this.$refs[formName].validate((valid) => {
-        //   if (valid) {
-        //     alert('submit!');
-        //   } else {
-        //     console.log('error submit!!');
-        //     return false;
-        //   }
-        // });
-        this.finishFlag = true;
+        var _this = this;
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            axios.post('/api/user/google_authenticator',this.googleForm).then(function(res){  
+                console.log(res);
+                _this.finishFlag = true;
+                _this.$store.dispatch('getUserInfo');
+                // _this.googleQR = res.data.googleAuthenticatorSecret;
+                // _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
+            }).catch(function (res){  
+                console.log(res);
+            }); 
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+        
       },
       changeFinishFlag() {
           //this.finishFlag = false;
           this.$router.push("/userCenter/account")
       }
+    },
+    components: {VueQr},
+    created() {
+        var _this = this;
+
+        axios.get('/api/user/google_authenticator').then(function(res){  
+            console.log(res);
+            _this.googleQR = res.data.googleAuthenticatorSecret;
+            _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
     }
 };
 </script>
@@ -214,7 +241,9 @@ export default {
             }
             .theKey{
                 background: #D8D8D8;
-                padding: 4px 28px;
+                width: 182px;
+                text-align: center;
+                padding: 4px 0;
                 margin: 10px 0;
             }
             .yardBox{
@@ -253,6 +282,9 @@ export default {
                 .el-button{
                     margin-left: -150px;
                 }
+            }
+            .el-form-item.is-required .el-form-item__label:before{
+                content: '';
             }
         }
     }

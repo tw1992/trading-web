@@ -264,6 +264,7 @@
 </template>
 
 <script>
+import axios from '../../api/axios'
 export default {
   data() {
       return {
@@ -341,10 +342,20 @@ export default {
       },
       handleIconClick(ev) {
         console.log(ev);
+      },
+      getRechargeHistory(coin_id) {
+        var _this = this;
+        axios.get(`/api/finance/record_withdraw/${coin_id}`).then(function(res){  
+            console.log(res);
+            //_this.tableData = res.data;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
       }
     },
     mounted() {
       this.restaurants = this.loadAll();
+      this.getRechargeHistory(1);
     }
 }
 </script>

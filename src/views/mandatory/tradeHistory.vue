@@ -98,6 +98,7 @@
 </template>
 
 <script>
+import axios from '../../api/axios'
 export default {
   data() {
       return {
@@ -161,6 +162,25 @@ export default {
 
       };
     },
+    methods: {
+      getRecord(postData) {
+        var _this = this;
+        axios.post('/api/finance/record_deal',postData?postData:{}).then(function(res){  
+            console.log(res);
+            _this.openOrder = res.data;
+            _this.openOrder.map(function(item){
+              item.show = false;
+              item.condition = '—— ——';
+              item.type = "限价";
+              item.probability = item.deal_number/item.number.toFixed(5);
+            });
+            // _this.googleQR = res.data.googleAuthenticatorSecret;
+            // _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+      }
+    }
 }
 </script>
 

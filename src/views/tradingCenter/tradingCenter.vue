@@ -1129,7 +1129,7 @@ $baseColor : #FC9217;
             display: flex;
             flex-direction: column;
             .tableBox {
-              height: 286px;
+              height: 273px;
               overflow-y: hidden;
               transition: all 0.5s ease;
               tr td:nth-child(3) {
@@ -1147,7 +1147,7 @@ $baseColor : #FC9217;
               display: flex;
               justify-content: space-between;
               align-items: center;
-              height: 20px;
+              height: 30px;
               background: #56585B;
               padding: 0 12px;
               .depthL {

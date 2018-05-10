@@ -66,8 +66,8 @@
         center>
         <el-form :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm">
             <el-form-item label="谷歌验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
-                <a class="verBtn" href="javascript:;">获取</a>
+                <el-input class="inputBase" @input="googleLogin(googleForm.verCode)" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
+                <!-- <a class="verBtn" href="javascript:;">获取</a> -->
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -90,8 +90,8 @@
 
         <el-form v-show="doubleSelect == 1" :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm">
             <el-form-item label="谷歌验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
-                <a class="verBtn" href="javascript:;">获取</a>
+                <el-input class="inputBase" @input="googleLogin(googleForm.verCode)" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
+                <!-- <a class="verBtn" href="javascript:;">获取</a> -->
             </el-form-item>
         </el-form>
         <el-form v-show="doubleSelect == 2" :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
@@ -229,7 +229,7 @@ export default {
           }
         },1000)
       },
-      phoneLogin(verCode) {
+      phoneLogin(verCode) {             //手机验证
         var smsCode = verCode.trim();
         if(smsCode.length == 6){
           var phoneLoginDate = {
@@ -256,6 +256,32 @@ export default {
           })
         }
         
+      },
+      googleLogin(verCode) {            //谷歌验证
+        var googleCode = verCode.trim();
+        if(googleCode.length == 6){
+          var googleLoginDate = {
+            loginToken: this.loginToken,
+            twoFactorAuthType: 'GOOGLE',
+            googleCode: googleCode
+          };
+          this.$store.dispatch('googleLogin', googleLoginDate).then((res) => {
+            this.$message({
+              message: '登录成功',
+              type: 'success'
+            });
+            var _this = this;
+            setTimeout(()=>{
+              let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
+              console.log(redirect)
+              _this.$router.push({ path: redirect })
+            },2000)
+          }).catch((e) => {  
+            //this.loading = false  
+            // console.log("err")
+            // console.log(e)
+          })
+        }
       }
     },
     computed: {

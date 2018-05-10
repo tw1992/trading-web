@@ -203,8 +203,9 @@ var fetch = {
           }) 
     },
     del: (url, params)=>{
+        console.log(params)
         return new Promise((resolve, reject) => {
-            axios.delete(url, params)
+            axios.delete(url, {data:params})
               .then(response => {
                 resolve(response.data);
               }, err => {

@@ -9,14 +9,14 @@
         <div class="formBox">
             <div class="selectItem">
                 <p class="label">证件类型</p>
-                <el-select v-model="type">
-                <el-option label="居民二代身份证" value="IDCard"></el-option>
-                <el-option label="护照" value="passport"></el-option>
+                <el-select v-model="type" @change="selectChange()">
+                <el-option label="居民二代身份证" value="0"></el-option>
+                <el-option label="护照" value="1"></el-option>
                 </el-select>
             </div>
             
             <!-- 身份证form -->
-            <el-form v-if="type=='IDCard'" label-position="left" :model="IDForm" :rules="IDForm.rules" ref="IDForm" label-width="100px" class="IDForm">
+            <el-form v-if="type=='0'" label-position="left" :model="IDForm" :rules="IDForm.rules" ref="IDForm" label-width="100px" class="IDForm">
                 <el-form-item class="tipList">
                     <p class="tips">目前支持的证件类型如下：</p>
                     <p class="tips">1. 国内用户可提供：国内居民二代身份证</p>
@@ -38,12 +38,12 @@
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
-                            action="https://upload.qiniup.com"
+                            action="https://up-z2.qiniup.com"
                             :show-file-list="false"
-                            :on-success="handleAvatarSuccess"
+                            :on-success="handleAvatarSuccess1"
                             :before-upload="beforeAvatarUpload"
                             :data="postData">
-                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                            <img v-if="front" :src="front" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
                         <p class="Ltips">上传身份证正面</p>
@@ -59,12 +59,12 @@
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
-                            action="https://upload.qiniup.com"
+                            action="https://up-z2.qiniup.com"
                             :show-file-list="false"
-                            :on-success="handleAvatarSuccess"
+                            :on-success="handleAvatarSuccess2"
                             :before-upload="beforeAvatarUpload"
                             :data="postData">
-                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                            <img v-if="back" :src="back" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
                         <p class="Ltips">上传身份证反面</p>
@@ -80,12 +80,12 @@
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
-                            action="https://upload.qiniup.com"
+                            action="https://up-z2.qiniup.com"
                             :show-file-list="false"
-                            :on-success="handleAvatarSuccess"
+                            :on-success="handleAvatarSuccess3"
                             :before-upload="beforeAvatarUpload"
                             :data="postData">
-                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                            <img v-if="image" :src="image" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
                         <p class="Ltips textl">请您上传一张手持身份证正面照和个人签字的照片，个人签字的内容包含“币加”和当前日期。请确保照片和个人签字的内容清晰可见。</p>
@@ -99,27 +99,27 @@
                 </el-form-item>
                 
                 <el-form-item>
-                    <el-button class="btnBase" type="primary" @click="submitForm('IDForm')">确定</el-button>
+                    <el-button class="btnBase" type="primary" @click="IDFormSubmit()">确定</el-button>
                 </el-form-item>
             </el-form>
 
             <!-- 护照form -->
-            <el-form v-if="type=='passport'" label-position="left" :model="IDForm" :rules="IDForm.rules" ref="IDForm" label-width="100px" class="IDForm">
+            <el-form v-if="type=='1'" label-position="left" :model="passportForm" :rules="passportForm.rules" ref="passportForm" label-width="100px" class="IDForm">
                 <el-form-item class="tipList">
                     <p class="tips">目前支持的证件类型如下：</p>
                     <p class="tips">1. 国内用户可提供：国内居民二代身份证</p>
                     <p class="tips">2. 海外用户可提供：护照（不含中国公民）</p>
                 </el-form-item>
                 <el-form-item label="国籍" placeholder="请填写国籍" prop="name">
-                    <el-input v-model="IDForm.name"></el-input>
+                    <el-input v-model="passportForm.name"></el-input>
                 </el-form-item>
 
                 <el-form-item label="姓名" placeholder="请填写姓名" prop="name">
-                    <el-input v-model="IDForm.name"></el-input>
+                    <el-input v-model="passportForm.name"></el-input>
                 </el-form-item>
                 
                 <el-form-item label="护照号码" class="mb76" placeholder="请填写护照号码" prop="cardNum">
-                    <el-input v-model="IDForm.cardNum"></el-input>
+                    <el-input v-model="passportForm.cardNum"></el-input>
                 </el-form-item>
                 <el-form-item label="证件照片" class="labelInit mb46">
                     <p class="tips">照片形式请参考示例进行拍摄，图片横拍，脸部光线均匀不要有阴影，背景简单，头顶拍全。</p>
@@ -130,11 +130,12 @@
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="https://up-z2.qiniup.com"
                             :show-file-list="false"
-                            :on-success="handleAvatarSuccess"
-                            :before-upload="beforeAvatarUpload">
-                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                            :on-success="handleAvatarSuccess1"
+                            :before-upload="beforeAvatarUpload"
+                            :data="postData">
+                            <img v-if="front" :src="front" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
                         <p class="Ltips">请上传护照封面</p>
@@ -150,11 +151,12 @@
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="https://up-z2.qiniup.com"
                             :show-file-list="false"
-                            :on-success="handleAvatarSuccess"
-                            :before-upload="beforeAvatarUpload">
-                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                            :on-success="handleAvatarSuccess2"
+                            :before-upload="beforeAvatarUpload"
+                            :data="postData">
+                            <img v-if="back" :src="back" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
                         <p class="Ltips">请上传护照信息页</p>
@@ -170,11 +172,12 @@
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="https://up-z2.qiniup.com"
                             :show-file-list="false"
-                            :on-success="handleAvatarSuccess"
-                            :before-upload="beforeAvatarUpload">
-                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                            :on-success="handleAvatarSuccess3"
+                            :before-upload="beforeAvatarUpload"
+                            :data="postData">
+                            <img v-if="image" :src="image" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
                         <p class="Ltips textl">请您上传一张手持护照信息页和个人签字的照片，个人签字的内容包含“币加”和当前日期。请确保照片和个人签字的内容清晰可见。</p>
@@ -188,7 +191,7 @@
                 </el-form-item>
                 
                 <el-form-item>
-                    <el-button class="btnBase" type="primary" @click="submitForm('IDForm')">确定</el-button>
+                    <el-button class="btnBase" type="primary" @click="submitForm('passportForm')">确定</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -196,6 +199,7 @@
 </template>
 
 <script>
+import axios from '../../api/axios'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -209,9 +213,19 @@ export default {
         }
       };
     return {
-        type: 'IDCard',
-        imageUrl: '',
+        type: '0',
+        front: '',
+        back: '',
+        image: '',
         IDForm: {
+            name: '',
+            cardNum: '',
+            rules :{
+                name:[{ required: true, message: '请输入姓名', trigger: 'blur' }],
+                cardNum:[{ required: true, message: '请输入证件号码', trigger: 'blur' },]
+            },
+        },
+        passportForm: {
             name: '',
             cardNum: '',
             rules :{
@@ -228,6 +242,7 @@ export default {
           email:[{ validator: validateEmail, trigger: 'blur' }],
           pass:[{  message: '请输入密码', trigger: 'blur' },]
         },
+        domain:'',
         finishFlag: false,
         postData: {
             token: ''
@@ -238,16 +253,27 @@ export default {
       submitForm(formName) {
         this.finishFlag = true;
       },
+      selectChange() {
+        this.front = ''
+        this.back = ''
+        this.image = ''
+      },
       changeFinishFlag() {
           //this.finishFlag = false;
           this.$router.push("/userCenter/account")
       },
-      handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
+      handleAvatarSuccess1(res, file) {
+        this.front = URL.createObjectURL(file.raw);
+      },
+      handleAvatarSuccess2(res, file) {
+        this.back = URL.createObjectURL(file.raw);
+      },
+      handleAvatarSuccess3(res, file) {
+        this.image = URL.createObjectURL(file.raw);
       },
       beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 5;
+        const isJPG = file.type === 'image/jpeg'||'image/png';
+        const isLt5M = file.size / 1024 / 1024 < 5;
 
         if (!isJPG) {
           this.$message.error('上传头像图片只能是 JPG 格式!');
@@ -256,7 +282,53 @@ export default {
           this.$message.error('上传头像图片大小不能超过 5MB!');
         }
         return isJPG && isLt5M;
+      },
+      IDFormSubmit() {
+        var _this = this;
+        this.$refs['IDForm'].validate((valid) => {
+          if (valid) {
+              if(this.front||this.back||this.image){
+                  var IDdata = {
+                    passportType: this.type,
+                    name: this.IDForm.name,
+                    country: "中国",
+                    passportId: this.IDForm.cardNum,
+                    passportFront: this.front,
+                    passportBack: this.back,
+                    passportImage: this.image,
+                }
+                axios.post('/api/user/kyc',IDdata).then(function(res){  
+                    console.log(res);
+                    _this.domain = res.data.domain;
+                    _this.postData.token = res.data.token;
+                }).catch(function (res){  
+                    console.log(res);
+                });
+              }else{
+                  this.$message({
+                      message: '请上传图片',
+                      type: 'warning'
+                  })
+              }
+            
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+        
+        
       }
+    },
+    created() {
+        var _this = this;
+        axios.get('/api/qiniu_upload_token').then(function(res){  
+            console.log(res);
+            _this.domain = res.data.domain;
+            _this.postData.token = res.data.token;
+        }).catch(function (res){  
+            console.log(res);
+        });
     }
 };
 </script>

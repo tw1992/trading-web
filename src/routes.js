@@ -38,6 +38,22 @@ let routes = [{
     hidden: true
 },
 {
+    path: '/emaiActivation',
+    component: function (resolve) {
+        require(['./views/hint/emaiActivation.vue'], resolve)
+    },
+    name: '邮箱激活确认',
+    hidden: true
+},
+{
+    path: '/activationSuccess',
+    component: function (resolve) {
+        require(['./views/hint/activationSuccess.vue'], resolve)
+    },
+    name: '账号激活成功',
+    hidden: true
+},
+{
   path: '/404',
   component: function (resolve) {
       require(['./views/404.vue'], resolve)

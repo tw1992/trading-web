@@ -61,7 +61,7 @@
     </div>
 
     <div class="orderBox">
-      <el-table
+      <!-- <el-table
         :data="openOrder"
         style="width: 100%">
         
@@ -144,12 +144,92 @@
             </div>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table> -->
+
+      <table class="orderTable">
+        <colgroup style="width:180px;"></colgroup>
+        <colgroup style="width:60px;"></colgroup>
+        <colgroup style="width:60px;"></colgroup>
+        <colgroup style="width:80px;"></colgroup>
+        <colgroup style="width:160px"></colgroup>
+        <colgroup style="width:160px;"></colgroup>
+        <colgroup style="width:120px"></colgroup>
+        <colgroup style=""></colgroup>
+        <colgroup style=""></colgroup>
+        <colgroup style=""></colgroup>
+        <tbody>
+          <tr>
+            <th class="firstCol">{{$t('tradingCenter.date')}}</th>
+            <th>{{$t('home.pair')}}</th>
+            <th>{{$t('tradingCenter.type')}}</th>
+            <th>{{$t('tradingCenter.side')}}</th>
+            <th>{{$t('tradingCenter.price')}}</th>
+            <th>{{$t('tradingCenter.amount')}}</th>
+            <th>{{$t('tradingCenter.filled')+'%'}}</th>
+            <th>{{$t('tradingCenter.sum')}}</th>
+            <th>{{$t('tradingCenter.trigger')}}</th>
+            <th>操作</th>
+          </tr>
+          
+          <template v-for="(item,idx) in openOrder">
+            <tr :key="idx+'a'">
+              <td class="firstCol">{{item.created_at}}</td>
+              <td>{{item.coin_id}}</td>
+              <td>{{item.type}}</td>
+              <td :class="item.direction=='SELL'?'red':'green'">{{item.direction}}</td>
+              <td>{{item.prices}}</td>
+              <td>{{item.number}}</td>
+              <td>{{item.probability}}</td>
+              <td>{{item.total}}</td>
+              <td>{{item.condition}}</td>
+              <td><span @click="item.show = !item.show" class="baseColor">成交详情</span></td>
+              
+            </tr>
+            <tr v-show="item.show" :key="idx+'b'">
+              <td colspan="10">
+                <div class="detail">
+                  <p class="title">成交总额<span class="sum">{{transaction}}</span></p>
+                <el-table
+                  class="detailTable"
+                  :data="historyList"
+                  style="width: 100%">
+                    <el-table-column
+                      class-name="firstCol"
+                      prop="time"
+                      label="成交时间">
+                    </el-table-column>
+                    <el-table-column
+                      prop="prices"
+                      label="成交价格">
+                    </el-table-column>
+                    <el-table-column
+                      prop="num"
+                      label="成交数量">
+                    </el-table-column>
+                    <el-table-column
+                      prop="commission"
+                      label="手续费">
+                    </el-table-column>
+                    <el-table-column
+                      prop="sum"
+                      label="成交金额">
+                    </el-table-column>
+                  </el-table>
+                </div>
+                
+              </td>
+            </tr>
+          </template>
+          
+        </tbody>
+
+      </table>
     </div>
   </div>
 </template>
 
 <script>
+import axios from '../../api/axios'
 export default {
   data() {
       return {
@@ -179,17 +259,7 @@ export default {
           label: '卖出'
         }],
         conceal: false,
-        openOrder: [{
-          time: '2018-04-11 18:08:11',
-          goods: 'BTC',
-          type: '限价',
-          direction: '卖出',
-          prices: '0.00000051',
-          num: '3,374.74628467',
-          probability: '0.00029%',
-          sum: '3,454.72846',
-          condition: '—— ——',
-          transaction: '0.28738938 BTC',
+        transaction: '0.28738938 BTC',
           historyList: [{
             time: '2018-04-11 13:05:17',
             prices: '0.00003287',
@@ -202,11 +272,56 @@ export default {
             num: '1.29387478',
             commission: '34.239 BTC',
             sum: '445.161 BTC'
-          }]
+          }],
+        openOrder: [{
+          created_at: '2018-04-11 18:08:11',
+          coin_id: 'BTC',
+          type: '限价',
+          side: '卖出',
+          price: '0.00000051',
+          number: '3,374.74628467',
+          deal_number: '0.00029%',
+          total: '3,454.72846',
+          condition: '—— ——',
+          status: "",
+          show: false
         }]
 
       };
     },
+    methods: {
+      getEntrusted(postData){
+        var _this = this;
+        axios.post('/api/finance/entrusted',postData?postData:{}).then(function(res){  
+            console.log(res);
+            _this.openOrder = res.data;
+            _this.openOrder.map(function(item){
+              item.show = false;
+              item.condition = '—— ——';
+              item.type = "限价";
+              item.probability = item.deal_number/item.number.toFixed(5);
+            });
+            // _this.googleQR = res.data.googleAuthenticatorSecret;
+            // _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+      },
+      getTrades() {
+        var _this = this;
+        axios.get('/api/market/pairs').then(function(res){  
+            console.log(res);
+            _this.tradeList = res.data;
+            
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+      }
+    },
+    created (){
+      //this.getEntrusted();
+      //this.getTrades()
+    }
 }
 </script>
 

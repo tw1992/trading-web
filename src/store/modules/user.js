@@ -49,7 +49,22 @@ const user = {
     },  
     phoneLogin({ commit }, userInfo) { 
         return new Promise((resolve, reject) => {  
-            axios.post("api/auth/2fa", userInfo).then(response => {  
+            axios.post("/api/auth/2fa", userInfo).then(response => {  
+                const data = response.data;  
+                console.log(response)
+                if(response.code == 0){
+                    commit('SET_TOKEN', data.token);  
+                    setToken(data.token);
+                }
+                resolve(response); 
+            }).catch(error => { 
+                reject(error) 
+            }) 
+        }) 
+    },
+    googleLogin({ commit }, userInfo) { 
+        return new Promise((resolve, reject) => {  
+            axios.post("/api/auth/2fa", userInfo).then(response => {  
                 const data = response.data;  
                 console.log(response)
                 if(response.code == 0){

@@ -41,7 +41,7 @@
                         {{$t('user.SMStips')}}
                         </p>
                     </div>
-                    <div class="boxR">
+                    <div class="boxR" style="padding-right: 30px;">
                         <div class="switchBtn" @click="switchClick('phoneFlag')"></div>
                         <el-switch
                         v-model="phoneFlag"
@@ -76,7 +76,7 @@
                                 {{$t('user.Googletips')}}
                             </p>
                         </div>
-                        <div class="boxR">
+                        <div class="boxR" style="padding-right: 30px;">
                             <div class="switchBtn" @click="switchClick('googleFlag')"></div>
                             <el-switch
                             @change="googleClick"
@@ -161,7 +161,8 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="mini" @click="openSMS()">{{$t('Dialog.confirm')}}</el-button>
+                <el-button v-if="!phoneFlag" type="primary" size="mini" @click="openSMS()">{{$t('Dialog.confirm')}}</el-button>
+                <el-button v-if="phoneFlag" type="primary" size="mini" @click="disableSMS()">{{$t('Dialog.confirm')}}</el-button>
             </span>
         </el-dialog>
 
@@ -194,11 +195,11 @@
                     <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="googleDelForm.pwd" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="谷歌验证码" prop="verCode">
-                    <el-input class="inputBase" placeholder="6位动态数字" v-model.number="googleDelForm.verCode"></el-input>
+                    <el-input class="inputBase" placeholder="6位动态数字" v-model="googleDelForm.verCode"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button class="btnBase" type="primary" size="mini" @click="googleDelDialog = false;googleFlag  = false">确认</el-button>
+                <el-button class="btnBase" type="primary" size="mini" @click="disableGoogle()">确认</el-button>
             </span>
         </el-dialog>
 
@@ -277,7 +278,7 @@ export default {
           verCode: "",
           rules: {
             pwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
-            verCode:[{ required: true,min: 6, max: 6, message: '请输入6位动态数字', trigger: 'blur' }],
+            verCode:[{ validator: valiVer, trigger: 'blur' }],
         }
       },
       changePwdForm: {      //修改密码
@@ -378,8 +379,52 @@ export default {
                 smsCode: this.phoneForm.verCode
             }).then(function(res){  
                 console.log(res)
+                _this.$store.dispatch('getUserInfo');
                 _this.phoneDialog = false;
                 _this.phoneFlag = true;
+            }).catch(function (res){  
+                console.log(res);
+            }); 
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      disableSMS() {                    //解除手机验证
+        var _this = this; 
+        this.$refs['phoneForm'].validate((valid) => {
+          if (valid) {
+            axios.del('/api/user/mobile',{
+                password: this.phoneForm.pwd,
+                smsId: this.phoneForm.smsId,
+                smsCode: this.phoneForm.verCode
+            }).then(function(res){  
+                console.log(res)
+                _this.$store.dispatch('getUserInfo');
+                _this.phoneDialog = false;
+                _this.phoneFlag = false;
+            }).catch(function (res){  
+                console.log(res);
+            }); 
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      disableGoogle() {                 //解除谷歌验证
+        var _this = this; 
+        this.$refs['googleDelForm'].validate((valid) => {
+          if (valid) {
+            axios.del('/api/user/google_authenticator',{
+                password: this.googleDelForm.pwd,
+                googleCode: this.googleDelForm.verCode
+            }).then(function(res){  
+                console.log(res)
+                _this.$store.dispatch('getUserInfo');
+                _this.googleDelDialog = false;
+                _this.googleFlag = false;
             }).catch(function (res){  
                 console.log(res);
             }); 
@@ -397,6 +442,7 @@ export default {
                 password: this.phoneForm.pwd,
                 newPassword: this.phoneForm.smsId,
             }).then(function(res){  
+                
                 console.log(res)
                 // _this.phoneDialog = false;
                 // _this.phoneFlag = true;
@@ -557,9 +603,9 @@ export default {
             width: 100px;
             height: 40px;
         }
-        .el-switch__core{
-            margin-right: 30px;
-        }
+        // .el-switch__core{
+        //     margin-right: 30px;
+        // }
         .switchBtn{
             width: 58%;
             height: 28%;
