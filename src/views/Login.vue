@@ -36,7 +36,7 @@
         <div class="register"><span>{{$t('login.NotonBJEXyet')}}</span><router-link to="/register">{{$t('login.register')}}</router-link></div>
       </div>
     </div>
-    <p class="footer">@  2017-2018   coin plus.com  All  Rights  Reserved</p>
+    <login-footer></login-footer>
 
     <!-- 手机验证 -->
     <el-dialog
@@ -117,6 +117,7 @@
 import { mapGetters } from 'vuex'
 import VueRouter from 'vue-router'
 import axios from '../api/axios'
+import loginFooter from './components/loginFooter'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -290,6 +291,9 @@ export default {
         'token',
         'userInfo',
       ]),
+    },
+    components: {
+      loginFooter
     },
     mounted (){
       console.log(this.email)

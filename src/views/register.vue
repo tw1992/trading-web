@@ -53,12 +53,13 @@
         <div class="toLogin"><span>{{$t('login.alreadyRegistered')}}</span><router-link to="/login">{{$t('login.login1')}}</router-link></div>
       </div>
     </div>
-    <p class="footer">@  2017-2018   coin plus.com  All  Rights  Reserved</p>
+    <login-footer></login-footer>
   </div>
 </template>
 
 <script>
 //import { mapState } from 'vuex'
+import loginFooter from './components/loginFooter'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -140,7 +141,10 @@ export default {
           }
         });
       },
-    }
+    },
+    components: {
+      loginFooter
+    },
 }
 </script>
 

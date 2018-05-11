@@ -33,11 +33,12 @@
           </div>
       </el-form>
     </div>
-    <p class="footer">@  2017-2018   coin plus.com  All  Rights  Reserved</p>
+    <login-footer></login-footer>
   </div>
 </template>
 
 <script>
+import loginFooter from './components/loginFooter'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -73,7 +74,10 @@ export default {
           }
         });
       },
-    }
+    },
+    components: {
+      loginFooter
+    },
 }
 </script>
 
