@@ -6,6 +6,7 @@
         class="homeNav"
         mode="horizontal"
         @select="handleSelect"
+        @open="openSelect"
         text-color="#333333"
         active-text-color="#FC9217">
           <el-menu-item index="/Home" class="logo"><img src="../../assets/img/logo.png" alt="logo"></el-menu-item>
@@ -29,7 +30,10 @@
         <el-submenu index="/userCenter" v-if="email">
             <template slot="title">{{$t('route.account')}}</template>
             <el-menu-item index="/userCenter/account">{{email}}</el-menu-item>
-            <el-menu-item index="">{{$t('route.assessment')}}</el-menu-item>
+            <el-menu-item class="sum" index="">
+              <p>{{$t('route.assessment')}}</p>
+              <p>{{sum}}  BTC</p>
+            </el-menu-item>
             <el-menu-item index="" @click="logout">{{$t('route.logout')}}</el-menu-item>
         </el-submenu>
         <!-- <el-menu-item index="">{{$t('route.join')}}</el-menu-item>
@@ -59,10 +63,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import axios from '../../api/axios'
 export default {
   data() {
     return {
-      sysUserName: "aaa",
+      sum: 0,
     };
   },
   methods: {
@@ -74,6 +79,9 @@ export default {
         if(!key){
           
         }
+    },
+    openSelect() {
+      console.log(123);
     },
     //退出登录
     logout: function() {
@@ -88,6 +96,22 @@ export default {
     //     message: 'switch language success',
     //     type: 'success'
     //   })
+    },
+    getAccounts() {
+      var _this = this;
+      axios.get('/api/accounts').then(function(res){  
+          console.log(res);
+          var dataList = res.data;
+          var sum = 0;
+          dataList.forEach(it => {
+            var appraisement = 0;
+            appraisement = (it.available*1 + it.disabled*1) * it.price;
+            sum += appraisement;
+          });
+          _this.sum = sum;
+      }).catch(function (res){  
+          console.log(res);
+      }); 
     }
   },
   computed: {
@@ -106,6 +130,7 @@ export default {
     console.log(this.token)
     if(this.email){
       this.$store.dispatch('getUserInfo');
+      this.getAccounts()
     }
   }
 };
@@ -150,6 +175,13 @@ export default {
 }
 .el-menu--horizontal{
   border:0;
+}
+.el-menu-item.sum{
+  height: 60px!important;
+  line-height: 24px!important;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 .logo.el-menu-item.is-active{
   border-bottom:0;

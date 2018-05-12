@@ -2,7 +2,7 @@
   <div class="Lfooter">
     <ul class="LFnav">
         <li><router-link to="/Home">首页</router-link></li>
-        <li><router-link to="">帮助</router-link></li>
+        <li><router-link to="">帮助中心</router-link></li>
         <li><a href="javascript:;" :class="language==='zh'?'active':''" @click="handleSetLanguage('zh')">简体中文</a></li>
         <li><a href="javascript:;" :class="language==='en'?'active':''" @click="handleSetLanguage('en')">English</a></li>
         </ul>

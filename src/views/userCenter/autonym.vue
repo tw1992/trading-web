@@ -22,12 +22,12 @@
                     <p class="tips">1. 国内用户可提供：国内居民二代身份证</p>
                     <p class="tips">2. 海外用户可提供：护照（不含中国公民）</p>
                 </el-form-item>
-                <el-form-item label="姓名" placeholder="请填写姓名" prop="name">
-                    <el-input v-model="IDForm.name"></el-input>
+                <el-form-item label="姓名" prop="name">
+                    <el-input placeholder="请填写姓名" v-model="IDForm.name"></el-input>
                 </el-form-item>
                 
-                <el-form-item label="证件号"  placeholder="请填写证件号码" class="mb76" prop="cardNum">
-                    <el-input v-model="IDForm.cardNum"></el-input>
+                <el-form-item label="证件号" class="mb76" prop="cardNum">
+                    <el-input  placeholder="请填写证件号码" v-model="IDForm.cardNum"></el-input>
                 </el-form-item>
                 <el-form-item label="证件照片" class="labelInit mb46">
                     <p class="tips">照片形式请参考示例进行拍摄，图片横拍，脸部光线均匀不要有阴影，背景简单，头顶拍全。</p>
@@ -110,16 +110,23 @@
                     <p class="tips">1. 国内用户可提供：国内居民二代身份证</p>
                     <p class="tips">2. 海外用户可提供：护照（不含中国公民）</p>
                 </el-form-item>
-                <el-form-item label="国籍" placeholder="请填写国籍" prop="name">
-                    <el-input v-model="passportForm.name"></el-input>
+                <el-form-item label="国籍">
+                    <el-select v-model="country" filterable placeholder="请选择">
+                        <el-option
+                            v-for="item in countryList"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
 
-                <el-form-item label="姓名" placeholder="请填写姓名" prop="name">
-                    <el-input v-model="passportForm.name"></el-input>
+                <el-form-item label="姓名" prop="name">
+                    <el-input placeholder="请填写姓名" v-model="passportForm.name"></el-input>
                 </el-form-item>
                 
-                <el-form-item label="护照号码" class="mb76" placeholder="请填写护照号码" prop="cardNum">
-                    <el-input v-model="passportForm.cardNum"></el-input>
+                <el-form-item label="护照号码" class="mb76" prop="cardNum">
+                    <el-input placeholder="请填写护照号码" v-model="passportForm.cardNum"></el-input>
                 </el-form-item>
                 <el-form-item label="证件照片" class="labelInit mb46">
                     <p class="tips">照片形式请参考示例进行拍摄，图片横拍，脸部光线均匀不要有阴影，背景简单，头顶拍全。</p>
@@ -199,6 +206,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import axios from '../../api/axios'
 export default {
   data() {
@@ -213,6 +221,9 @@ export default {
         }
       };
     return {
+        countryUrl:"http://192.168.133.190:8080/static/country",
+        countryList:[],
+        country: '',
         type: '0',
         front: '',
         back: '',
@@ -318,7 +329,49 @@ export default {
         });
         
         
+      },
+      getCountry() {
+        var _this = this;
+        console.log(this.language)
+        if(this.language == "zh"){
+            var url = this.countryUrl+"/zh.json"
+        }else if(this.language == "zh-TW"){
+            var url = this.countryUrl+"/zh-TW.json"
+        }else if(this.language == "en"){
+            var url = this.countryUrl+"/en.json"
+        }
+        axios.get(url).then(function(res){  
+            console.log(res);
+            var country = res;
+            var list = [];
+            for(var i in country){
+                var countryItem = {
+                    id: i,
+                    name: country[i]
+                }
+                list.push(countryItem);
+            }
+            _this.countryList = list;
+            // _this.domain = res.data.domain;
+            // _this.postData.token = res.data.token;
+        }).catch(function (res){  
+            console.log(res);
+        });
       }
+    },
+    computed: {
+        ...mapGetters([
+            'language',
+        ]),
+        language() {
+        return this.$store.getters.language
+        }
+    },
+    watch: {
+        language: function() {
+            console.log(123)
+            this.getCountry();
+        }
     },
     created() {
         var _this = this;
@@ -329,7 +382,8 @@ export default {
         }).catch(function (res){  
             console.log(res);
         });
-    }
+        this.getCountry();
+    } 
 };
 </script>
 

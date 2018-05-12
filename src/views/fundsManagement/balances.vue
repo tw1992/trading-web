@@ -14,7 +14,7 @@
         <el-checkbox v-model="hidesmall">{{$t('funds.hideSmallBalances')}}</el-checkbox>
       </div>
       <div class="titem">
-        <p class="sum">{{$t('funds.estimatedValue')}}：0.00000000 BTC / &yen;0.00</p>
+        <p class="sum">{{$t('funds.estimatedValue')}}：{{sum}} BTC / &yen;0.00</p>
       </div>
     </div>
     <div class="orderBox">
@@ -55,26 +55,56 @@
   
 </template>
 <script>
+import axios from '../../api/axios'
 export default {
   data() {
-      return {
-        search: '',
-        hidesmall: false,
-        balances: [{
-          goods: 'BTC',
-          sum: '3,454.72846',
-          usable: '0.00000051',
-          freeze: '0.00000067',
-          appraisement: '23455.34847598',
-        },{
-          goods: 'BTC',
-          sum: '3,454.72846',
-          usable: '0.00000051',
-          freeze: '0.00000067',
-          appraisement: '23455.34847598',
-        }]
-      };
-    },
+    return {
+      search: '',
+      hidesmall: false,
+      sum:'0.00000000',
+      balances: [{
+        goods: 'BTC',
+        sum: '3,454.72846',
+        usable: '0.00000051',
+        freeze: '0.00000067',
+        appraisement: '23455.34847598',
+      },{
+        goods: 'BTC',
+        sum: '3,454.72846',
+        usable: '0.00000051',
+        freeze: '0.00000067',
+        appraisement: '23455.34847598',
+      }]
+    };
+  },
+  methods: {
+    getAccounts() {
+      var _this = this;
+      axios.get('/api/accounts').then(function(res){  
+          console.log(res);
+          var dataList = res.data;
+          var balances = [];
+          var sum = 0;
+          dataList.forEach(it => {
+            var coinItem = {};
+            coinItem.goods = it.id;
+            coinItem.sum = it.available*1 + it.disabled*1;
+            coinItem.usable = it.available;
+            coinItem.freeze = it.disabled;
+            coinItem.appraisement = coinItem.sum * it.price;
+            sum += coinItem.appraisement;
+            balances.push(coinItem);
+          });
+          _this.balances = balances;
+          _this.sum = sum;
+      }).catch(function (res){  
+          console.log(res);
+      }); 
+    }
+  },
+  created() {
+    this.getAccounts();
+  },
 }
 </script>
 
