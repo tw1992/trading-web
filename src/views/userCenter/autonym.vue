@@ -2,7 +2,7 @@
     <div class="autonymBox">
         <p class="topTip">安全建议：检查访问网址、开启二次验证、不要给他人转账和透露密码信息等。</p>
         <div class="autTop">
-            <router-link to=""><i class="el-icon-d-arrow-left"></i></router-link>
+            <router-link to="/userCenter/account"><i class="el-icon-d-arrow-left"></i></router-link>
             <p class="topTitle">实名认证</p>
         </div>
 
@@ -16,7 +16,7 @@
             </div>
             
             <!-- 身份证form -->
-            <el-form v-if="type=='0'" label-position="left" :model="IDForm" :rules="IDForm.rules" ref="IDForm" label-width="100px" class="IDForm">
+            <el-form v-show="type=='0'" label-position="left" :model="IDForm" :rules="IDForm.rules" ref="IDForm" label-width="100px" class="IDForm">
                 <el-form-item class="tipList">
                     <p class="tips">目前支持的证件类型如下：</p>
                     <p class="tips">1. 国内用户可提供：国内居民二代身份证</p>
@@ -34,7 +34,7 @@
                     <p class="tips">身份证信息清晰可见，照片大小不要超过5M</p>
                     <p class="tips">(认证的身份证信息不可修改，请谨慎填写)</p>
                 </el-form-item>
-                <el-form-item prop="IDImg" class="upBox">
+                <el-form-item class="upBox">
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
@@ -55,7 +55,7 @@
                         <img src="../../assets/img/ID  POSITIVE.png" alt="">
                     </div>
                 </el-form-item>
-                <el-form-item prop="IDImg" class="upBox">
+                <el-form-item class="upBox">
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
@@ -76,7 +76,7 @@
                         <img src="../../assets/img/ID  left.png" alt="">
                     </div>
                 </el-form-item>
-                <el-form-item prop="IDImg" class="upBox">
+                <el-form-item class="upBox">
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
@@ -104,13 +104,13 @@
             </el-form>
 
             <!-- 护照form -->
-            <el-form v-if="type=='1'" label-position="left" :model="passportForm" :rules="passportForm.rules" ref="passportForm" label-width="100px" class="IDForm">
+            <el-form v-show="type=='1'" label-position="left" :model="passportForm" :rules="passportForm.rules" ref="passportForm" label-width="100px" class="IDForm">
                 <el-form-item class="tipList">
                     <p class="tips">目前支持的证件类型如下：</p>
                     <p class="tips">1. 国内用户可提供：国内居民二代身份证</p>
                     <p class="tips">2. 海外用户可提供：护照（不含中国公民）</p>
                 </el-form-item>
-                <el-form-item label="国籍">
+                <el-form-item label="国籍" prop="country">
                     <el-select v-model="country" filterable placeholder="请选择">
                         <el-option
                             v-for="item in countryList"
@@ -133,7 +133,7 @@
                     <p class="tips">身份证信息清晰可见，照片大小不要超过5M</p>
                     <p class="tips">(认证的身份证信息不可修改，请谨慎填写)</p>
                 </el-form-item>
-                <el-form-item prop="IDImg" class="upBox">
+                <el-form-item class="upBox">
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
@@ -154,7 +154,7 @@
                         <img src="../../assets/img/password.png" alt="">
                     </div>
                 </el-form-item>
-                <el-form-item prop="IDImg" class="upBox">
+                <el-form-item class="upBox">
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
@@ -175,7 +175,7 @@
                         <img src="../../assets/img/ID passport.png" alt="">
                     </div>
                 </el-form-item>
-                <el-form-item prop="IDImg" class="upBox">
+                <el-form-item class="upBox">
                     <div class="itemL">
                         <el-upload
                             class="avatar-uploader"
@@ -240,6 +240,7 @@ export default {
             name: '',
             cardNum: '',
             rules :{
+                country:[{ required: true, message: '请选择国籍', trigger: 'blur' }],
                 name:[{ required: true, message: '请输入姓名', trigger: 'blur' }],
                 cardNum:[{ required: true, message: '请输入证件号码', trigger: 'blur' },]
             },

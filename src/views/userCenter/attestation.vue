@@ -20,7 +20,7 @@
                 <p class="theKey">{{this.googleQR}}</p>
                 <div class="yardBox">
                     <!-- <img src="../../assets/img/pic.jpg" class="yard"> -->
-                    <vue-qr :text="googleQR" :size="150"></vue-qr>
+                    <vue-qr :text="googleQR" :margin="0" :size="150"></vue-qr>
                     <p class="tips">{{$t('user.useGoogleAPP1')}}</p>
                     <p class="tips">{{$t('user.useGoogleAPP2')}}</p>
                 </div>

@@ -129,8 +129,11 @@ export default {
     console.log(this.email)
     console.log(this.token)
     if(this.email){
-      this.$store.dispatch('getUserInfo');
-      this.getAccounts()
+      this.$store.dispatch('getUserInfo');    //获取用户信息  
+      this.$store.dispatch('getPairs');       //获取交易对列表
+      this.$store.dispatch('getCoin');        //获取币种列表
+      this.getAccounts();
+      
     }
   }
 };

@@ -17,12 +17,12 @@
       </div>
       <div class="searchItem">
         <span class="searchLabel">{{$t('funds.pair')}}：</span>
-        <el-select size="mini" v-model="trade" placeholder="请选择">
+        <el-select size="mini" @change="marketChange" v-model="trade" placeholder="请选择">
           <el-option
-            v-for="item in tradeList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="(item,idx) in tradeList"
+            :key="idx"
+            :label="item.market.name"
+            :value="item.market.id">
           </el-option>
         </el-select>
       </div>
@@ -30,10 +30,10 @@
         <span class="searchLabel">{{$t('tradingCenter.coin')}}：</span>
         <el-select size="mini" v-model="currency" placeholder="请选择">
           <el-option
-            v-for="item in currencyList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="(item,idx) in currencyList"
+            :key="idx"
+            :label="item.coin_name"
+            :value="item.coin_id">
           </el-option>
         </el-select>
       </div>
@@ -43,14 +43,14 @@
           <el-option
             v-for="item in directionList"
             :key="item.value"
-            :label="item.label"
+            :label="item.name"
             :value="item.value">
           </el-option>
         </el-select>
       </div>
       <div class="searchItem">
         <el-button type="primary" size="mini">{{$t('button.search')}}</el-button>
-        <el-button size="mini">{{$t('button.reset')}}</el-button>
+        <el-button size="mini" @click="reset()">{{$t('button.reset')}}</el-button>
       </div>
       <div class="searchItem">
         <el-checkbox size="mini" v-model="conceal">{{$t('funds.hideallcanceled')}}</el-checkbox>
@@ -229,34 +229,24 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import axios from '../../api/axios'
 export default {
   data() {
       return {
         time: '',
         trade: '',
-        tradeList: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }],
+        tradeList: [],
         currency: '',
-        currencyList: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }],
+        currencyList: [],
         direction: '',
-        directionList: [{
-          value: '选项1',
-          label: '买入'
-        },{
-          value: '选项2',
-          label: '卖出'
+        directionList:[{
+          label: "买入",
+          value: "BUY",
+        },
+        {
+          label: "卖出",
+          value: "SELL",
         }],
         conceal: false,
         transaction: '0.28738938 BTC',
@@ -307,20 +297,50 @@ export default {
             console.log(res);
         }); 
       },
-      getTrades() {
-        var _this = this;
-        axios.get('/api/market/pairs').then(function(res){  
-            console.log(res);
-            _this.tradeList = res.data;
+      // getTrades() {
+      //   var _this = this;
+      //   axios.get('/api/market/pairs').then(function(res){  
+      //       console.log(res);
+      //       _this.tradeList = res.data;
             
-        }).catch(function (res){  
-            console.log(res);
-        }); 
+      //   }).catch(function (res){  
+      //       console.log(res);
+      //   }); 
+      // },
+      getMarketList(marketList) {
+        this.tradeList = marketList;
+      },
+      getCoinList(coinList) {
+        this.currency = "";
+        this.currencyList = coinList;
+      },
+      marketChange(value) {
+        console.log(value)
+        this.marketList.forEach(item => {
+          if(item.market.id == value){
+            this.getCoinList(item.pairs);
+          }
+        });
+      },
+      reset() {
+        this.time = "";
+        this.trade = "";
+        this.currency = "";
+        this.direction = "";
+        this.getCoinList(this.coinList);
       }
     },
+    computed: {
+      ...mapGetters([
+          'marketList',
+          'coinList',
+      ])
+    },
     created (){
-      //this.getEntrusted();
-      //this.getTrades()
+      // this.getEntrusted();
+      console.log(this.marketList)
+      this.getMarketList(this.marketList);
+      this.getCoinList(this.coinList);
     }
 }
 </script>

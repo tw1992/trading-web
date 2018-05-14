@@ -19,10 +19,10 @@
         <span class="searchLabel">{{$t('funds.pair')}}：</span>
         <el-select size="mini" v-model="trade" placeholder="请选择">
           <el-option
-            v-for="item in tradeList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="(item,idx) in tradeList"
+            :key="idx"
+            :label="item.market.name"
+            :value="item.market.id">
           </el-option>
         </el-select>
       </div>
@@ -30,10 +30,10 @@
         <span class="searchLabel">{{$t('tradingCenter.coin')}}：</span>
         <el-select size="mini" v-model="currency" placeholder="请选择">
           <el-option
-            v-for="item in currencyList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            v-for="(item,idx) in currencyList"
+            :key="idx"
+            :label="item.coin_name"
+            :value="item.coin_id">
           </el-option>
         </el-select>
       </div>
@@ -50,7 +50,7 @@
       </div>
       <div class="searchItem">
         <el-button type="primary" size="mini">{{$t('button.search')}}</el-button>
-        <el-button size="mini">{{$t('button.reset')}}</el-button>
+        <el-button size="mini" @click="reset()">{{$t('button.reset')}}</el-button>
       </div>
       <div class="searchItem export">
         <a href="javascript:;">{{$t('funds.exportCT')}}<i class="iconfont icon-excel"></i></a>
@@ -98,33 +98,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import axios from '../../api/axios'
 export default {
   data() {
       return {
         time: '',
         trade: '',
-        tradeList: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }],
+        tradeList: [],
         currency: '',
-        currencyList: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }],
+        currencyList: [],
         direction: '',
         directionList: [{
-          value: '选项1',
+          value: 'BUY',
           label: '买入'
         },{
-          value: '选项2',
+          value: 'SELL',
           label: '卖出'
         }],
         conceal: false,
@@ -179,7 +168,40 @@ export default {
         }).catch(function (res){  
             console.log(res);
         }); 
+      },
+      getMarketList(marketList) {
+        this.tradeList = marketList;
+      },
+      getCoinList(coinList) {
+        this.currency = "";
+        this.currencyList = coinList;
+      },
+      marketChange(value) {
+        console.log(value)
+        this.marketList.forEach(item => {
+          if(item.market.id == value){
+            this.getCoinList(item.pairs);
+          }
+        });
+      },
+      reset() {
+        this.time = "";
+        this.trade = "";
+        this.currency = "";
+        this.direction = "";
+        this.getCoinList(this.coinList);
       }
+    },
+    computed: {
+      ...mapGetters([
+          'marketList',
+          'coinList',
+      ])
+    },
+    created (){
+      console.log(this.marketList)
+      this.getMarketList(this.marketList);
+      this.getCoinList(this.coinList);
     }
 }
 </script>

@@ -39,30 +39,23 @@ const app = {
     },
     getPairs({ commit }) {
       return new Promise((resolve, reject) => {  
-        axios.get("/api/market/pairs").then(response => {  
-            const data = response.data;  
-            console.log(data)
-            var market = [];
-            var coin = [];
-            var json = {};
-            data.forEach(it => {
-              if(!json[it.market_name]){  
-
-              }else{
-
-              }
-              if(!json[it.coin_name]){
-
-              }else{
-                
-              }
-            });
-            
+        axios.get("/api/market/markets_and_pairs").then(response => {  
+            commit('SET_MARKET', response.data)
             resolve(response); 
         }).catch(error => { 
             reject(error) 
         }) 
-    }) 
+      }) 
+    },
+    getCoin({ commit }) {
+      return new Promise((resolve, reject) => {  
+        axios.get("/api/market/assets").then(response => {  
+            commit('SET_COIN', response.data)
+            resolve(response); 
+        }).catch(error => { 
+            reject(error) 
+        }) 
+      }) 
     }
   }
 }
