@@ -98,7 +98,7 @@
           <span slot="label">BTC {{$t('home.markets')}}</span>
           <el-row class="tabContent">
             <el-table
-            :data="BTCList"
+            :data="items"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
@@ -112,6 +112,7 @@
             </el-table-column>
             <el-table-column
               prop="name"
+              sortable
               :label="$t('home.pair')"
               width="180">
             </el-table-column>
@@ -125,6 +126,7 @@
             <el-table-column
               prop="scope"
               align="right"
+              sortable
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="parseFloat(scope.row.scope)>=0?'green':'red'">{{scope.row.scope}}</span>
@@ -133,16 +135,19 @@
             <el-table-column
               prop="high"
               align="right"
+              sortable
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="down"
               align="right"
+              sortable
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="all"
               align="right"
+              sortable
               class-name="lastList"
               :label="'24h'+$t('home.volume')">
             </el-table-column>
@@ -212,6 +217,7 @@
             class="search"
             placeholder=""
             prefix-icon="el-icon-search"
+            v-model="search"
             >
         </el-input>
           </span>
@@ -245,6 +251,7 @@ export default {
           }
         },
         swiperSlides: [],
+        search: '',
         newList:[{
           name: "new1",
           img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
@@ -272,7 +279,7 @@ export default {
           linkTo: "https://www.baidu.com/"
         }],
         BTCList: [
-          {id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"1",name:"XVG/BTC",newPrice1:"0.000001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
           {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},
           {id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
           {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
@@ -281,7 +288,7 @@ export default {
           {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
           {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},
           {id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
+          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.28%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
           {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
           {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
           {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
@@ -309,6 +316,7 @@ export default {
       },
       linkToGoods(row, event, column){
         console.log(row.id);
+        this.$router.push('/tradingCenter/'+row.id)
       },
       changeStar(star){
         console.log(star)
@@ -332,6 +340,20 @@ export default {
     components: {
       swiper,
       swiperSlide
+    },
+    computed: {
+      items: function() {
+        var _search = this.search.toLocaleLowerCase();
+        if (_search) {
+          return this.BTCList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product[key]).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+
+        return this.BTCList;
+      }
     },
     beforeCreate () {
       

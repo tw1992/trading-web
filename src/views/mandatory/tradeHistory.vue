@@ -154,7 +154,10 @@ export default {
     methods: {
       getRecord(postData) {
         var _this = this;
-        axios.post('/api/finance/record_deal',postData?postData:{}).then(function(res){  
+        if(postData){
+          postData.status = 1;
+        }
+        axios.get('/api/orders',postData?postData:{status:1}).then(function(res){  
             console.log(res);
             _this.openOrder = res.data;
             _this.openOrder.map(function(item){
@@ -199,7 +202,8 @@ export default {
       ])
     },
     created (){
-      console.log(this.marketList)
+      this.getRecord();
+      // console.log(this.marketList)
       this.getMarketList(this.marketList);
       this.getCoinList(this.coinList);
     }

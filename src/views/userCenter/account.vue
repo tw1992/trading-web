@@ -63,7 +63,7 @@
                             </p>
                         </div>
                         <div class="boxR">
-                            <el-button type="primary">{{$t('user.enable')}}</el-button>
+                            <el-button disabled type="primary">{{$t('user.enable')}}</el-button>
                         </div>
                 </div>
                 <div class="GoogleBox itemBox">

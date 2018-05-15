@@ -136,6 +136,9 @@
           </tr>
         </template>
         
+        <tr v-if="openOrder.length ==0">
+          <td colspan="10"><div class="nodate"><span class="empty-text">暂无数据</span></div></td>
+        </tr>
       </tbody>
 
     </table>
@@ -281,9 +284,9 @@ import axios from '../../api/axios'
     },
     created() {
       var _this = this;
-      axios.get('/api/finance/entrusting').then(function(res){  
+      axios.get('/api/orders',{status:0}).then(function(res){  
           console.log(res);
-          _this.tableData = res.data;
+          _this.openOrder = res.data;
       }).catch(function (res){  
           console.log(res);
       }); 

@@ -220,6 +220,10 @@
               </td>
             </tr>
           </template>
+          <tr v-if="openOrder.length ==0">
+            <td colspan="10"><div class="nodate"><span class="empty-text">暂无数据</span></div></td>
+          </tr>
+          
           
         </tbody>
 
@@ -282,7 +286,7 @@ export default {
     methods: {
       getEntrusted(postData){
         var _this = this;
-        axios.post('/api/finance/entrusted',postData?postData:{}).then(function(res){  
+        axios.get('/api/orders',postData?postData:{}).then(function(res){  
             console.log(res);
             _this.openOrder = res.data;
             _this.openOrder.map(function(item){
@@ -337,7 +341,7 @@ export default {
       ])
     },
     created (){
-      // this.getEntrusted();
+      this.getEntrusted();
       console.log(this.marketList)
       this.getMarketList(this.marketList);
       this.getCoinList(this.coinList);

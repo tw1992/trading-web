@@ -25,7 +25,7 @@ axios.interceptors.request.use(
         loading = Loading.service({
             fullscreen: true
         });
-        console.log(store.getters.language)
+        // console.log(store.getters.language)
         //语言切换
         if(store.getters.language == "zh"){
             

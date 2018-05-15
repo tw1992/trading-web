@@ -12,8 +12,8 @@
       </ul>
 
       <div class="export">
-        <a v-show="activeIdx == 0" href="javascript:;">{{$t('funds.exportD')}}<i class="iconfont icon-excel"></i></a>
-        <a v-show="activeIdx == 1" href="javascript:;">{{$t('funds.exportW')}}<i class="iconfont icon-excel"></i></a>
+        <a v-show="activeIdx == 0" href="javascript:;" @click="exportD()">{{$t('funds.exportD')}}<i class="iconfont icon-excel"></i></a>
+        <a v-show="activeIdx == 1" href="javascript:;" @click="exportW()">{{$t('funds.exportW')}}<i class="iconfont icon-excel"></i></a>
       </div>
     </div>
 
@@ -28,31 +28,31 @@
             label="状态"
             width="120">
             <template slot-scope="scope">
-              <span class="success" v-if="scope.row.state == 1">成功</span>
-              <span class="defeat" v-if="scope.row.state == 0">失败</span>
-              <span class="processed" v-if="scope.row.state == 2">处理中</span>
+              <span class="success" v-if="scope.row.status == 1">成功</span>
+              <span class="defeat" v-if="scope.row.status == 0">失败</span>
+              <span class="processed" v-if="scope.row.status == 2">处理中</span>
             </template>
           </el-table-column>
           <el-table-column
             label="币种"
             width="120"
-            prop="goods">
+            prop="coin_id">
           </el-table-column>
           <el-table-column
             label="数量"
             width="180"
-            prop="num">
+            prop="number">
           </el-table-column>
           <el-table-column
             label="时间"
             width="240"
-            prop="time">
+            prop="created_at">
           </el-table-column>
           <el-table-column
             label="信息">
             <template slot-scope="scope">
-              <div style="margin-bottom:4px;" class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.message.add}}</p></div>
-              <div class="tdItem"><p class="tdname">Txid</p><p class="tdmain">{{scope.row.message.Txid}}</p></div>
+              <div style="margin-bottom:4px;" class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.address}}</p></div>
+              <div class="tdItem"><p class="tdname">Txid</p><p class="tdmain">{{scope.row.txid}}</p></div>
             </template>
           </el-table-column>
         </el-table>
@@ -70,31 +70,31 @@
             :label="$t('tradingCenter.status')"
             width="120">
             <template slot-scope="scope">
-              <span class="success" v-if="scope.row.state == 1">成功</span>
-              <span class="defeat" v-if="scope.row.state == 0">失败</span>
-              <span class="processed" v-if="scope.row.state == 2">处理中</span>
+              <span class="success" v-if="scope.row.status == 1">成功</span>
+              <span class="defeat" v-if="scope.row.status == 0">失败</span>
+              <span class="processed" v-if="scope.row.status == 2">处理中</span>
             </template>
           </el-table-column>
           <el-table-column
             :label="$t('tradingCenter.coin')"
             width="120"
-            prop="goods">
+            prop="coin_id">
           </el-table-column>
           <el-table-column
             :label="$t('tradingCenter.amount')"
             width="180"
-            prop="num">
+            prop="number">
           </el-table-column>
           <el-table-column
             :label="$t('tradingCenter.date')"
             width="240"
-            prop="time">
+            prop="created_at">
           </el-table-column>
           <el-table-column
             :label="$t('funds.information')">
             <template slot-scope="scope">
-              <div class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.message.add}}</p></div>
-              <div class="tdItem"><p class="tdname">Txid</p><p class="tdmain">{{scope.row.message.Txid}}</p></div>
+              <div class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.address}}</p></div>
+              <div class="tdItem"><p class="tdname">Txid</p><p class="tdmain">{{scope.row.txid}}</p></div>
             </template>
           </el-table-column>
         </el-table>
@@ -107,64 +107,106 @@
 </template>
 
 <script>
+import axios from '../../api/axios'
 export default {
   data() {
       return {
         activeIdx: 0,
         recharge: [{
-          state: 1,
-          goods: 'BTC',
-          num: '3,374.74628467',
-          time: '2018-04-11 18:08:11',
-          message: {
-            add: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
-            Txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-          }
+          status: 0,
+          coin_id: 'BTC',
+          number: '3,374.74628467',
+          created_at: '2018-04-11 18:08:11',
+          address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
+          txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
         },{
-          state: 0,
-          goods: 'BTC',
-          num: '3,374.74628467',
-          time: '2018-04-11 18:08:11',
-          message: {
-            add: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
-            Txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-          }
+          status: 1,
+          coin_id: 'BTC',
+          number: '3,374.74628467',
+          created_at: '2018-04-11 18:08:11',
+          address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
+          txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
         },{
-          state: 2,
-          goods: 'BTC',
-          num: '3,374.74628467',
-          time: '2018-04-11 18:08:11',
-          message: {
-            add: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
-            Txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-          }
-        }],
+          status: 2,
+          coin_id: 'BTC',
+          number: '3,374.74628467',
+          created_at: '2018-04-11 18:08:11',
+          address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
+          txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
+        },],
         withdraw: [{
-          state: 1,
-          goods: 'BTC',
-          num: '3,374.74628467',
-          time: '2018-04-11 18:08:11',
-          message: {
-            add: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
-            Txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-          }
+          status: 1,
+          coin_id: 'BTC',
+          number: '3,374.74628467',
+          created_at: '2018-04-11 18:08:11',
+          address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
+          txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
         },{
-          state: 2,
-          goods: 'BTC',
-          num: '3,374.74628467',
-          time: '2018-04-11 18:08:11',
-          message: {
-            add: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
-            Txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-          }
-        }]
+          status: 2,
+          coin_id: 'BTC',
+          number: '3,374.74628467',
+          created_at: '2018-04-11 18:08:11',
+          address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
+          txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
+        },]
 
       };
     },
     methods: {
       changeActive(idx) {
         this.activeIdx = idx;
+      },
+      getRecharge(){
+        var _this = this;
+        axios.get('/api/accounts/imports').then(function(res){  
+            console.log(res);
+            // _this.openOrder = res.data;
+        }).catch(function (res){  
+            console.log(res);
+        });
+      },
+      getWithdraw(){
+        var _this = this;
+        axios.get('/api/accounts/exports').then(function(res){  
+            console.log(res);
+            // _this.openOrder = res.data;
+        }).catch(function (res){  
+            console.log(res);
+        });
+      },
+      exportD() {
+        require.ensure([], () => {
+          const { export_json_to_excel } = require('@/vendor/Export2Excel')
+          const tHeader = ['状态', '币种', '数量', '时间', '地址', 'Txid']
+          const filterVal = ['statu', 'coin_id', 'number', 'created_at', 'address', 'txid']
+          this.recharge.map(it =>{
+            it.statu = it.status == 0?'失败':it.status == 1?'成功':'处理中';
+          })
+          const list = this.recharge
+          const data = this.formatJson(filterVal, list)
+          export_json_to_excel(tHeader, data, '充值记录')
+        })
+      },
+      exportW() {
+        require.ensure([], () => {
+          const { export_json_to_excel } = require('@/vendor/Export2Excel')
+          const tHeader = ['状态', '币种', '数量', '时间', '地址', 'Txid']
+          const filterVal = ['statu', 'coin_id', 'number', 'created_at', 'address', 'txid']
+          this.withdraw.map(it =>{
+            it.statu = it.status == 0?'失败':it.status == 1?'成功':'处理中';
+          })
+          const list = this.withdraw
+          const data = this.formatJson(filterVal, list)
+          export_json_to_excel(tHeader, data, '提现记录')
+        })
+      },
+      formatJson(filterVal, jsonData) {
+        return jsonData.map(v => filterVal.map(j => v[j]))
       }
+    },
+    created() {
+      this.getRecharge();
+      this.getWithdraw();
     }
 }
 </script>

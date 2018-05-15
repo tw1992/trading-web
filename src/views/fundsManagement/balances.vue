@@ -44,9 +44,9 @@
         </el-table-column>
         <el-table-column class-name = "operation" width="280" :label="$t('funds.operation')">
           <template slot-scope="scope">
-            <router-link to="">{{$t('funds.deposit')}}</router-link>
-            <router-link to="">{{$t('funds.withdrawal')}}</router-link>
-            <router-link to="">{{$t('funds.trade')}}</router-link>
+            <router-link :to="'/fundsManagement/deposits/'+scope.row.goods">{{$t('funds.deposit')}}</router-link>
+            <router-link :to="'/fundsManagement/withdrawals/'+scope.row.goods">{{$t('funds.withdrawal')}}</router-link>
+            <router-link :to="'/tradingCenter/'+scope.row.goods">{{$t('funds.trade')}}</router-link>
           </template>
         </el-table-column>
       </el-table>

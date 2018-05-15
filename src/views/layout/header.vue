@@ -17,8 +17,8 @@
         <el-submenu index="/fundsManagement" v-if="email">
             <template slot="title">{{$t('route.funds')}}</template>
             <el-menu-item index="/fundsManagement/balances">{{$t('route.balances')}}</el-menu-item>
-            <el-menu-item index="/fundsManagement/deposits">{{$t('route.deposits')}}</el-menu-item>
-            <el-menu-item index="/fundsManagement/withdrawals">{{$t('route.withdrawals')}}</el-menu-item>
+            <el-menu-item index="/fundsManagement/deposits/1">{{$t('route.deposits')}}</el-menu-item>
+            <el-menu-item index="/fundsManagement/withdrawals/1">{{$t('route.withdrawals')}}</el-menu-item>
             <el-menu-item index="/fundsManagement/transactionHistory">{{$t('route.transactionHistory')}}</el-menu-item>
         </el-submenu>
         <el-submenu index="/mandatory" v-if="email">

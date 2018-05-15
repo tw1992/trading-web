@@ -17,18 +17,18 @@
         <ul class="priceList">
           <li>
             <span class="name">{{$t('tradingCenter.totalBalance')}}</span>
-            <span class="num">0.00000000 ADA</span>
+            <span class="num">0.00000000 {{coin_name}}</span>
           </li>
           <li>
             <span class="name">{{$t('tradingCenter.inOrder')}}</span>
-            <span class="num">0.00000000 ADA</span>
+            <span class="num">0.00000000 {{coin_name}}</span>
           </li>
           <li>
             <span class="name">{{$t('tradingCenter.availableBalance')}}</span>
-            <span class="num">0.00000000 ADA</span>
+            <span class="num">0.00000000 {{coin_name}}</span>
           </li>
         </ul>
-        <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>{{$t('funds.whats')}}ADA？</span></a>
+        <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>{{$t('funds.whats')+coin_name}}</span></a>
       </div>
 
       <div class="tipsBox">
@@ -36,7 +36,7 @@
         <ul class="tipsList">
           <li>
             
-            <p class="careful"><span class="dot careful"></span>{{$t('funds.importantTip1')}}8.4ADA</p>
+            <p class="careful"><span class="dot careful"></span>{{$t('funds.importantTip1')}}8.4{{coin_name}}</p>
           </li>
           <li>
             
@@ -46,10 +46,22 @@
       </div>
 
       <div class="siteBox">
-        <p class="siteTitle">ADA{{$t('funds.withdrawalAddress')}}</p>
+        <p class="siteTitle">{{coin_name+$t('funds.withdrawalAddress')}}</p>
         <p class="siteTips">请在下方输入本次提现地址</p>
         <el-form :model="siteForm" status-icon :rules="siteForm.rules" ref="siteForm" class="siteForm">
-          <div class="formT">
+          <el-form-item prop="addSelect">
+              <el-select class="addList" v-model="siteForm.addSelect" placeholder="请选择">
+                <el-option key="new" label="新地址" value="new"></el-option>
+                <el-option key="123" label="123" value="123"></el-option>
+                <el-option
+                  v-for="item in addList"
+                  :key="item.address"
+                  :label="item.address"
+                  :value="item.address">
+                </el-option>
+              </el-select>
+          </el-form-item>
+          <div class="formT" v-if="siteForm.addSelect == 'new'">
             <el-form-item class="label" prop="label">
               <el-input type="password" v-model="siteForm.label" auto-complete="off" placeholder="备注标签"></el-input>
             </el-form-item>
@@ -63,7 +75,7 @@
           </div>
           <el-form-item prop="num">
             <el-input v-model.number="siteForm.num" placeholder="请输入内容">
-              <template slot="append">ADA</template>
+              <template slot="append">{{coin_name}}</template>
             </el-input>
           </el-form-item>
           <div class="formTip">
@@ -101,7 +113,7 @@
             <p>{{$t('funds.mailtip')}} <a href="javascript:;" class="baseColor">{{$t('funds.notReceived')}}</a></p>
           </el-popover>
           <a href="javascript:;" class="baseColor showtip" v-popover:popover5>{{$t('funds.theMail')}} <i class="el-icon-question"></i></a>
-          <a href="javascript:;" class="more">{{$t('funds.viewAll')}}</a>
+          <router-link to="/fundsManagement/transactionHistory" class="more">{{$t('funds.viewAll')}}</router-link>
         </div>
       </div>
       <ul class="depList">
@@ -230,16 +242,22 @@ import axios from '../../api/axios'
 export default {
   data() {
       return {
+        coin_id: '',
+        coin_name : '',
         restaurants: [],
         state3: '3',
+        addList:[],
+        changeFlag: false,      //判断进入页面后是否改变过币种
         siteForm: {
           label: '',
           site: '',
+          addSelect:'',
           num: '',
           rules:{ 
-            label:[{ required: true, message: '请选择活动资源', trigger: 'blur' }],
-            site: [{ required: true, message: '请选择活动资源', trigger: 'blur' }],
-            num: [{ required: true, message: '请选择活动资源', trigger: 'blur' }]
+            addSelect: [{ required: true, message: '请选择提现地址', trigger: 'change' }],
+            label:[{ required: true, message: '请输入备注', trigger: 'blur' }],
+            site: [{ required: true, message: '请输入提现地址', trigger: 'blur' }],
+            num: [{ required: true, message: '请输入提现数量', trigger: 'blur' }]
           }
         },
         googleDialog: false,
@@ -259,8 +277,8 @@ export default {
           rules: {
             phone:[{ required: true, message: '请输入手机号', trigger: 'blur' }],
             verCode:[{ required: true, message: '请输入验证码', trigger: 'blur' }],
-        }
-      },
+          }
+        },
       };
     },
     methods: {
@@ -275,18 +293,41 @@ export default {
         });
       },
       changeSelect(value){
-        console.log(value)
-        console.log(this.state3)
+        this.changeFlag = true;   //改变过币
+        var name = this.findName(value)
+        this.coin_name = name;
+        console.log(name)
+        this.getWithdrawHistory(value);
+        this.getWithdrawAdd(this.coin_id)
       },
       getWithdrawHistory(coin_id) {
         var _this = this;
-        axios.get(`/api/finance/record_withdraw/${coin_id}`).then(function(res){  
+        axios.get(`/api/accounts/exports/${coin_id}`).then(function(res){  
             console.log(res);
             //_this.tableData = res.data;
         }).catch(function (res){  
             console.log(res);
         }); 
-      }
+      },
+      getWithdrawAdd(coin_id) {
+        var _this = this;
+        axios.get(`/api/accounts/addresses/${coin_id}`).then(function(res){  
+            console.log(res);
+            _this.addList = res.data;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+      },
+      findName(coin_id) {
+        var _this = this;
+        var name;
+        this.coinList.forEach(it=>{
+        if(it.coin_id == coin_id){
+            name = it.coin_name
+          }
+        })
+        return name;
+      },
     },
     computed: {
       ...mapGetters([
@@ -295,8 +336,12 @@ export default {
       ])
     },
     mounted() {
+      this.coin_id = this.$route.params.coin_id;
+      this.coin_name = this.findName(this.coin_id);
+      this.state3 = this.coin_name;
       this.restaurants = this.coinList;
-      this.getWithdrawHistory(1)
+      this.getWithdrawHistory(this.coin_id)
+      this.getWithdrawAdd(this.coin_id)
     }
 }
 </script>
@@ -329,6 +374,9 @@ export default {
       }
   }
 
+  .addList.el-select{
+    width: 100%;
+  }
 .siteBox{
   .siteTitle{
     line-height: 36px;

@@ -105,14 +105,14 @@ let routes = [{
             name: '我的资产'
         },
         {
-            path: '/fundsManagement/deposits',
+            path: '/fundsManagement/deposits/:coin_id',
             component: function (resolve) {
                 require(['./views/fundsManagement/deposits.vue'], resolve)
             },
             name: '充值'
         },
         {
-            path: '/fundsManagement/withdrawals',
+            path: '/fundsManagement/withdrawals/:coin_id',
             component: function (resolve) {
                 require(['./views/fundsManagement/withdrawals.vue'], resolve)
             },

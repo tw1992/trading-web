@@ -17,24 +17,24 @@
         <ul class="priceList">
           <li>
             <span class="name">{{$t('tradingCenter.totalBalance')}}</span>
-            <span class="num">0.00000000 ADA</span>
+            <span class="num">0.00000000 {{coin_name}}</span>
           </li>
           <li>
             <span class="name">{{$t('tradingCenter.inOrder')}}</span>
-            <span class="num">0.00000000 ADA</span>
+            <span class="num">0.00000000 {{coin_name}}</span>
           </li>
           <li>
             <span class="name">{{$t('tradingCenter.availableBalance')}}</span>
-            <span class="num">0.00000000 ADA</span>
+            <span class="num">0.00000000 {{coin_name}}</span>
           </li>
         </ul>
-        <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>{{$t('funds.whats')}}ADA？</span></a>
+        <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>{{$t('funds.whats')+coin_name}}？</span></a>
       </div>
 
       <div class="addBox">
-        <p class="addTitle">ADA{{$t('funds.depositAddress')}}</p>
+        <p class="addTitle">{{coin_name+$t('funds.depositAddress')}}</p>
         <p class="add">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>
-        <p class="warning">{{$t('funds.importantTip')}}</p>
+        <p class="warning">{{changeTips.tip1}}</p>
       </div>
       <div class="btnBox">
         <a href="javascript:;" class="copy" :data-clipboard-text = "depositsAdd" @click="copy"><i class="iconfont icon-fuzhi"></i>{{$t('funds.copyAddress')}}</a>
@@ -45,7 +45,7 @@
         <ul class="tipsList">
           <li>
             <span class="dot"></span>
-            <p>{{$t('funds.tips1a')}}<span class="baseColor">15</span>{{$t('funds.tips1b')}}</p>
+            <p>{{changeTips.tip2}}<span class="baseColor">15</span>{{$t('funds.tips1b')}}</p>
           </li>
           <li>
             <span class="dot"></span>
@@ -66,7 +66,7 @@
             <p>{{$t('funds.notip')}} <a href="javascript:;" class="baseColor">{{$t('funds.more')}}</a></p>
           </el-popover>
           <a href="javascript:;" class="baseColor showtip" v-popover:popover4>{{$t('funds.notArrive')}}<i class="el-icon-question"></i></a>
-          <a href="javascript:;" class="more">{{$t('funds.viewAll')}}</a>
+          <router-link to="/fundsManagement/transactionHistory" class="more">{{$t('funds.viewAll')}}</router-link>
         </div>
       </div>
 
@@ -90,7 +90,7 @@
             <div class="itemT">
               <div class="nodes">
                 <p class="nodeTitle">币种</p>
-                <p class="nodeMain">ADA</p>
+                <p class="nodeMain">{{coin_name}}</p>
               </div>
               <div class="nodes">
                 <p class="nodeTitle">数量</p>
@@ -246,7 +246,7 @@
 
     <!-- 二维码弹窗 -->
     <el-dialog
-        :title="'ADA'+$t('funds.depositAddress')"
+        :title="coin_name+$t('funds.depositAddress')"
         :visible.sync="codeDialog"
         custom-class="baseDialog codeDialog"
         center>
@@ -269,16 +269,23 @@ import axios from '../../api/axios'
 export default {
   data() {
       return {
+        coin_id: '',
+        coin_name : '',
         restaurants: [],
         state3: '3',
         codeDialog: false,
-        depositsAdd: "DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN"
+        depositsAdd: "DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN",
+        changeTips: {
+          tip1: '',
+          tip2: '',
+        },
+        changeFlag: false,      //判断进入页面后是否改变过币种
       };
     },
     methods: {
       getRechargeHistory(coin_id) {
         var _this = this;
-        axios.get(`/api/finance/record_withdraw/${coin_id}`).then(function(res){  
+        axios.get(`/api/accounts/imports/${coin_id}`).then(function(res){  
             console.log(res);
             //_this.tableData = res.data;
         }).catch(function (res){  
@@ -286,8 +293,12 @@ export default {
         }); 
       },
       changeSelect(value){
-        console.log(value)
-        console.log(this.state3)
+        this.changeFlag = true;   //改变过币
+        var name = this.findName(value)
+        this.coin_name = name;
+        this.changeTip(name);        //替换change
+        console.log(name)
+        this.getRechargeHistory(value);
       },
       copy(){
         var clipboard = new Clipboard('.copy')  
@@ -305,6 +316,20 @@ export default {
           // 释放内存  
           clipboard.destroy()  
         }) 
+      },
+      changeTip(name) {
+        this.changeTips.tip1 = this.$t('funds.importantTip').replace(/change/g,name);
+        this.changeTips.tip2 = this.$t('funds.tips1a').replace(/change/g,name);
+      },
+      findName(coin_id) {
+        var _this = this;
+        var name;
+        this.coinList.forEach(it=>{
+        if(it.coin_id == coin_id){
+            name = it.coin_name
+          }
+        })
+        return name;
       }
     },
     computed: {
@@ -314,9 +339,13 @@ export default {
       ])
     },
     components: {VueQr},
-    mounted() {
+    created() {
+      this.coin_id = this.$route.params.coin_id;
+      this.coin_name = this.findName(this.coin_id);
+      this.state3 = this.coin_name;
       this.restaurants = this.coinList;
-      this.getRechargeHistory(1);
+      this.getRechargeHistory(this.coin_id);
+      this.changeTip(this.coin_name);        //替换change
     }
 }
 </script>

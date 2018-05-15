@@ -36,7 +36,7 @@
       <div class="fLine"></div>
       <div class="fDown">
         <div class="reserved">
-          @  2017-2018   coin plus.com  All  Rights  Reserved
+          &copy;  2017-2018   bjex.io  All  Rights  Reserved
         </div>
         <ul class="priceList">
           <li>
