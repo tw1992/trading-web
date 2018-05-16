@@ -14,7 +14,7 @@
             <a href="#">隐私声明</a>
           </li> -->
           <li>
-            <a href="#">{{$t('home.fees')}}</a>
+            <router-link to="/fees">{{$t('home.fees')}}</router-link>
           </li>
           <li>
             <a href="#">{{$t('home.api')}}</a>

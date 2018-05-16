@@ -212,6 +212,13 @@ let routes = [{
     name: '服务条款'
   },
   {
+    path: '/fees',
+    component: function (resolve) {
+        require(['./views/layout/other/fees.vue'], resolve)
+    },
+    name: '费率标准'
+  },
+  {
       path: '/helpCenter',
       component: function (resolve) {
           require(['./views/helpCenter/helpCenter.vue'], resolve)

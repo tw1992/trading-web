@@ -351,7 +351,15 @@
               </ul>
               <div class="flort">
                 <span>{{$t('tradingCenter.groups')}}</span>
-                <div class="flortBtn options">8{{$t('tradingCenter.decimals')}}<i class="el-icon-caret-bottom"></i></div>
+                <div class="flortBtn options" @click="flortFlag=!flortFlag">
+                  {{fixed + $t('tradingCenter.decimals')}}<i class="el-icon-caret-bottom"></i>
+                  <div v-show="flortFlag" class="flortList">
+                    <div class="flortItem" :class="fixed==5?'active':''" @click="fixed=5">5{{$t('tradingCenter.decimals')}}</div>
+                    <div class="flortItem" :class="fixed==6?'active':''" @click="fixed=6">6{{$t('tradingCenter.decimals')}}</div>
+                    <div class="flortItem" :class="fixed==7?'active':''" @click="fixed=7">7{{$t('tradingCenter.decimals')}}</div>
+                    <div class="flortItem" :class="fixed==8?'active':''" @click="fixed=8">8{{$t('tradingCenter.decimals')}}</div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -390,9 +398,13 @@
                 <div style="color: #7EC28D;" class="depthL fz14">
                   0.00000435<i class="el-icon-sort-up"></i><span class="price baseColor">&yen;0.18</span>
                 </div>
-                <div class="depthWrong">
-                  <img src="https://resource.binance.com/resources/img/depthFail.gif">
+                <div class="depthWrong" v-show="!depthFlag">
+                  <img src="../../assets/img/depthFail.gif">
                   <p>{{$t('tradingCenter.marketStatus')}}:{{$t('tradingCenter.delay')}}</p>
+                </div>
+                <div class="depthWrong" v-show="depthFlag">
+                  <img src="../../assets/img/depthSuc.png">
+                  <p>{{$t('tradingCenter.marketStatus')}}:正常</p>
                 </div>
               </div>
               <div class="tableBox" :class="marketSelect == 3?'toHeight100':marketSelect == 2?'toHeight0':''">
@@ -434,8 +446,8 @@
                 <colgroup style="width:30%;"></colgroup>
                 <tbody>
                 <tr v-for="(it,idx) in newmarket" :key="idx">
-                  <td class="f-left" :class="it[1]=='SELL'?'red':'green'"><span>{{it[3]}}</span></td>
-                  <td class="f-center"><span>{{it[2]|toFixed0}}</span></td>
+                  <td class="" :class="it[1]=='SELL'?'red':'green'"><span>{{it[3]}}</span></td>
+                  <td class="f-center"><span>{{[it[2],0]|toFixed}}</span></td>
                   <td class="f-right" style="color: #898989;"><span>{{formatDateTime(it[4],"HH:mm:ss")}}</span></td>
                 </tr>
                 </tbody>
@@ -563,7 +575,9 @@
         funds: [],          //资产管理
         startTime: '',
         endTime: '',
-        fixed: '6',
+        fixed: '8',
+        flortFlag: false,
+        depthFlag: true,    //行情正常/延迟
       };
     },
     mounted() {
@@ -665,9 +679,9 @@
       }
     },
     filters: {
-      toFixed0: (value) => {
+      toFixed: ([value,num]) => {
         if (!value) return ''
-        value = (value*1).toFixed(0)
+        value = (value*1).toFixed(num)
         return value;
       },
       mul: ([value1,value2,fixed]) => {
@@ -1172,8 +1186,33 @@ $baseColor : #FC9217;
                 border: 1px solid #858282;
                 padding: 0 6px;
                 margin-right: 8px;
+                position: relative;
                 i {
                   margin-left: 4px;
+                }
+                .flortList{
+                  position: absolute;
+                  z-index: 10;
+                  right: -1px;
+                  left: -1px;
+                  top: 18px;
+                  border: 1px solid #858282;
+                  cursor: pointer;
+                  .flortItem{
+                    padding: 5px 0px;
+                    border-bottom: 1px solid #858282;
+                    background: #000000;
+                    text-align: center;
+                    &:hover{
+                      background: #383636;
+                    }
+                    &:nth-last-child(1){
+                      border: 0;
+                    }
+                  }
+                  .flortItem.active{
+                    color: $baseColor;
+                  }
                 }
               }
             }
