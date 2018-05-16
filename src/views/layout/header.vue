@@ -12,6 +12,7 @@
           <el-menu-item index="/Home" class="logo"><img src="../../assets/img/logo.png" alt="logo"></el-menu-item>
           <el-menu-item index="/tradingCenter/1">{{$t('route.tradingCenter')}}</el-menu-item>
           <el-menu-item index="" class="blank" disabled></el-menu-item>
+          <el-menu-item v-if="!email" index=""><a href="https://support.bjex.io/hc/zh-cn" target="_block">{{$t('route.support')}}</a></el-menu-item>
           <el-menu-item v-if="!email" index="/login">{{$t('route.login')}}</el-menu-item>
           <el-menu-item v-if="!email" index="/register">{{$t('route.register')}}</el-menu-item>
         <el-submenu index="/fundsManagement" v-if="email">

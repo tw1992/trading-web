@@ -82,7 +82,7 @@
                 </tr>
                 </tbody>
               </table>
-              <div class="tableBox">
+              <div class="tableBox" style="height:180px">
                 <div class="tbody">
 									<table class="table table-strip">
 										<colgroup style="width: 12%"></colgroup>
@@ -172,7 +172,7 @@
                 </tr>
                 </tbody>
               </table>
-              <div class="tableBox" style="height: 140px;">
+              <div class="tableBox" style="height: 156px;">
                 <div class="tbody">
 									<table class="table table-strip">
 										<colgroup style="width: 11%"></colgroup>
@@ -365,6 +365,7 @@
 							</tbody>
               <colgroup style="width:30%;"></colgroup>
               <colgroup style="width:30%;"></colgroup>
+              <colgroup style="width:30%;"></colgroup>
             </table>
 
             <div class="markefive">
@@ -374,10 +375,10 @@
                   <colgroup style="width:30%;"></colgroup>
                   <colgroup style="width:30%;"></colgroup>
                   <tbody>
-                  <tr v-for="(it,idx) in newmarket" :key="idx">
-                    <td class="f-left red hoverB"><span>{{it.price}}</span></td>
-                    <td class="f-center"><span class="hoverSpan">{{it.num}}</span></td>
-                    <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{it.time}}</span>
+                  <tr v-for="(it,idx) in bidsList" :key="idx">
+                    <td class="f-left red hoverB"><span>{{it[0]}}</span></td>
+                    <td class="f-center"><span class="hoverSpan">{{it[1]}}</span></td>
+                    <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{[it[0],it[1],fixed] | mul }}</span>
                       <div class="zhuzhuang redBg" :style="{width: Math.random()*346+'px'}"></div>
                     </td>
                   </tr>
@@ -400,7 +401,7 @@
                   <colgroup style="width:30%;"></colgroup>
                   <colgroup style="width:30%;"></colgroup>
                   <tbody>
-                  <tr v-for="(it,idx) in newmarket" :key="idx">
+                  <tr v-for="(it,idx) in asksList" :key="idx">
                     <td class="f-left green hoverB"><span>{{it.price}}</span></td>
                     <td class="f-center"><span class="hoverSpan">{{it.num}}</span></td>
                     <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{it.time}}</span>
@@ -433,9 +434,9 @@
                 <colgroup style="width:30%;"></colgroup>
                 <tbody>
                 <tr v-for="(it,idx) in newmarket" :key="idx">
-                  <td class="f-left" :class="it.direction==0?'red':'green'"><span>{{it.price}}</span></td>
-                  <td class="f-center"><span>{{it.num}}</span></td>
-                  <td class="f-right" style="color: #898989;"><span>{{it.time}}</span></td>
+                  <td class="f-left" :class="it[1]=='SELL'?'red':'green'"><span>{{it[3]}}</span></td>
+                  <td class="f-center"><span>{{it[2]|toFixed0}}</span></td>
+                  <td class="f-right" style="color: #898989;"><span>{{formatDateTime(it[4],"HH:mm:ss")}}</span></td>
                 </tr>
                 </tbody>
 
@@ -552,6 +553,8 @@
     data() {
       return {
         newmarket: [],
+        asksList: [],
+        bidsList: [],
         marketSelect: 1,    //行情选项
         dealSelect: 1,       //交易选项
         orderSelect: 1,     //订单选项
@@ -560,7 +563,7 @@
         funds: [],          //资产管理
         startTime: '',
         endTime: '',
-
+        fixed: '6',
       };
     },
     mounted() {
@@ -576,13 +579,28 @@
         let c = 0;
         console.log('建立长连接！')
         const socket = io.connect('http://192.168.133.190:9006/')
-        socket.emit('join', {userId: 'linxi'})
+        socket.emit('join', {userId: 'linxi',symbol: 'ETH/BTC'})
         socket.on('tradingData', function (data) {
           let res = JSON.parse(JSON.parse(data).tradingList).data
           c++
           console.log(c)
           console.log(res)
           that.newmarket = res
+        })
+        socket.on('tradesData', function (data) {
+          let res = JSON.parse(JSON.parse(data).tradingList).data
+          c++
+          //console.log(c)
+         // console.log(res)
+          that.newmarket = res
+        })
+        socket.on('depthData', function (data) {
+          let res = JSON.parse(JSON.parse(data).tradingList).data
+          c++
+          console.log(c)
+          console.log(res)
+          that.asksList = res.asks;
+          that.bidsList = res.bids;
         })
       },
       getOpenOrde() {
@@ -618,6 +636,42 @@
         }
 
         this.funds = list;
+      },
+      formatDateTime(time, format) {
+        var t = new Date(time);  
+          var tf = function(i){return (i < 10 ? '0' : '') + i};  
+          return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function(a){  
+            switch(a){  
+              case 'yyyy':  
+                  return tf(t.getFullYear());  
+                  break;  
+              case 'MM':  
+                  return tf(t.getMonth() + 1);  
+                  break;  
+              case 'dd':  
+                  return tf(t.getDate());  
+                  break;  
+              case 'HH':  
+                  return tf(t.getHours());  
+                  break;  
+              case 'mm':  
+                  return tf(t.getMinutes());  
+                  break; 
+              case 'ss':  
+                  return tf(t.getSeconds());  
+                  break;  
+            }  
+          })  
+      }
+    },
+    filters: {
+      toFixed0: (value) => {
+        if (!value) return ''
+        value = (value*1).toFixed(0)
+        return value;
+      },
+      mul: ([value1,value2,fixed]) => {
+        return calc.mul(value1, value2).toFixed(fixed)
       }
     }
   }
@@ -1129,7 +1183,7 @@ $baseColor : #FC9217;
             display: flex;
             flex-direction: column;
             .tableBox {
-              height: 273px;
+              height: 288px;
               overflow-y: hidden;
               transition: all 0.5s ease;
               tr td:nth-child(3) {
@@ -1147,7 +1201,7 @@ $baseColor : #FC9217;
               display: flex;
               justify-content: space-between;
               align-items: center;
-              height: 30px;
+              height: 20px;
               background: #56585B;
               padding: 0 12px;
               .depthL {

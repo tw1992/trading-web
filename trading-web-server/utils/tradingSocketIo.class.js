@@ -1,4 +1,4 @@
-const {tradingSendData} = require('./asyncHttp')
+const {tradingSendData,tradingSendTrades,tradingSendDepth} = require('./asyncHttp')
 const dateFormat = require('dateformat')
 const schedule = require("node-schedule")
 const dateLabel = 'yyyy-mm-dd HH:MM:ss' // 时间格式
@@ -17,7 +17,10 @@ class SocketIo {
     this.io = io
     this.socket = null
     this.socketNum = 0
-    this.userId = null // 用户标识
+    this.userId = null  // 用户标识
+    this.symbol = null  // 交易区
+    this.from = null    // 偏移量
+    this.limit = null   // 条数
   }
 
   init() {
@@ -29,9 +32,10 @@ class SocketIo {
   }
 
   into() {
-    this.socket.on('join', ({userId}) => {
+    this.socket.on('join', ({userId,symbol}) => {
       console.log(`用户:${userId}进入了, 开始调接口, 时间:${dateFormat(new Date(), dateLabel)}`)
       this.userId = userId
+      this.symbol = symbol
       this.getSocketData() // 默认调接口
       // this.setSchedule() // 执行定时任务
       this.socketNum = this.socketNum + 1
@@ -60,18 +64,46 @@ class SocketIo {
   }
 
   getSocketData() { // 获取数据并定向推送
-    tradingSendData(this.userId, (tradingList) => {
-      console.log(`初始化用户数据成功1，当前时间: ${dateFormat(new Date(), dateLabel)}`)
-      this.socket.emit('tradingData', JSON.stringify({
+    // tradingSendData(this.userId, (tradingList) => {
+    //   console.log(`初始化用户数据成功1，当前时间: ${dateFormat(new Date(), dateLabel)}`)
+    //   this.socket.emit('tradingData', JSON.stringify({
+    //     tradingList
+    //   }))
+    // })
+
+    tradingSendTrades(`symbol=${this.symbol}`, (tradingList) => {
+      console.log(`最近成交1，当前时间: ${dateFormat(new Date(), dateLabel)}`)
+      this.socket.emit('tradesData', JSON.stringify({
+        tradingList
+      }))
+    })
+
+    tradingSendDepth(`symbol=${this.symbol}`, (tradingList) => {
+      console.log(`市场深度1，当前时间: ${dateFormat(new Date(), dateLabel)}`)
+      this.socket.emit('depthData', JSON.stringify({
         tradingList
       }))
     })
   }
 
   getData() { // 获取数据并广播
-    tradingSendData(this.userId, (tradingList) => {
-      console.log(`初始化用户数据成功2，当前时间: ${dateFormat(new Date(), dateLabel)}`)
-      this.io.sockets.emit('tradingData', JSON.stringify({
+    // tradingSendData(this.userId, (tradingList) => {
+    //   console.log(`初始化用户数据成功2，当前时间: ${dateFormat(new Date(), dateLabel)}`)
+    //   this.io.sockets.emit('tradingData', JSON.stringify({
+    //     tradingList
+    //   }))
+    // })
+
+    tradingSendTrades(`symbol=${this.symbol}`, (tradingList) => {
+      console.log(`最近成交2: ${dateFormat(new Date(), dateLabel)}`)
+      this.io.sockets.emit('tradesData', JSON.stringify({
+        tradingList
+      }))
+    })
+
+    tradingSendDepth(`symbol=${this.symbol}`, (tradingList) => {
+      console.log(`市场深度2，当前时间: ${dateFormat(new Date(), dateLabel)}`)
+      this.io.sockets.emit('depthData', JSON.stringify({
         tradingList
       }))
     })
