@@ -52,7 +52,6 @@
           <el-form-item prop="addSelect">
               <el-select class="addList" v-model="siteForm.addSelect" placeholder="请选择">
                 <el-option key="new" label="新地址" value="new"></el-option>
-                <el-option key="123" label="123" value="123"></el-option>
                 <el-option
                   v-for="item in addList"
                   :key="item.address"
@@ -63,11 +62,11 @@
           </el-form-item>
           <div class="formT" v-if="siteForm.addSelect == 'new'">
             <el-form-item class="label" prop="label">
-              <el-input type="password" v-model="siteForm.label" auto-complete="off" placeholder="备注标签"></el-input>
+              <el-input type="text" v-model="siteForm.label" auto-complete="off" placeholder="备注标签"></el-input>
             </el-form-item>
             <div class="to"></div>
             <el-form-item class="site" prop="site">
-              <el-input type="password" v-model="siteForm.site" auto-complete="off" placeholder="地址"></el-input>
+              <el-input type="text" v-model="siteForm.site" auto-complete="off" placeholder="地址"></el-input>
             </el-form-item>
           </div>
           <div class="formTip">
@@ -117,18 +116,18 @@
         </div>
       </div>
       <ul class="depList">
-        <li class="depItem">
+        <li class="depItem" v-for="(it,idx) in historyList" :key="idx">
           <div class="itemL">
             <div class="itemT">
               <div class="nodes">
-                <p class="nodeTitle">成功</p>
-                <p class="nodeMain">2018-04-18  18:11-:25</p>
+                <p class="nodeTitle">{{it.status == 0?'成功':'失败'}}</p>
+                <p class="nodeMain">{{it.created_at}}</p>
               </div>
             </div>
             <div class="itemB">
               <div class="nodes">
                 <p class="nodeTitle">地址</p>
-                <p class="nodeMain">NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479</p>
+                <p class="nodeMain">{{it.address}}</p>
               </div>
             </div>
           </div>
@@ -136,55 +135,22 @@
             <div class="itemT">
               <div class="nodes">
                 <p class="nodeTitle">币种</p>
-                <p class="nodeMain">ADA</p>
+                <p class="nodeMain">{{coin_name}}</p>
               </div>
               <div class="nodes">
                 <p class="nodeTitle">数量</p>
-                <p class="nodeMain">3,374.74628467</p>
+                <p class="nodeMain">{{it.number}}</p>
               </div>
             </div>
             <div class="itemB">
               <div class="nodes">
                 <p class="nodeTitle">Txid</p>
-                <p class="nodeMain">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>
+                <p class="nodeMain">{{it.txid}}</p>
               </div>
             </div>
           </div>
         </li>
-        <li class="depItem">
-          <div class="itemL">
-            <div class="itemT">
-              <div class="nodes">
-                <p class="nodeTitle">成功</p>
-                <p class="nodeMain">2018-04-18  18:11-:25</p>
-              </div>
-            </div>
-            <div class="itemB">
-              <div class="nodes">
-                <p class="nodeTitle">地址</p>
-                <p class="nodeMain">NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479</p>
-              </div>
-            </div>
-          </div>
-          <div class="itemR">
-            <div class="itemT">
-              <div class="nodes">
-                <p class="nodeTitle">币种</p>
-                <p class="nodeMain">ADA</p>
-              </div>
-              <div class="nodes">
-                <p class="nodeTitle">数量</p>
-                <p class="nodeMain">3,374.74628467</p>
-              </div>
-            </div>
-            <div class="itemB">
-              <div class="nodes">
-                <p class="nodeTitle">Txid</p>
-                <p class="nodeMain">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>
-              </div>
-            </div>
-          </div>
-        </li>
+        
       </ul>
     </div>
 
@@ -195,15 +161,18 @@
         custom-class="baseDialog"
         center>
         <el-form :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm" class="googleForm">
-            <el-form-item label="登录密码" prop="pwd">
+            <!-- <el-form-item label="登录密码" prop="pwd">
                 <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="googleForm.pwd" auto-complete="off"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="谷歌验证码" prop="verCode">
-                <el-input class="inputBase" placeholder="6位动态数字" v-model.number="googleForm.verCode"></el-input>
+                <el-input class="inputBase" @input="googleInput(googleForm.verCode)" placeholder="6位动态数字" v-model.number="googleForm.verCode"></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button class="btnBase" type="primary" size="mini" @click="googleDialog = false">确认</el-button>
+            <!-- <el-button class="btnBase" type="primary" size="mini" @click="googleDialog = false">确认</el-button> -->
+            <p class="tips">
+              如果您遗失了谷歌验证,请 <a href="javascript:;">联系客服</a>
+            </p>
         </span>
     </el-dialog>
 
@@ -225,12 +194,50 @@
                 </el-input>
             </el-form-item>
             <el-form-item label="验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.newpwd" auto-complete="off"></el-input>
-                <a class="verBtn" href="javascript:;">获取</a>
+                <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)" placeholder="请输入短信验证码" v-model="phoneForm.newpwd" auto-complete="off"></el-input>
+                <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
+                <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button type="primary" size="mini" @click="phoneDialog = false">确认</el-button>
+            <!-- <el-button type="primary" size="mini" @click="phoneDialog = false">确认</el-button> -->
+            <p class="tips">
+              如果您遗失了手机或无法收到验证码,请 <a href="javascript:;">联系客服</a>
+            </p>
+        </span>
+    </el-dialog>
+
+    <!-- 双重验证 -->
+    <el-dialog
+        title="双重验证"
+        :visible.sync="doubleDialog"
+        custom-class="baseDialog"
+        center>
+        <ul class="doubleSelect">
+          <li :class="doubleSelect == 1?'active':''" @click="doubleSelect = 1">谷歌验证</li>
+          <li :class="doubleSelect == 2?'active':''" @click="doubleSelect = 2">手机验证</li>
+        </ul>
+
+        <el-form v-show="doubleSelect == 1" :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm">
+            <el-form-item label="谷歌验证码" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="googleLogin(googleForm.verCode)" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
+                <!-- <a class="verBtn" href="javascript:;">获取</a> -->
+            </el-form-item>
+        </el-form>
+        <el-form v-show="doubleSelect == 2" :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
+            <el-form-item label="验证码" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)"  placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+                <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
+                <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <p v-show="doubleSelect == 1" class="tips">
+            如果您遗失了谷歌验证,请 <a href="javascript:;">联系客服</a>
+          </p>
+          <p v-show="doubleSelect == 2" class="tips">
+            如果您遗失了手机或无法收到验证码,请 <a href="javascript:;">联系客服</a>
+          </p>
         </span>
     </el-dialog>
   </div>
@@ -279,6 +286,12 @@ export default {
             verCode:[{ required: true, message: '请输入验证码', trigger: 'blur' }],
           }
         },
+        doubleDialog: false,
+        doubleSelect: 1,
+        historyList: [],
+        submitData: {},    //提现信息
+        VerCodeFlag: true,
+        verCodeTime: 60,
       };
     },
     methods: {
@@ -292,19 +305,115 @@ export default {
           }
         });
       },
+      getVerificationCode(mobile) {     //获取验证码
+        var _this = this;
+        axios.get(`/api/sms/to_mobile/${mobile}`).then(function(res){  
+            console.log(res);
+            _this.VerCodeFlag = false;
+            _this.verCodeTime = 60;
+            _this.verCodeTimeStart ();
+            _this.phoneForm.smsId = res.data.smsId;
+        }).catch(function (res){  
+            console.log(res);
+        });  
+      },
+      verCodeTimeStart (){              //验证码计时器
+        var _this = this;
+        var timer = setInterval(()=>{
+          if(_this.verCodeTime>1){
+              _this.verCodeTime--;
+          }else{
+              clearInterval(timer);
+              this.VerCodeFlag = true;
+          }
+        },1000)
+      },
+      siteSubmit() {
+        var _this = this; 
+        this.$refs['siteForm'].validate((valid) => {
+          if (valid) {
+            var submitData = {};
+            this.submitData.coinId = this.coin_id;
+            this.submitData.number = this.num;
+            if(this.siteForm.addList == 'new'){
+              this.submitData.address = this.siteForm.site
+            }else{
+              this.submitData.address = this.siteForm.addList
+            }
+            if(this.tag != ''){
+              this.submitData.tag = this.tag;
+            }
+            if(this.userInfo.two_factor_auth_type == 'CLOSE'){
+              axios.post('/api/accounts/exports',this.submitData).then(function(res){  
+                console.log(res)
+
+              }).catch(function (res){  
+                  console.log(res);
+              }); 
+            }else if(this.userInfo.two_factor_auth_type == 'MOBILE'){
+              this.phoneDialog = true;
+            }else if(this.userInfo.two_factor_auth_type == 'GOOGLE'){
+              this.googleDialog = true;
+            }else if(this.userInfo.two_factor_auth_type == 'BOTH'){
+              this.doubleDialog = true;
+            }
+            
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      phoneInput(verCode) {             //手机验证
+        var _this = this;
+        var smsCode = verCode.trim();
+        if(smsCode.length == 6){
+          var phoneDate = this.submitData;
+          phoneDate.smsId = this.phoneForm.smsId;
+          phoneDate.smsCode = this.phoneForm.smsCode;
+          
+          axios.post('/api/accounts/exports',phoneDate).then(function(res){  
+                console.log(res)
+
+          }).catch(function (res){  
+              console.log(res);
+          }); 
+        }
+        
+      },
+      googleInput(verCode) {            //谷歌验证
+        var _this = this;
+        var googleCode = verCode.trim();
+        if(googleCode.length == 6){
+          var googleLoginDate = {
+            loginToken: this.loginToken,
+            twoFactorAuthType: 'GOOGLE',
+            googleCode: googleCode
+          };
+          var googleDate = this.submitData;
+          googleDate.googleCode = googleCode;
+          axios.post('/api/accounts/exports',googleDate).then(function(res){  
+                console.log(res)
+
+          }).catch(function (res){  
+              console.log(res);
+          }); 
+        }
+      },
       changeSelect(value){
         this.changeFlag = true;   //改变过币
+        this.coin_id = value;
         var name = this.findName(value)
         this.coin_name = name;
         console.log(name)
         this.getWithdrawHistory(value);
-        this.getWithdrawAdd(this.coin_id)
+        this.getWithdrawAdd(value)
       },
       getWithdrawHistory(coin_id) {
         var _this = this;
         axios.get(`/api/accounts/exports/${coin_id}`).then(function(res){  
             console.log(res);
-            //_this.tableData = res.data;
+            _this.historyList = res.data;
         }).catch(function (res){  
             console.log(res);
         }); 
@@ -333,9 +442,10 @@ export default {
       ...mapGetters([
           'marketList',
           'coinList',
+          'userInfo',
       ])
     },
-    mounted() {
+    beforeMount() {
       this.coin_id = this.$route.params.coin_id;
       this.coin_name = this.findName(this.coin_id);
       this.state3 = this.coin_name;

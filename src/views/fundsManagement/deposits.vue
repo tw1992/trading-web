@@ -17,15 +17,15 @@
         <ul class="priceList">
           <li>
             <span class="name">{{$t('tradingCenter.totalBalance')}}</span>
-            <span class="num">0.00000000 {{coin_name}}</span>
+            <span class="num">{{[accounts.address,accounts.disabled,8] | add}} {{coin_name}}</span>
           </li>
           <li>
             <span class="name">{{$t('tradingCenter.inOrder')}}</span>
-            <span class="num">0.00000000 {{coin_name}}</span>
+            <span class="num">{{accounts.disabled}} {{coin_name}}</span>
           </li>
           <li>
             <span class="name">{{$t('tradingCenter.availableBalance')}}</span>
-            <span class="num">0.00000000 {{coin_name}}</span>
+            <span class="num">{{accounts.available}} {{coin_name}}</span>
           </li>
         </ul>
         <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>{{$t('funds.whats')+coin_name}}？</span></a>
@@ -33,7 +33,7 @@
 
       <div class="addBox">
         <p class="addTitle">{{coin_name+$t('funds.depositAddress')}}</p>
-        <p class="add">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>
+        <p class="add">{{accounts.address}}</p>
         <p class="warning">{{changeTips.tip1}}</p>
       </div>
       <div class="btnBox">
@@ -71,18 +71,18 @@
       </div>
 
       <ul class="depList">
-        <li class="depItem">
+        <li class="depItem" v-for="(it,idx) in historyList" :key="idx">
           <div class="itemL">
             <div class="itemT">
               <div class="nodes">
-                <p class="nodeTitle">成功</p>
-                <p class="nodeMain">2018-04-18  18:11-:25</p>
+                <p class="nodeTitle">{{it.status == 0?'成功':'失败'}}</p>
+                <p class="nodeMain">{{it.created_at}}</p>
               </div>
             </div>
             <div class="itemB">
               <div class="nodes">
                 <p class="nodeTitle">地址</p>
-                <p class="nodeMain">NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479</p>
+                <p class="nodeMain">{{it.address}}</p>
               </div>
             </div>
           </div>
@@ -94,149 +94,13 @@
               </div>
               <div class="nodes">
                 <p class="nodeTitle">数量</p>
-                <p class="nodeMain">3,374.74628467</p>
+                <p class="nodeMain">{{it.number}}</p>
               </div>
             </div>
             <div class="itemB">
               <div class="nodes">
                 <p class="nodeTitle">Txid</p>
-                <p class="nodeMain">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="depItem">
-          <div class="itemL">
-            <div class="itemT">
-              <div class="nodes">
-                <p class="nodeTitle">成功</p>
-                <p class="nodeMain">2018-04-18  18:11-:25</p>
-              </div>
-            </div>
-            <div class="itemB">
-              <div class="nodes">
-                <p class="nodeTitle">地址</p>
-                <p class="nodeMain">NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479</p>
-              </div>
-            </div>
-          </div>
-          <div class="itemR">
-            <div class="itemT">
-              <div class="nodes">
-                <p class="nodeTitle">币种</p>
-                <p class="nodeMain">ADA</p>
-              </div>
-              <div class="nodes">
-                <p class="nodeTitle">数量</p>
-                <p class="nodeMain">3,374.74628467</p>
-              </div>
-            </div>
-            <div class="itemB">
-              <div class="nodes">
-                <p class="nodeTitle">Txid</p>
-                <p class="nodeMain">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="depItem">
-          <div class="itemL">
-            <div class="itemT">
-              <div class="nodes">
-                <p class="nodeTitle">成功</p>
-                <p class="nodeMain">2018-04-18  18:11-:25</p>
-              </div>
-            </div>
-            <div class="itemB">
-              <div class="nodes">
-                <p class="nodeTitle">地址</p>
-                <p class="nodeMain">NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479</p>
-              </div>
-            </div>
-          </div>
-          <div class="itemR">
-            <div class="itemT">
-              <div class="nodes">
-                <p class="nodeTitle">币种</p>
-                <p class="nodeMain">ADA</p>
-              </div>
-              <div class="nodes">
-                <p class="nodeTitle">数量</p>
-                <p class="nodeMain">3,374.74628467</p>
-              </div>
-            </div>
-            <div class="itemB">
-              <div class="nodes">
-                <p class="nodeTitle">Txid</p>
-                <p class="nodeMain">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="depItem">
-          <div class="itemL">
-            <div class="itemT">
-              <div class="nodes">
-                <p class="nodeTitle">成功</p>
-                <p class="nodeMain">2018-04-18  18:11-:25</p>
-              </div>
-            </div>
-            <div class="itemB">
-              <div class="nodes">
-                <p class="nodeTitle">地址</p>
-                <p class="nodeMain">NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479</p>
-              </div>
-            </div>
-          </div>
-          <div class="itemR">
-            <div class="itemT">
-              <div class="nodes">
-                <p class="nodeTitle">币种</p>
-                <p class="nodeMain">ADA</p>
-              </div>
-              <div class="nodes">
-                <p class="nodeTitle">数量</p>
-                <p class="nodeMain">3,374.74628467</p>
-              </div>
-            </div>
-            <div class="itemB">
-              <div class="nodes">
-                <p class="nodeTitle">Txid</p>
-                <p class="nodeMain">DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN</p>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="depItem">
-          <div class="itemL">
-            <div class="itemT">
-              <div class="nodes">
-                <p class="nodeTitle">成功</p>
-                <p class="nodeMain">2018-04-18  18:11-:25</p>
-              </div>
-            </div>
-            <div class="itemB">
-              <div class="nodes">
-                <p class="nodeTitle">地址</p>
-                <p class="nodeMain">NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479</p>
-              </div>
-            </div>
-          </div>
-          <div class="itemR">
-            <div class="itemT">
-              <div class="nodes">
-                <p class="nodeTitle">币种</p>
-                <p class="nodeMain">ADA</p>
-              </div>
-              <div class="nodes">
-                <p class="nodeTitle">数量</p>
-                <p class="nodeMain">3,374.74628467</p>
-              </div>
-            </div>
-            <div class="itemB">
-              <div class="nodes">
-                <p class="nodeTitle">Txid</p>
-                <p class="nodeMain">{{depositsAdd}}</p>
+                <p class="nodeMain">{{it.txid}}</p>
               </div>
             </div>
           </div>
@@ -252,10 +116,10 @@
         center>
         <div class="codeBox">
           <!-- <img src="../../assets/img/pic.jpg"> -->
-          <vue-qr :text="depositsAdd" :margin="0" :size="160" style="margin: auto;"></vue-qr>
+          <vue-qr :text="accounts.address" :margin="0" :size="160" style="margin: auto;"></vue-qr>
         </div>
         <span slot="footer" class="dialog-footer">
-            <p class="add">{{depositsAdd}}</p>
+            <p class="add">{{accounts.address}}</p>
         </span>
     </el-dialog>
   </div>
@@ -263,6 +127,7 @@
 
 <script>
 import Clipboard from 'clipboard';
+import calc from 'calculatorjs'
 import VueQr from 'vue-qr'
 import { mapGetters } from 'vuex'
 import axios from '../../api/axios'
@@ -280,6 +145,13 @@ export default {
           tip2: '',
         },
         changeFlag: false,      //判断进入页面后是否改变过币种
+        historyList: [],
+        accounts: {
+          available: '',
+          disabled: '',
+          address: ''
+        },
+        tag: ''
       };
     },
     methods: {
@@ -287,18 +159,31 @@ export default {
         var _this = this;
         axios.get(`/api/accounts/imports/${coin_id}`).then(function(res){  
             console.log(res);
-            //_this.tableData = res.data;
+            _this.historyList = res.data;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+      },
+      getAccounts(coin_id) {
+        var _this = this;
+        axios.get(`/api/accounts/${coin_id}`).then(function(res){  
+            console.log(res);
+            _this.accounts.available = res.data.available;
+            _this.accounts.disabled = res.data.disabled;
+            _this.accounts.address = res.data.address;
         }).catch(function (res){  
             console.log(res);
         }); 
       },
       changeSelect(value){
         this.changeFlag = true;   //改变过币
+        this.coin_id = value;
         var name = this.findName(value)
         this.coin_name = name;
         this.changeTip(name);        //替换change
         console.log(name)
         this.getRechargeHistory(value);
+        this.getAccounts(value);
       },
       copy(){
         var clipboard = new Clipboard('.copy')  
@@ -338,6 +223,11 @@ export default {
           'coinList',
       ])
     },
+    filters: {
+      add: ([value1,value2,fixed]) => {
+        return calc.add(value1, value2).toFixed(fixed)
+      }
+    },
     components: {VueQr},
     created() {
       this.coin_id = this.$route.params.coin_id;
@@ -345,6 +235,7 @@ export default {
       this.state3 = this.coin_name;
       this.restaurants = this.coinList;
       this.getRechargeHistory(this.coin_id);
+      this.getAccounts(this.coin_id);
       this.changeTip(this.coin_name);        //替换change
     }
 }

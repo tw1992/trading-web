@@ -62,7 +62,7 @@ let routes = [{
   hidden: true
 },
 {
-    path: '/tradingCenter/:goodsId',
+    path: '/tradingCenter/:coin/:market',
     component: function (resolve) {
         require(['./views/tradingCenter/tradingCenter.vue'], resolve)
     },

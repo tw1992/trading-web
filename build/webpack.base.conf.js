@@ -1,4 +1,5 @@
 'use strict'
+const webpack = require('webpack')
 const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
@@ -28,10 +29,17 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
       'scss_vars': '@/styles/vars.scss'
-    }
+    },
+    plugins: [],
   },
   module: {
     rules: [
+      {
+        // 得到jquery模块的绝对路径
+        test: require.resolve("jquery"),
+        // 将jquery绑定为window.jQuery 和 window.$       
+        loader: "expose-loader?jQuery!expose-loader?$"
+      },
       {
         test: /\.vue$/,
         loader: 'vue-loader',

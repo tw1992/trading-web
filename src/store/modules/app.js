@@ -8,7 +8,8 @@ const app = {
     },
     language: Cookies.get('language') || 'en',
     marketList: [],
-    coinList: []
+    coinList: [],
+    pairsList: [],
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
@@ -22,6 +23,9 @@ const app = {
     SET_LANGUAGE: (state, language) => {
       state.language = language
       Cookies.set('language', language)
+    },
+    SET_PAIRS: (state, pairs) => {
+      state.pairsList = pairs
     },
     SET_MARKET: (state, market) => {
       state.marketList = market
@@ -37,10 +41,21 @@ const app = {
     setLanguage({ commit }, language) {
       commit('SET_LANGUAGE', language)
     },
-    getPairs({ commit }) {
+    getMarket({ commit }) {
       return new Promise((resolve, reject) => {  
         axios.get("/api/market/markets_and_pairs").then(response => {  
             commit('SET_MARKET', response.data)
+            console.log(response.data)
+            resolve(response); 
+        }).catch(error => { 
+            reject(error) 
+        }) 
+      }) 
+    },
+    getPairs({ commit }) {
+      return new Promise((resolve, reject) => {  
+        axios.get("/api/market/pairs").then(response => {  
+            commit('SET_PAIRS', response.data)
             resolve(response); 
         }).catch(error => { 
             reject(error) 

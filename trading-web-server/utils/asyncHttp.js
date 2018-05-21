@@ -8,3 +8,6 @@ exports.tradingSendTrades= async (data, callback) => {
 exports.tradingSendDepth= async (data, callback) => {
   callback(await tradingService.getDepth(data))
 }
+exports.tradingSendPairs= async (data, callback) => {
+  callback(await tradingService.getPairs(data))
+}

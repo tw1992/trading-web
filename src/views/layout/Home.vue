@@ -9,10 +9,10 @@
         <swiper-slide class="swiper-no-swiping" v-for="(slide, index) in swiperSlides" :key="index">
           <!-- I'm Slide {{ slide }} -->
           <div class="newBox" v-for="(item, idx) in slide" :key="idx">
-            <a :href="item.linkTo" :title="item.name" target="_blank">
-              <img :src="item.img">
-              <div class="time" v-if="item.time">
-                距活动结束<span>{{item.time}}</span>
+            <a :href="item.link" :title="item.title" target="_blank">
+              <img :src="item.picture">
+              <div class="time" v-if="item.type">
+                距活动结束<span>2天17小时26分12秒</span>
               </div>
             </a>
           </div>
@@ -42,7 +42,7 @@
           <span slot="label"><i class="el-icon-star-on"></i> {{$t('home.favorites')}}</span>
           <el-row class="tabContent">
             <el-table
-            :data="BTCList"
+            :data="collectList"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
@@ -55,7 +55,8 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="symbol"
+              sortable
               :label="$t('home.pair')"
               width="180">
             </el-table-column>
@@ -63,30 +64,33 @@
               :label="$t('home.lastPrice')"
               width="188">
               <template slot-scope="scope">
-                <span class="newPriceL">{{scope.row.newPrice1}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;{{scope.row.newPrice2}}</span>
+                <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
               </template>
             </el-table-column>
             <el-table-column
-              prop="scope"
               align="right"
+              sortable
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
-                <span :class="parseFloat(scope.row.scope)>=0?'green':'red'">{{scope.row.scope}}</span>
+                <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
               </template>
             </el-table-column>
             <el-table-column
               prop="high"
               align="right"
+              sortable
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
-              prop="down"
+              prop="low"
               align="right"
+              sortable
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
-              prop="all"
+              prop="number"
               align="right"
+              sortable
               class-name="lastList"
               :label="'24h'+$t('home.volume')">
             </el-table-column>
@@ -98,7 +102,7 @@
           <span slot="label">BTC {{$t('home.markets')}}</span>
           <el-row class="tabContent">
             <el-table
-            :data="items"
+            :data="BTCitems"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
@@ -111,7 +115,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="symbol"
               sortable
               :label="$t('home.pair')"
               width="180">
@@ -120,16 +124,15 @@
               :label="$t('home.lastPrice')"
               width="188">
               <template slot-scope="scope">
-                <span class="newPriceL">{{scope.row.newPrice1}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;{{scope.row.newPrice2}}</span>
+                <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
               </template>
             </el-table-column>
             <el-table-column
-              prop="scope"
               align="right"
               sortable
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
-                <span :class="parseFloat(scope.row.scope)>=0?'green':'red'">{{scope.row.scope}}</span>
+                <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -139,13 +142,13 @@
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
-              prop="down"
+              prop="low"
               align="right"
               sortable
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
-              prop="all"
+              prop="number"
               align="right"
               sortable
               class-name="lastList"
@@ -159,7 +162,67 @@
           <span slot="label">ETH {{$t('home.markets')}}</span>
           <el-row class="tabContent">
             <el-table
-            :data="ETHList"
+            :data="ETHitems"
+            stripe
+            @row-click="linkToGoods"
+            style="width: 1198px">
+            <span slot="empty">{{$t('home.noData')}}</span>
+            <el-table-column
+              align="center"
+              width="80">
+              <template slot-scope="scope">
+                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="symbol"
+              sortable
+              :label="$t('home.pair')"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              :label="$t('home.lastPrice')"
+              width="188">
+              <template slot-scope="scope">
+                <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="right"
+              sortable
+              :label="'24h'+$t('home.change')">
+              <template slot-scope="scope">
+                <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="high"
+              align="right"
+              sortable
+              :label="'24h'+$t('home.high')">
+            </el-table-column>
+            <el-table-column
+              prop="low"
+              align="right"
+              sortable
+              :label="'24h'+$t('home.low')">
+            </el-table-column>
+            <el-table-column
+              prop="number"
+              align="right"
+              sortable
+              class-name="lastList"
+              :label="'24h'+$t('home.volume')">
+            </el-table-column>
+          </el-table>
+          </el-row>
+        </el-tab-pane>
+
+        <el-tab-pane name="OMG">
+          <span slot="label">OMG {{$t('home.markets')}}</span>
+          <el-row class="tabContent">
+            <el-table
+            :data="OMGitems"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
@@ -172,7 +235,8 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="symbol"
+              sortable
               :label="$t('home.pair')"
               width="180">
             </el-table-column>
@@ -180,30 +244,33 @@
               :label="$t('home.lastPrice')"
               width="188">
               <template slot-scope="scope">
-                <span class="newPriceL">{{scope.row.newPrice1}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;{{scope.row.newPrice2}}</span>
+                <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
               </template>
             </el-table-column>
             <el-table-column
-              prop="scope"
               align="right"
+              sortable
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
-                <span :class="parseFloat(scope.row.scope)>=0?'green':'red'">{{scope.row.scope}}</span>
+                <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
               </template>
             </el-table-column>
             <el-table-column
               prop="high"
               align="right"
+              sortable
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
-              prop="down"
+              prop="low"
               align="right"
+              sortable
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
-              prop="all"
+              prop="number"
               align="right"
+              sortable
               class-name="lastList"
               :label="'24h'+$t('home.volume')">
             </el-table-column>
@@ -211,15 +278,195 @@
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane :disabled="true">
+        <el-tab-pane name="DOGE">
+          <span slot="label">DOGE {{$t('home.markets')}}</span>
+          <el-row class="tabContent">
+            <el-table
+            :data="DOGEitems"
+            stripe
+            @row-click="linkToGoods"
+            style="width: 100%">
+            <span slot="empty">{{$t('home.noData')}}</span>
+            <el-table-column
+              align="center"
+              width="80">
+              <template slot-scope="scope">
+                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="symbol"
+              sortable
+              :label="$t('home.pair')"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              :label="$t('home.lastPrice')"
+              width="188">
+              <template slot-scope="scope">
+                <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="right"
+              sortable
+              :label="'24h'+$t('home.change')">
+              <template slot-scope="scope">
+                <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="high"
+              align="right"
+              sortable
+              :label="'24h'+$t('home.high')">
+            </el-table-column>
+            <el-table-column
+              prop="low"
+              align="right"
+              sortable
+              :label="'24h'+$t('home.low')">
+            </el-table-column>
+            <el-table-column
+              prop="number"
+              align="right"
+              sortable
+              class-name="lastList"
+              :label="'24h'+$t('home.volume')">
+            </el-table-column>
+          </el-table>
+          </el-row>
+        </el-tab-pane>
+
+        <el-tab-pane name="WWW">
+          <span slot="label">WWW {{$t('home.markets')}}</span>
+          <el-row class="tabContent">
+            <el-table
+            :data="WWWitems"
+            stripe
+            @row-click="linkToGoods"
+            style="width: 100%">
+            <span slot="empty">{{$t('home.noData')}}</span>
+            <el-table-column
+              align="center"
+              width="80">
+              <template slot-scope="scope">
+                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="symbol"
+              sortable
+              :label="$t('home.pair')"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              :label="$t('home.lastPrice')"
+              width="188">
+              <template slot-scope="scope">
+                <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="right"
+              sortable
+              :label="'24h'+$t('home.change')">
+              <template slot-scope="scope">
+                <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="high"
+              align="right"
+              sortable
+              :label="'24h'+$t('home.high')">
+            </el-table-column>
+            <el-table-column
+              prop="low"
+              align="right"
+              sortable
+              :label="'24h'+$t('home.low')">
+            </el-table-column>
+            <el-table-column
+              prop="number"
+              align="right"
+              sortable
+              class-name="lastList"
+              :label="'24h'+$t('home.volume')">
+            </el-table-column>
+          </el-table>
+          </el-row>
+        </el-tab-pane>
+
+        <el-tab-pane name="RNG">
+          <span slot="label">RNG {{$t('home.markets')}}</span>
+          <el-row class="tabContent">
+            <el-table
+            :data="RNGitems"
+            stripe
+            @row-click="linkToGoods"
+            style="width: 100%">
+            <span slot="empty">{{$t('home.noData')}}</span>
+            <el-table-column
+              align="center"
+              width="80">
+              <template slot-scope="scope">
+                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="symbol"
+              sortable
+              :label="$t('home.pair')"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              :label="$t('home.lastPrice')"
+              width="188">
+              <template slot-scope="scope">
+                <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="right"
+              sortable
+              :label="'24h'+$t('home.change')">
+              <template slot-scope="scope">
+                <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="high"
+              align="right"
+              sortable
+              :label="'24h'+$t('home.high')">
+            </el-table-column>
+            <el-table-column
+              prop="low"
+              align="right"
+              sortable
+              :label="'24h'+$t('home.low')">
+            </el-table-column>
+            <el-table-column
+              prop="number"
+              align="right"
+              sortable
+              class-name="lastList"
+              :label="'24h'+$t('home.volume')">
+            </el-table-column>
+          </el-table>
+          </el-row>
+        </el-tab-pane>
+
+        <el-tab-pane name="search" :disabled="true">
           <span slot="label">
             <el-input
-            class="search"
-            placeholder=""
-            prefix-icon="el-icon-search"
-            v-model="search"
-            >
-        </el-input>
+              class="search"
+              placeholder=""
+              prefix-icon="el-icon-search"
+              v-model="search"
+              >
+            </el-input>
           </span>
         </el-tab-pane>
       </el-tabs>
@@ -230,8 +477,12 @@
 </template>
 
 <script>
+import calc from 'calculatorjs'
 import 'swiper/dist/css/swiper.css';
+import axios from '../../api/axios'
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
+import { mapGetters } from 'vuex'
+import io from 'socket.io-client'
 export default {
   data() {
       return {
@@ -252,50 +503,16 @@ export default {
         },
         swiperSlides: [],
         search: '',
-        newList:[{
-          name: "new1",
-          img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
-          time: "2天17小时26分12秒",
-          linkTo: "https://www.baidu.com/"
-        },{
-          name: "new2",
-          img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
-          time: "",
-          linkTo: "https://www.baidu.com/"
-        },{
-          name: "new3",
-          img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
-          time: "",
-          linkTo: "https://www.baidu.com/"
-        },{
-          name: "new1",
-          img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
-          time: "",
-          linkTo: "https://www.baidu.com/"
-        },{
-          name: "new1",
-          img: "https://gss0.bdstatic.com/7051cy89QMgCncy6lo7D0j9wexYrbOWh7c50/shangcheng%2FGreenTaxes270*170.png?t=1523157245",
-          time: "",
-          linkTo: "https://www.baidu.com/"
-        }],
-        BTCList: [
-          {id:"1",name:"XVG/BTC",newPrice1:"0.000001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},
-          {id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},
-          {id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.28%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},{id:"1",name:"XVG/BTC",newPrice1:"0.00001257",newPrice2:"0.67",scope:"17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"off"},
-          {id:"2",name:"ADA/BTC",newPrice1:"0.00001257",newPrice2:"1.67",scope:"-17.48%",high:"0.00001310",down:"0.00000975",all:"17,245.43037969",star:"on"},
-        ],
+        newList:[],
+        List: [],
+        localList: [],
+        collectList: [],
+        BTCList: [],
         ETHList: [],
+        OMGList: [],
+        DOGEList: [],
+        WWWList: [],
+        RNGList: [],
       };
     },
     methods: {
@@ -315,8 +532,8 @@ export default {
 
       },
       linkToGoods(row, event, column){
-        console.log(row.id);
-        this.$router.push('/tradingCenter/'+row.id)
+        console.log(row.name);
+        this.$router.push('/tradingCenter/'+row.symbol)
       },
       changeStar(star){
         console.log(star)
@@ -336,14 +553,110 @@ export default {
         document.body.scrollTop = 0
         document.documentElement.scrollTop = 0
       },
+      getNewsList() {
+        var _this = this;
+        axios.get('/api/banners',{status:0}).then(function(res){  
+            console.log(res);
+            _this.newList = res.data;
+            _this.sliceArray(_this.newList,4);
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+      },
+      onReady() {
+        let that = this
+        let c = 0;
+        console.log('建立长连接！')
+        const socket = io.connect('http://192.168.133.190:9006/')
+        socket.emit('home', {userId: 'shehui'})
+        
+        socket.on('pairsData', function (data) {
+          let res = JSON.parse(JSON.parse(data).tradingList).data
+          c++
+          console.log(c)
+          console.log(res)
+          that.BTCList = [];
+          that.ETHList = [];
+          that.OMGList = [];
+          that.DOGEList = [];
+          that.WWWList = [];
+          that.RNGList = [];
+          res.forEach(item => {
+            if(item.market_name == "BTC"){
+              that.BTCList.push(item);
+            }else if(item.market_name == "ETH"){
+              that.ETHList.push(item);
+            }else if(item.market_name == "OMG"){
+              that.OMGList.push(item);
+            }else if(item.market_name == "DOGE"){
+              that.DOGEList.push(item);
+            }else if(item.market_name == "WWW"){
+              that.WWWList.push(item);
+            }else if(item.market_name == "RNG"){
+              that.RNGList.push(item);
+            }
+          })
+        })
+      },
+      sub(value1,value2,fixed) {
+        return calc.sub(value1, value2).toFixed(fixed)
+      },
+      div(value1,value2,fixed) {
+        if(value2 == 0){
+          var val = 0;
+          return val.toFixed(fixed)
+        }
+        return calc.div(value1, value2).toFixed(fixed)
+      },
+      toPercent(point,num){
+          var str=Number(point*100).toFixed(num);
+          str+="%";
+          return str;
+      },
     },
     components: {
       swiper,
       swiperSlide
     },
     computed: {
-      items: function() {
+      ...mapGetters([
+          'marketList',
+          'pairsList'
+      ])
+    },
+    filters: {
+      toFixed: ([value,num]) => {
+        if (value != 0 && !value) return ''
+        value = (value*1).toFixed(num)
+        return value;
+      },
+      sub: ([value1,value2,fixed]) => {
+        return calc.sub(value1, value2).toFixed(fixed)
+      },
+      mul: ([value1,value2,fixed]) => {
+        return calc.mul(value1, value2).toFixed(fixed)
+      },
+      div: ([value1,value2,fixed]) => {
+        if(value2 == 0){
+          var val = 0;
+          return val.toFixed(fixed)
+        }
+        return calc.div(value1, value2).toFixed(fixed)
+      },
+    },
+    computed: {
+      BTCitems: function() {
         var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.BTCList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = 'on'
+            _this.collectList.push(it);
+          }else{
+            it.star = 'off'
+          }
+        })
         if (_search) {
           return this.BTCList.filter(function(product) {
             return Object.keys(product).some(function(key) {
@@ -351,16 +664,113 @@ export default {
             })
           })
         }
-
         return this.BTCList;
-      }
+      },
+      ETHitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.ETHList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = 'on'
+          }else{
+            it.star = 'off'
+          }
+        })
+        if (_search) {
+          return this.ETHList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product[key]).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.ETHList;
+      },
+      OMGitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.OMGList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+        })
+        if (_search) {
+          return this.OMGList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product[key]).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.OMGList;
+      },
+      DOGEitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.DOGEList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+        })
+        if (_search) {
+          return this.DOGEList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product[key]).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.DOGEList;
+      },
+      WWWitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.WWWList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+        })
+        if (_search) {
+          return this.WWWList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product[key]).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.WWWList;
+      },
+      RNGitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.RNGList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+        })
+        if (_search) {
+          return this.RNGList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product[key]).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.RNGList;
+      },
+      collectitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.RNGList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+        })
+        if (_search) {
+          return this.RNGList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product[key]).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.RNGList;
+      },
     },
-    beforeCreate () {
-      
+    created() {
+      this.getNewsList();
     },
-    mounted () {
+    beforeMount () {
       window.addEventListener('scroll', this.handleScroll);
-      this.sliceArray(this.newList,4);
+      this.onReady();
+    },
+    mounted() {
+      
     },
     destroyed () {
       window.removeEventListener('scroll', this.handleScroll)
@@ -482,7 +892,7 @@ export default {
       height: 41px;
     }
     .tabBox{
-       #tab-3{
+       #tab-search{
         margin-top:-1px; 
         margin-right:-1px; 
         border-top:1px solid #ffffff; 
@@ -503,6 +913,9 @@ export default {
         }
       }
       .tabContent{
+        // .el-table__header,.el-table__body,.el-table__empty-block{
+        //   width: 1198px !important;
+        // }
         .el-table--enable-row-hover .el-table__body tr:hover > td{
           background-color: rgba(245,166,35,0.10);
         }

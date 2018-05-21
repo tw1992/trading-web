@@ -7,28 +7,37 @@
       <p class="time">2018-04-01 12:00:04</p>
       <div class="block"></div>
       <ul class="fz12 marketList">
-        <li>{{$t('home.lastPrice')}}<span style="margin:0 2px;" class="fb16 red">6948.32</span>≈ 44851.40 CNY</li>
+        <li>{{$t('home.lastPrice')}}<span style="margin:0 2px;" class="fb16 red">{{[nowPairs.close,2] | toFixed}}</span>≈ 44851.40 CNY</li>
         <li>{{$t('tradingCenter.change')}}<span class="green"> +0.22%</span></li>
-        <li>{{$t('home.high')}} 6984.99</li>
-        <li>{{$t('home.low')}} 6868.67</li>
-        <li>24H{{$t('home.volume')}} 13728 BTC</li>
+        <li>{{$t('home.high')}} {{[nowPairs.high,2] | toFixed}}</li>
+        <li>{{$t('home.low')}} {{[nowPairs.low,2] | toFixed}}</li>
+        <li>24H{{$t('home.volume')}} {{[nowPairs.number,2] | toFixed}} {{market}}</li>
       </ul>
       <div class="goodsBox fz14 white">
-        <div class="showGoods options">BTC/USDT<i class="el-icon-caret-bottom baseColor"></i></div>
+        <div class="showGoods options">{{symbol}}<i class="el-icon-caret-bottom baseColor"></i></div>
       </div>
-      <div class="userBox fz14 white">
+      <div class="userBox fz14 white" v-if="!email">
         <router-link to="/login">{{$t('route.login')}}</router-link>
         <router-link to="/register">{{$t('route.register')}}</router-link>
       </div>
-      <div class="langsBox fz14 white">
+      <div class="userBox fz14 white" v-if="email">
+        <router-link to="/userCenter/account" class="options">{{$t('route.account')}}</router-link>
+        <router-link to="" @click="logout">{{$t('route.logout')}}</router-link>
+      </div>
+      <div class="langsBox fz14 white" @click="langFlag = !langFlag">
         <div class="showLangs options">{{$t('route.lang')}}<i class="el-icon-arrow-down"></i></div>
+        <div v-show="langFlag" class="langList">
+          <div class="langItem" :class="language==='zh'?'active':''" @click="handleSetLanguage('zh')">简体中文</div>
+          <div class="langItem" :class="language==='tw'?'active':''" @click="handleSetLanguage('tw')">繁体中文</div>
+          <div class="langItem" :class="language==='en'?'active':''" @click="handleSetLanguage('en')">English</div>
+        </div>
       </div>
     </div>
     <div class="tradMain">
       <div class="tradMainL">
         <!-- K线面板 -->
-        <div class="tradMainLT">
-
+        <div class="tradMainLT" ref="kline_container">
+          <div id="kline_container"></div>
         </div>
         <!-- 订单面板 -->
         <div class="tradMainLB">
@@ -67,7 +76,8 @@
 									<th>{{$t('tradingCenter.trigger')}}</th>
 									<th style="text-align: center;" class="cancels">
 										<span class="btn">{{$t('tradingCenter.cancelAll')}}</span>
-										<div class="btn iconfont-downsjsmall">
+                    <!-- 全撤旁边的更多 -->
+										<!-- <div class="btn iconfont-downsjsmall">
                       <i class="el-icon-more"></i>
                       <div class="cancelType">
                         <ul>
@@ -76,7 +86,7 @@
                           <li>{{$t('tradingCenter.stopLimitOrder')}}</li>
                         </ul>
                       </div>
-                    </div>
+                    </div> -->
                   </th>
 
                 </tr>
@@ -97,15 +107,15 @@
 										<colgroup style="width: 13%"></colgroup>
 										<tbody>
                       <tr v-for="(item,idx) in openOrder" :key="idx">
-                        <td><span>{{item.time}}</span></td>
-                        <td><span>{{item.goods}}</span></td>
-                        <td><span>{{item.type}}</span></td>
-                        <td><span>{{item.direction}}</span></td>
+                        <td><span>{{item.created_at}}</span></td>
+                        <td><span>{{item.symbol}}</span></td>
+                        <td><span>限价</span></td>
+                        <td><span>{{item.side == "BUY"?"买入":"卖出"}}</span></td>
                         <td><span>{{item.price}}</span></td>
-                        <td><span>{{item.num}}</span></td>
-                        <td><span>{{item.probability}}</span></td>
-                        <td><span>{{item.sum}}</span></td>
-                        <td><span>{{item.condition}}</span></td>
+                        <td><span>{{item.number}}</span></td>
+                        <td><span>{{toPercent(item.deal_number/item.number,2)}}</span></td>
+                        <td><span>{{item.total}}</span></td>
+                        <td><span>条件</span></td>
                         <td style="text-align: center;"><div class="options">{{$t('tradingCenter.cancel')}}</div></td>
                       </tr>
 										</tbody>
@@ -189,18 +199,18 @@
                     <colgroup style="width: 9%"></colgroup>
                     <colgroup style="width: 9%"></colgroup>
                     <tbody>
-                    <tr v-for="(item,idx) in openOrder" :key="idx">
-                      <td><span>{{item.time}}</span></td>
-                      <td><span>{{item.goods}}</span></td>
-                      <td><span>{{item.type}}</span></td>
-                      <td><span>{{item.direction}}</span></td>
+                    <tr v-for="(item,idx) in historyOrder" :key="idx">
+                      <td><span>{{item.created_at}}</span></td>
+                      <td><span>{{item.symbol}}</span></td>
+                      <td><span>限价</span></td>
+                      <td><span>{{item.side == "BUY"?"买入":"卖出"}}</span></td>
+                      <td><span>{{item.total/item.deal_number}}</span></td>
                       <td><span>{{item.price}}</span></td>
-                      <td><span>{{item.num}}</span></td>
-                      <td><span>{{item.num}}</span></td>
-                      <td><span>{{item.sum}}</span></td>
-                      <td><span>{{item.sum}}</span></td>
-                      <td><span>{{item.condition}}</span></td>
-                      <td><span>{{item.sum}}</span></td>
+                      <td><span>{{toPercent(item.deal_number/item.number,2)}}</span></td>
+                      <td><span>{{item.number}}</span></td>
+                      <td><span>{{item.total}}</span></td>
+                      <td><span>条件</span></td>
+                      <td><span>{{item.status == 0?"未成交":item.status == 1?"已成交":"已撤销"}}</span></td>
                     </tr>
                     </tbody>
                   </table>
@@ -269,14 +279,14 @@
 										<colgroup style="width: 14%"></colgroup>
 										<colgroup style="width: 14%"></colgroup>
 										<tbody>
-                      <tr v-for="(item,idx) in openOrder" :key="idx">
-                        <td><span>{{item.time}}</span></td>
-                        <td><span>{{item.goods}}</span></td>
-                        <td><span>{{item.direction}}</span></td>
-                        <td><span>{{item.price}}</span></td>
-                        <td><span>{{item.num}}</span></td>
-                        <td><span>{{item.sum}}</span></td>
-                        <td><span>{{item.sum}}</span></td>
+                      <tr v-for="(item,idx) in historytrading" :key="idx">
+                        <td><span>{{item.created_at}}</span></td>
+                        <td><span>{{item.symbol}}</span></td>
+                        <td><span>{{item.side == "BUY"?"买入":"卖出"}}</span></td>
+                        <td><span>{{item.total/item.deal_number}}</span></td>
+                        <td><span>{{item.number}}</span></td>
+                        <td><span>{{item.total}}</span></td>
+                        <td><span>手续费</span></td>
                       </tr>
 										</tbody>
 									</table>
@@ -298,7 +308,7 @@
 									<th>{{$t('tradingCenter.totalBalance')}}</th>
 									<th>{{$t('tradingCenter.availableBalance')}}</th>
 									<th>{{$t('tradingCenter.inOrder')}}</th>
-									<th>BTC{{$t('tradingCenter.value')}}</th>
+									<th>{{market+$t('tradingCenter.value')}}</th>
 								</tr>
 								</tbody>
               </table>
@@ -316,7 +326,7 @@
                       <td><span>{{item.sum}}</span></td>
                       <td><span>{{item.usable}}</span></td>
                       <td><span>{{item.freeze}}</span></td>
-                      <td><span>{{item.value}}</span></td>
+                      <td><span>{{item.appraisement}}</span></td>
                     </tr>
                     </tbody>
                   </table>
@@ -366,9 +376,9 @@
             <table class="table">
 							<tbody>
                 <tr>
-                  <th class="f-left fz13">{{$t('tradingCenter.price')}}(BTC)</th>
+                  <th class="f-left fz13">{{$t('tradingCenter.price')}}({{market}})</th>
                   <th class="f-center fz13">{{$t('tradingCenter.amount')}}(IOST)</th>
-                  <th class="f-right fz13">{{$t('tradingCenter.sum')}}(BTC)</th>
+                  <th class="f-right fz13">{{$t('tradingCenter.sum')}}({{market}})</th>
                 </tr>
 							</tbody>
               <colgroup style="width:30%;"></colgroup>
@@ -430,7 +440,7 @@
             <table class="table">
 							<tbody>
                 <tr>
-                <th class="f-left fz13">{{$t('tradingCenter.price')}}(BTC)</th>
+                <th class="f-left fz13">{{$t('tradingCenter.price')}}({{market}})</th>
                 <th class="f-center fz13">XVG</th>
                 <th class="f-right fz13">{{$t('tradingCenter.time')}}</th>
               </tr>
@@ -462,23 +472,23 @@
             <li>
               <div class="options" :class="dealSelect == 1?'active':''" @click="dealSelect=1">{{$t('tradingCenter.limit')}}</div>
             </li>
-            <li>
+            <!-- <li>
               <div class="options" :class="dealSelect == 2?'active':''" @click="dealSelect=2">{{$t('tradingCenter.market')}}</div>
             </li>
             <li>
               <div class="options" :class="dealSelect == 3?'active':''" @click="dealSelect=3">{{$t('tradingCenter.stopLimit')}}</div>
-            </li>
+            </li> -->
           </ul>
           <div class="dealbox">
             <div class="dealItem">
               <div class="dealT">
-                <span class="f-fl">{{$t('tradingCenter.buy')}} XRP</span>
-                <span class="f-fr"><i class="el-icon-edit"></i>__BTC</span>
+                <span class="f-fl">{{$t('tradingCenter.buy')}} {{coin}}</span>
+                <span class="f-fr"><i class="el-icon-edit"></i>__{{market}}</span>
               </div>
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.price')}}：</span>
-                <label>BTC</label>
-                <input type="text">
+                <label>{{market}}</label>
+                <input type="text" v-model="buyPrice">
                 <span class="legalMoney">￥0.41</span>
                 <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
@@ -487,8 +497,8 @@
               </div>
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.amount')}}：</span>
-                <label>XRP</label>
-                <input type="text">
+                <label>{{coin}}</label>
+                <input type="text" v-model="buyNumber">
                 <span class="most">{{$t('tradingCenter.maxBuy')}}<span>0</span></span>
                 <!-- <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
@@ -505,20 +515,20 @@
               </div>
               <div class="sumBox">
                 <span class="fcB">{{$t('tradingCenter.total')}} ： </span>
-                <span class="sum">0.00000000000<span>BTC</span></span>
+                <span class="sum">0.00000000000<span>{{market}}</span></span>
               </div>
-              <el-button class="buy" type="success">{{$t('tradingCenter.buy')}}</el-button>
+              <el-button class="buy" @click="createOrder('buy')" type="success">{{$t('tradingCenter.buy')}}</el-button>
             </div>
 
             <div class="dealItem">
               <div class="dealT">
-                <span class="f-fl">{{$t('tradingCenter.sell')}} XRP</span>
-                <span class="f-fr"><i class="el-icon-edit"></i>__BTC</span>
+                <span class="f-fl">{{$t('tradingCenter.sell')}} {{coin}}</span>
+                <span class="f-fr"><i class="el-icon-edit"></i>__{{market}}</span>
               </div>
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.price')}}：</span>
-                <label>BTC</label>
-                <input type="text">
+                <label>{{market}}</label>
+                <input type="text" v-model="sellPrice">
                 <span class="legalMoney">￥0.41</span>
                 <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
@@ -527,8 +537,8 @@
               </div>
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.amount')}}：</span>
-                <label>XRP</label>
-                <input type="text">
+                <label>{{coin}}</label>
+                <input type="text" v-model="sellNumber">
                 <span class="most">{{$t('tradingCenter.maxBuy')}}<span>0</span></span>
                 <!-- <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
@@ -545,9 +555,9 @@
               </div>
               <div class="sumBox">
                 <span class="fcB">{{$t('tradingCenter.total')}} ： </span>
-                <span class="sum">0.00000000000<span>BTC</span></span>
+                <span class="sum">0.00000000000<span>{{market}}</span></span>
               </div>
-              <el-button class="sell" type="success">{{$t('tradingCenter.sell')}}</el-button>
+              <el-button  @click="createOrder('sell')" class="sell" type="success">{{$t('tradingCenter.sell')}}</el-button>
             </div>
           </div>
         </div>
@@ -559,7 +569,14 @@
 
 <script>
   import calc from 'calculatorjs'
+  import $ from 'expose-loader?$!jquery'
+  import Kline from 'kline';
+  // import SockJS from 'sockjs';
+  // var SockJS = require('sockjs');
+  // import StompJS from 'stompjs';
   import io from 'socket.io-client'
+  import axios from '../../api/axios'
+  import { mapGetters } from 'vuex'
 
   export default {
     data() {
@@ -572,20 +589,69 @@
         orderSelect: 1,     //订单选项
         hideOrder: false,
         openOrder: [],      //当前委托
+        historyOrder: [],   //历史委托
+        historytrading: [], //历史成交
         funds: [],          //资产管理
         startTime: '',
         endTime: '',
         fixed: '8',
         flortFlag: false,
         depthFlag: true,    //行情正常/延迟
+        langFlag: false,
+        market: '',
+        coin: '',
+        symbol: '',
+        interval: "5",
+        nowPairs: '',
+        close: '',
+        sum: '',
+        buyPrice: '',
+        buyNumber: '',
+        sellPrice: '',
+        sellNumber: '',
       };
     },
-    mounted() {
+    beforeMount() {
+      this.coin = this.$route.params.coin;
+      this.market = this.$route.params.market;
+      this.symbol = `${this.coin}/${this.market}`
       this.onReady()
-      this.getOpenOrde();
-      this.getFunds();
+      this.getOpenOrder();
+      this.getHistoryOrder();
+      this.getAccounts();
+      console.log(this.symbol)
       var num = calc.add(0.00000001, 0.00000002)
       console.log(num.toFixed(8))
+      
+    },
+    mounted() {
+      const that = this
+      console.log(this.$refs.kline_container.offsetHeight)
+      var height = this.$refs.kline_container.offsetHeight;
+      var width = this.$refs.kline_container.offsetWidth;
+      var kline = new Kline({
+        element: "#kline_container",
+        symbol: "ETH/BTC",
+        symbolName: "比特币",
+        height: height,
+        width: width,
+        intervalTime: '3000',
+        ranges: ["1w", "1d", "1h", "30m", "15m", "5m", "1m", "line"],
+        language: 'zh-cn',
+        showTrade: false,
+        disableFirebase: true,
+        theme: 'dark',
+        type: "poll", // poll/stomp
+        url: `http://192.168.22.208/api/market/kline?interval=5`,
+      });
+      console.log(kline.data)
+      kline.draw();
+      
+      window.onresize = () => {
+        var height = this.$refs.kline_container.offsetHeight;
+        var width = this.$refs.kline_container.offsetWidth;
+        kline.resize(width, height);
+      }
     },
     methods: {
       onReady() {
@@ -593,7 +659,7 @@
         let c = 0;
         console.log('建立长连接！')
         const socket = io.connect('http://192.168.133.190:9006/')
-        socket.emit('join', {userId: 'linxi',symbol: 'ETH/BTC'})
+        socket.emit('join', {userId: 'linxi',symbol: this.symbol})
         socket.on('tradingData', function (data) {
           let res = JSON.parse(JSON.parse(data).tradingList).data
           c++
@@ -611,47 +677,127 @@
         socket.on('depthData', function (data) {
           let res = JSON.parse(JSON.parse(data).tradingList).data
           c++
-          console.log(c)
-          console.log(res)
+          //console.log(c)
+          //console.log(res)
           that.asksList = res.asks;
           that.bidsList = res.bids;
         })
+        socket.on('pairsData', function (data) {
+          let res = JSON.parse(JSON.parse(data).tradingList).data
+          c++
+          console.log(c)
+          console.log(res)
+          var symbol = that.symbol;
+          res.forEach(it =>{
+            if(it.symbol == symbol){
+              that.nowPairs = it;
+            }
+          })
+        })
       },
-      getOpenOrde() {
-        var list = [];
-        var item = {
-          time: '01-09 15:03:07',
-          goods: 'LRC/BTC',
-          type: '限价',
-          direction: '买入',
-          price: '0.00000000',
-          num: '0.00000000',
-          probability: '100%',
-          sum: '0.00000000',
-          condition: '条件'
-        };
-        for (var i = 0; i < 12; i++) {
-          list.push(item);
-        }
-
-        this.openOrder = list;
+      getOpenOrder() {
+        var _this = this;
+        axios.get('/api/orders',{status:0}).then(function(res){  
+            _this.openOrder = res.data;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
       },
-      getFunds() {
-        var obj = {
-          goods: 'LRC',
-          sum: '0.00000000',
-          usable: '0.00000000',
-          freeze: '0.00000000',
-          value: '0.00000000'
-        }
-        var list = [];
-        for (var i = 0; i < 12; i++) {
-          list.push(obj);
-        }
-
-        this.funds = list;
+      getHistoryOrder() {
+        var _this = this;
+        axios.get('/api/orders').then(function(res){  
+            _this.historyOrder = res.data;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
       },
-      formatDateTime(time, format) {
+      getHistorytrading() {
+        var _this = this;
+        axios.get('/api/orders',{status:1}).then(function(res){  
+            _this.historytrading = res.data;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+      },
+      findName(coin_id) {
+        var _this = this;
+        var name;
+        this.coinList.forEach(it=>{
+        if(it.coin_id == coin_id){
+            name = it.coin_name
+          }
+        })
+        return name;
+      },
+      getAccounts() {
+        var _this = this;
+        axios.get('/api/accounts').then(function(res){ 
+            var dataList = res.data;
+            var balances = [];
+            var sum = 0;
+            dataList.forEach(it => {
+              var coinItem = {};
+              coinItem.id = it.id;
+              coinItem.goods = _this.findName(it.id);
+              coinItem.sum = it.available*1 + it.disabled*1;
+              coinItem.usable = it.available;
+              coinItem.freeze = it.disabled;
+              coinItem.appraisement = coinItem.sum * it.price;
+              coinItem.showPairsFlag = false;  //交易对列表
+              sum += coinItem.appraisement;
+              balances.push(coinItem);
+            });
+            _this.funds = balances;
+            _this.sum = sum;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+      },
+      createOrder(type) {
+        var _this = this;
+        if (type == 'buy'){
+          var postData = {
+            symbol: this.symbol,
+            side: 'BUY',
+            price: this.buyPrice,
+            number: this.buyNumber
+          }
+        }else{
+          var postData = {
+            symbol: this.symbol,
+            side: 'SELL',
+            price: this.sellPrice,
+            number: this.sellNumber
+          }
+        }
+        
+        axios.post('/api/orders',postData).then(function(res){ 
+            console.log(res);
+            if(res.code == 0){
+              _this.$message({
+                message: '下单成功',
+                type: 'success'
+              });
+            }else{
+              _this.$message({
+                message: res,
+                type: 'error'
+              });
+            }
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+      },
+      toPercent(point,num){
+          var str=Number(point*100).toFixed(num);
+          str+="%";
+          return str;
+      },
+      //退出登录
+      logout: function() {
+        this.$store.dispatch('LogOut');
+      },
+      formatDateTime(time, format) {//时间戳转换
         var t = new Date(time);  
           var tf = function(i){return (i < 10 ? '0' : '') + i};  
           return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function(a){  
@@ -676,18 +822,33 @@
                   break;  
             }  
           })  
-      }
+      },
+      handleSetLanguage(lang) { //语言切换
+        this.$i18n.locale = lang
+        this.$store.dispatch('setLanguage', lang)
+      },
     },
     filters: {
       toFixed: ([value,num]) => {
-        if (!value) return ''
+        if (value != 0 && !value) return ''
         value = (value*1).toFixed(num)
         return value;
       },
       mul: ([value1,value2,fixed]) => {
         return calc.mul(value1, value2).toFixed(fixed)
       }
-    }
+    },
+    computed: {
+      ...mapGetters([
+          'email',
+          'token',
+          'userInfo',
+          'coinList'
+      ]),
+      language() {
+        return this.$store.getters.language
+      }
+    },
   }
 </script>
 
@@ -853,13 +1014,35 @@ $baseColor : #FC9217;
     }
     .langsBox {
       height: 100%;
+      position: relative;
       .showLangs {
         padding: 0 14px;
         height: 100%;
         line-height: 40px;
-        display: block;
+        display: inline-block;
         i {
           margin-left: 10px;
+        }
+        &:hover{
+          background-color: #383636;;
+        }
+      }
+      .langList{
+        background-color: #383636;
+        width: 110px;
+        position: absolute;
+        left: -23px;
+        top: 40px;
+        z-index: 10;
+        cursor: pointer;
+        .langItem{
+          line-height: 30px;
+          text-align: center;
+          border-bottom: 1px solid #1f262c;
+        }
+        .langItem.active{
+          color: $baseColor;
+          background-color: #212121;
         }
       }
     }
@@ -1389,7 +1572,7 @@ $baseColor : #FC9217;
                 }
               }
               .most {
-                width: 226px;
+                width: 180px;
                 height: 20px;
                 line-height: 20px;
                 background: $baseColor;

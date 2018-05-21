@@ -11,7 +11,8 @@
                 <p class="UID">UID: {{userInfo.id}}</p>
             </div>
             <div class="attest">
-                <router-link class="toattest" to="/autonym">{{$t('user.unverified')}}&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
+                <router-link v-if="!userInfo.is_human_validated" class="toattest" to="/autonym">{{$t('user.unverified')}}&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
+                <a v-if="userInfo.is_human_validated" class="toattest" style="color:#3ABC56">已实名认证</a>
             </div>
         </div>
         <div class="otherBox">
@@ -439,8 +440,8 @@ export default {
         this.$refs['changePwdForm'].validate((valid) => {
           if (valid) {
             axios.post('/api/user/password_update',{
-                password: this.phoneForm.pwd,
-                newPassword: this.phoneForm.smsId,
+                password: this.changePwdForm.pwd1,
+                newPassword: this.changePwdForm.newpwd1,
             }).then(function(res){  
                 
                 console.log(res)

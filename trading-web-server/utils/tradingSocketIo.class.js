@@ -1,4 +1,4 @@
-const {tradingSendData,tradingSendTrades,tradingSendDepth} = require('./asyncHttp')
+const {tradingSendData,tradingSendTrades,tradingSendDepth,tradingSendPairs} = require('./asyncHttp')
 const dateFormat = require('dateformat')
 const schedule = require("node-schedule")
 const dateLabel = 'yyyy-mm-dd HH:MM:ss' // 时间格式
@@ -50,6 +50,18 @@ class SocketIo {
       this.userId = userId
       this.getSocketData() // 默认调接口
     })
+    //首页数据
+    this.socket.on('home', ({userId}) => {
+      console.log(`用户:${userId}进入了, 开始调接口, 时间:${dateFormat(new Date(), dateLabel)}`)
+      this.userId = userId
+      this.getSocketHomeData() // 默认调接口
+      // this.setSchedule() // 执行定时任务
+      this.socketNum = this.socketNum + 1
+      if (this.socketNum === 1) {
+        console.log(this.socketNum)
+        this.setHomeSchedule() // 执行定时任务
+      }
+    })
   }
 
   setSchedule() { // 定时任务
@@ -60,6 +72,17 @@ class SocketIo {
       c++
       console.log(c)
       this.getData()
+    })
+  }
+
+  setHomeSchedule() { // 定时任务
+    console.log(`已开启定时任务，当前时间:${dateFormat(new Date(), dateLabel)}`)
+    let c = 0
+    schedule.scheduleJob(scheduleRule, () => {
+      console.log(`定时任务执行完毕，当前时间:${dateFormat(new Date(), dateLabel)}`)
+      c++
+      console.log(c)
+      this.getHomeData()
     })
   }
 
@@ -84,6 +107,22 @@ class SocketIo {
         tradingList
       }))
     })
+
+    tradingSendPairs(``, (tradingList) => {
+      console.log(`交易区1，当前时间: ${dateFormat(new Date(), dateLabel)}`)
+      this.socket.emit('pairsData', JSON.stringify({
+        tradingList
+      }))
+    })
+  }
+
+  getSocketHomeData() {
+    tradingSendPairs(``, (tradingList) => {
+      console.log(`交易区1，当前时间: ${dateFormat(new Date(), dateLabel)}`)
+      this.socket.emit('pairsData', JSON.stringify({
+        tradingList
+      }))
+    })
   }
 
   getData() { // 获取数据并广播
@@ -104,6 +143,22 @@ class SocketIo {
     tradingSendDepth(`symbol=${this.symbol}`, (tradingList) => {
       console.log(`市场深度2，当前时间: ${dateFormat(new Date(), dateLabel)}`)
       this.io.sockets.emit('depthData', JSON.stringify({
+        tradingList
+      }))
+    })
+
+    tradingSendPairs(`symbol=${this.symbol}`, (tradingList) => {
+      console.log(`交易区2，当前时间: ${dateFormat(new Date(), dateLabel)}`)
+      this.io.sockets.emit('pairsData', JSON.stringify({
+        tradingList
+      }))
+    })
+  }
+
+  getHomeData() {
+    tradingSendPairs(`symbol=${this.symbol}`, (tradingList) => {
+      console.log(`交易区2，当前时间: ${dateFormat(new Date(), dateLabel)}`)
+      this.io.sockets.emit('pairsData', JSON.stringify({
         tradingList
       }))
     })

@@ -114,7 +114,7 @@ export default {
         console.log(ev);
       }
     },
-    mounted() {
+    beforeMount() {
       this.restaurants = this.loadAll();
     }
 }

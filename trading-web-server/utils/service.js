@@ -9,6 +9,9 @@ const getTrades = (data) => {
 const getDepth = (data) => {
   return request.apiGet(`${api.tradingCenter.depth}?${data}`)
 }
+const getPairs = (data) => {
+  return request.apiGet(`${api.tradingCenter.pairs}?${data}`)
+}
 module.exports = {
-  tradingService: {getTradingList,getTrades,getDepth}
+  tradingService: {getTradingList,getTrades,getDepth,getPairs}
 }

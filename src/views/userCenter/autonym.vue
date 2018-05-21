@@ -198,7 +198,7 @@
                 </el-form-item>
                 
                 <el-form-item>
-                    <el-button class="btnBase" type="primary" @click="submitForm('passportForm')">确定</el-button>
+                    <el-button class="btnBase" type="primary" @click="passportSubmit()">确定</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -303,7 +303,7 @@ export default {
                   var IDdata = {
                     passportType: this.type,
                     name: this.IDForm.name,
-                    country: "中国",
+                    country: "zh",
                     passportId: this.IDForm.cardNum,
                     passportFront: this.front,
                     passportBack: this.back,
@@ -330,6 +330,40 @@ export default {
         });
         
         
+      },
+      passportSubmit() {
+          var _this = this;
+          this.$refs['passportForm'].validate((valid) => {
+          if (valid) {
+              if(this.front||this.back||this.image){
+                  var passportdata = {
+                    passportType: this.type,
+                    name: this.passportForm.name,
+                    country: this.country,
+                    passportId: this.passportForm.cardNum,
+                    passportFront: this.front,
+                    passportBack: this.back,
+                    passportImage: this.image,
+                }
+                axios.post('/api/user/kyc',passportdata).then(function(res){  
+                    console.log(res);
+                    _this.domain = res.data.domain;
+                    _this.postData.token = res.data.token;
+                }).catch(function (res){  
+                    console.log(res);
+                });
+              }else{
+                  this.$message({
+                      message: '请上传图片',
+                      type: 'warning'
+                  })
+              }
+            
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       },
       getCountry() {
         var _this = this;

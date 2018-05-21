@@ -10,7 +10,7 @@
         text-color="#333333"
         active-text-color="#FC9217">
           <el-menu-item index="/Home" class="logo"><img src="../../assets/img/logo.png" alt="logo"></el-menu-item>
-          <el-menu-item index="/tradingCenter/1">{{$t('route.tradingCenter')}}</el-menu-item>
+          <el-menu-item index="/tradingCenter/ETH/BTC">{{$t('route.tradingCenter')}}</el-menu-item>
           <el-menu-item index="" class="blank" disabled></el-menu-item>
           <el-menu-item v-if="!email" index=""><a href="https://support.bjex.io/hc/zh-cn" target="_block">{{$t('route.support')}}</a></el-menu-item>
           <el-menu-item v-if="!email" index="/login">{{$t('route.login')}}</el-menu-item>
@@ -125,14 +125,15 @@ export default {
       return this.$store.getters.language
     }
   },
-  mounted (){
+  beforeMount (){
     // this.$store.dispatch('initLogin');
     console.log(this.email)
     console.log(this.token)
     if(this.email){
       this.$store.dispatch('getUserInfo');    //获取用户信息  
-      this.$store.dispatch('getPairs');       //获取交易对列表
+      this.$store.dispatch('getMarket');       //获取市场列表
       this.$store.dispatch('getCoin');        //获取币种列表
+      this.$store.dispatch('getPairs');        //获取交易对列表
       this.getAccounts();
       
     }

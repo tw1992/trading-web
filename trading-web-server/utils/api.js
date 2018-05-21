@@ -4,6 +4,7 @@ module.exports = {
   tradingCenter: {
       tradingList: baseUrlTraffic + 'trandingCenter/trandingCenter.json',  // 模拟数据
       trades: baseUrl + '/api/market/trades',     //最近成交
-      depth: baseUrl + '/api/market/depth',      //市场深度图
+      depth: baseUrl + '/api/market/depth',       //市场深度图
+      pairs: baseUrl + '/api/market/pairs',       //交易对
   }
 }

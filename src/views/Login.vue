@@ -295,7 +295,7 @@ export default {
     components: {
       loginFooter
     },
-    mounted (){
+    beforeMount (){
       console.log(this.email)
       console.log(this.token)
     }

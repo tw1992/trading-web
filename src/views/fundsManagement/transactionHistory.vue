@@ -35,8 +35,10 @@
           </el-table-column>
           <el-table-column
             label="币种"
-            width="120"
-            prop="coin_id">
+            width="120">
+            <template slot-scope="scope">
+              <span>{{findName(scope.row.coin_id)}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             label="数量"
@@ -52,7 +54,7 @@
             label="信息">
             <template slot-scope="scope">
               <div style="margin-bottom:4px;" class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.address}}</p></div>
-              <div class="tdItem"><p class="tdname">Txid</p><p class="tdmain">{{scope.row.txid}}</p></div>
+              <div class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://etherscan.io/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
             </template>
           </el-table-column>
         </el-table>
@@ -77,8 +79,10 @@
           </el-table-column>
           <el-table-column
             :label="$t('tradingCenter.coin')"
-            width="120"
-            prop="coin_id">
+            width="120">
+            <template slot-scope="scope">
+              <span>{{findName(scope.row.coin_id)}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             :label="$t('tradingCenter.amount')"
@@ -107,11 +111,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import axios from '../../api/axios'
 export default {
   data() {
       return {
         activeIdx: 0,
+        pagination: {},
         recharge: [{
           status: 0,
           coin_id: 'BTC',
@@ -160,7 +166,8 @@ export default {
         var _this = this;
         axios.get('/api/accounts/imports').then(function(res){  
             console.log(res);
-            // _this.openOrder = res.data;
+            _this.recharge = res.data;
+            _this.pagination = res.meta.pagination;
         }).catch(function (res){  
             console.log(res);
         });
@@ -169,7 +176,7 @@ export default {
         var _this = this;
         axios.get('/api/accounts/exports').then(function(res){  
             console.log(res);
-            // _this.openOrder = res.data;
+            _this.withdraw = res.data;
         }).catch(function (res){  
             console.log(res);
         });
@@ -202,7 +209,22 @@ export default {
       },
       formatJson(filterVal, jsonData) {
         return jsonData.map(v => filterVal.map(j => v[j]))
-      }
+      },
+      findName(coin_id) {
+        var _this = this;
+        var name;
+        this.coinList.forEach(it=>{
+        if(it.coin_id == coin_id){
+            name = it.coin_name
+          }
+        })
+        return name;
+      },
+    },
+    computed: {
+      ...mapGetters([
+          'coinList',
+      ])
     },
     created() {
       this.getRecharge();
@@ -213,6 +235,7 @@ export default {
 
 <style lang="scss">
 .transactionBox{
+  padding-bottom: 40px;
   a{
     color: #333333;
   }
@@ -286,6 +309,10 @@ export default {
     .tdmain{
       width: 400px;
       padding-right: 60px;
+    }
+    .txLink:hover{
+      color: #FC9217;
+      text-decoration: underline;
     }
   }
 }
