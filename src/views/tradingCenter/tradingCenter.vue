@@ -42,10 +42,10 @@
         <!-- 订单面板 -->
         <div class="tradMainLB">
           <ul class="orderSelect fz14">
-            <li><div class="options" :class="orderSelect == 1?'active':''" @click="orderSelect=1">{{$t('route.openOrders')}}</div></li>
-            <li><div class="options" :class="orderSelect == 2?'active':''" @click="orderSelect=2">{{$t('route.orderHistory')}}</div></li>
-            <li><div class="options" :class="orderSelect == 3?'active':''" @click="orderSelect=3">{{$t('tradingCenter.tradeHistory')}}</div></li>
-            <li><div class="options" :class="orderSelect == 4?'active':''" @click="orderSelect=4">{{$t('route.funds')}}</div></li>
+            <li><div class="options" :class="orderSelect == 1?'active':''" @click="orderSelect=1;hideOrder = false">{{$t('route.openOrders')}}</div></li>
+            <li><div class="options" :class="orderSelect == 2?'active':''" @click="orderSelect=2;hideOrder = false">{{$t('route.orderHistory')}}</div></li>
+            <li><div class="options" :class="orderSelect == 3?'active':''" @click="orderSelect=3;hideOrder = false">{{$t('tradingCenter.tradeHistory')}}</div></li>
+            <li><div class="options" :class="orderSelect == 4?'active':''" @click="orderSelect=4;hideOrder = false">{{$t('route.funds')}}</div></li>
             <div class="block"></div>
             <div class="hideOrder"><el-checkbox v-model="hideOrder">{{$t('tradingCenter.hide')}}</el-checkbox></div>
           </ul>
@@ -75,7 +75,7 @@
 									<th>{{$t('tradingCenter.totalVal')}}</th>
 									<th>{{$t('tradingCenter.trigger')}}</th>
 									<th style="text-align: center;" class="cancels">
-										<span class="btn">{{$t('tradingCenter.cancelAll')}}</span>
+										<span class="btn" @click="delAllOrder()">{{$t('tradingCenter.cancelAll')}}</span>
                     <!-- 全撤旁边的更多 -->
 										<!-- <div class="btn iconfont-downsjsmall">
                       <i class="el-icon-more"></i>
@@ -128,29 +128,31 @@
             <div class="slider" v-show="orderSelect == 2">
               <div class="scopeBox">
                 <ul class="scopeList">
-                  <li><div class="options">{{$t('tradingCenter.nowDay')}}</div></li>
-                  <li><div class="options">{{$t('tradingCenter.oneWeek')}}</div></li>
-                  <li><div class="options">{{$t('tradingCenter.oneMonth')}}</div></li>
-                  <li><div class="options">{{$t('tradingCenter.threeMonth')}}</div></li>
+                  <li><div class="options" @click="getTimeClick(1,'historyOrder')">{{$t('tradingCenter.nowDay')}}</div></li>
+                  <li><div class="options" @click="getTimeClick(7,'historyOrder')">{{$t('tradingCenter.oneWeek')}}</div></li>
+                  <li><div class="options" @click="getTimeClick(30,'historyOrder')">{{$t('tradingCenter.oneMonth')}}</div></li>
+                  <li><div class="options" @click="getTimeClick(90,'historyOrder')">{{$t('tradingCenter.threeMonth')}}</div></li>
                 </ul>
                 <div class="timeBox">
                   <span class="lable">{{$t('tradingCenter.form')}}</span>
                   <el-date-picker
-                    v-model="startTime"
+                    v-model="startTime1"
                     type="date"
                     size="mini"
+                    value-format="yyyy-MM-dd"
                     prefix-icon="el-icon-caret-bottom"
                     :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
                   <div class="line"></div>
                   <el-date-picker
-                    v-model="endTime"
+                    v-model="endTime1"
                     type="date"
                     size="mini"
+                    value-format="yyyy-MM-dd"
                     prefix-icon="el-icon-caret-bottom"
                     :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
-                  <div class="searchTime">{{$t('button.search')}}</div>
+                  <div class="searchTime" @click="searchHistoryOrder()">{{$t('button.search')}}</div>
                 </div>
               </div>
               <table class="table tableHead">
@@ -222,29 +224,31 @@
             <div class="slider" v-show="orderSelect == 3">
               <div class="scopeBox">
                 <ul class="scopeList">
-                   <li><div class="options">{{$t('tradingCenter.nowDay')}}</div></li>
-                  <li><div class="options">{{$t('tradingCenter.oneWeek')}}</div></li>
-                  <li><div class="options">{{$t('tradingCenter.oneMonth')}}</div></li>
-                  <li><div class="options">{{$t('tradingCenter.threeMonth')}}</div></li>
+                   <li><div class="options" @click="getTimeClick(1,'historytrading')">{{$t('tradingCenter.nowDay')}}</div></li>
+                  <li><div class="options" @click="getTimeClick(7,'historytrading')">{{$t('tradingCenter.oneWeek')}}</div></li>
+                  <li><div class="options" @click="getTimeClick(30,'historytrading')">{{$t('tradingCenter.oneMonth')}}</div></li>
+                  <li><div class="options" @click="getTimeClick(90,'historytrading')">{{$t('tradingCenter.threeMonth')}}</div></li>
                 </ul>
                 <div class="timeBox">
                   <span class="lable">{{$t('tradingCenter.form')}}</span>
                   <el-date-picker
-                    v-model="startTime"
+                    v-model="startTime2"
                     type="date"
                     size="mini"
+                    value-format="yyyy-MM-dd"
                     prefix-icon="el-icon-caret-bottom"
                     :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
                   <div class="line"></div>
                   <el-date-picker
-                    v-model="endTime"
+                    v-model="endTime2"
                     type="date"
                     size="mini"
+                    value-format="yyyy-MM-dd"
                     prefix-icon="el-icon-caret-bottom"
                     :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
-                  <div class="searchTime">{{$t('button.search')}}</div>
+                  <div class="searchTime" @click="searchHistorytrading()">{{$t('button.search')}}</div>
                 </div>
               </div>
               <table class="table tableHead">
@@ -568,324 +572,421 @@
 </template>
 
 <script>
-  import calc from 'calculatorjs'
-  import $ from 'expose-loader?$!jquery'
-  import Kline from 'kline';
-  // import SockJS from 'sockjs';
-  // var SockJS = require('sockjs');
-  // import StompJS from 'stompjs';
-  import io from 'socket.io-client'
-  import axios from '../../api/axios'
-  import { mapGetters } from 'vuex'
+import calc from "calculatorjs";
+import $ from "expose-loader?$!jquery";
+import Kline from "kline";
+// import SockJS from 'sockjs';
+// var SockJS = require('sockjs');
+// import StompJS from 'stompjs';
+import io from "socket.io-client";
+import axios from "../../api/axios";
+import { mapGetters } from "vuex";
 
-  export default {
-    data() {
-      return {
-        newmarket: [],
-        asksList: [],
-        bidsList: [],
-        marketSelect: 1,    //行情选项
-        dealSelect: 1,       //交易选项
-        orderSelect: 1,     //订单选项
-        hideOrder: false,
-        openOrder: [],      //当前委托
-        historyOrder: [],   //历史委托
-        historytrading: [], //历史成交
-        funds: [],          //资产管理
-        startTime: '',
-        endTime: '',
-        fixed: '8',
-        flortFlag: false,
-        depthFlag: true,    //行情正常/延迟
-        langFlag: false,
-        market: '',
-        coin: '',
-        symbol: '',
-        interval: "5",
-        nowPairs: '',
-        close: '',
-        sum: '',
-        buyPrice: '',
-        buyNumber: '',
-        sellPrice: '',
-        sellNumber: '',
-      };
-    },
-    beforeMount() {
-      this.coin = this.$route.params.coin;
-      this.market = this.$route.params.market;
-      this.symbol = `${this.coin}/${this.market}`
-      this.onReady()
-      this.getOpenOrder();
-      this.getHistoryOrder();
-      this.getAccounts();
-      console.log(this.symbol)
-      var num = calc.add(0.00000001, 0.00000002)
-      console.log(num.toFixed(8))
-      
-    },
-    mounted() {
-      const that = this
-      console.log(this.$refs.kline_container.offsetHeight)
+export default {
+  data() {
+    return {
+      newmarket: [],
+      asksList: [],
+      bidsList: [],
+      marketSelect: 1, //行情选项
+      dealSelect: 1, //交易选项
+      orderSelect: 1, //订单选项
+      hideOrder: false,
+      openOrder: [], //当前委托
+      historyOrder: [], //历史委托
+      historytrading: [], //历史成交
+      funds: [], //资产管理
+      startTime1: "",
+      endTime1: "",
+      startTime2: "",
+      endTime2: "",
+      fixed: "8",
+      flortFlag: false,
+      depthFlag: true, //行情正常/延迟
+      langFlag: false,
+      market: "",
+      coin: "",
+      symbol: "",
+      interval: "5",
+      nowPairs: "",
+      close: "",
+      sum: "",
+      buyPrice: "",
+      buyNumber: "",
+      sellPrice: "",
+      sellNumber: ""
+    };
+  },
+  beforeMount() {
+    this.coin = this.$route.params.coin;
+    this.market = this.$route.params.market;
+    this.symbol = `${this.coin}/${this.market}`;
+    this.onReady();
+    this.getOpenOrder();
+    this.getHistoryOrder();
+    this.getAccounts();
+    console.log(this.symbol);
+    var num = calc.add(0.00000001, 0.00000002);
+    console.log(num.toFixed(8));
+  },
+  mounted() {
+    const that = this;
+    console.log(this.$refs.kline_container.offsetHeight);
+    var height = this.$refs.kline_container.offsetHeight;
+    var width = this.$refs.kline_container.offsetWidth;
+    var kline = new Kline({
+      element: "#kline_container",
+      symbol: "ETH/BTC",
+      symbolName: "比特币",
+      height: height,
+      width: width,
+      intervalTime: "3000",
+      ranges: ["1w", "1d", "1h", "30m", "15m", "5m", "1m", "line"],
+      language: "zh-cn",
+      showTrade: false,
+      disableFirebase: true,
+      theme: "dark",
+      type: "poll", // poll/stomp
+      url: `http://192.168.22.208/api/market/kline?interval=5`
+    });
+    console.log(kline.data);
+    kline.draw();
+
+    window.onresize = () => {
       var height = this.$refs.kline_container.offsetHeight;
       var width = this.$refs.kline_container.offsetWidth;
-      var kline = new Kline({
-        element: "#kline_container",
-        symbol: "ETH/BTC",
-        symbolName: "比特币",
-        height: height,
-        width: width,
-        intervalTime: '3000',
-        ranges: ["1w", "1d", "1h", "30m", "15m", "5m", "1m", "line"],
-        language: 'zh-cn',
-        showTrade: false,
-        disableFirebase: true,
-        theme: 'dark',
-        type: "poll", // poll/stomp
-        url: `http://192.168.22.208/api/market/kline?interval=5`,
+      kline.resize(width, height);
+    };
+  },
+  methods: {
+    onReady() {
+      let that = this;
+      let c = 0;
+      console.log("建立长连接！");
+      const socket = io.connect("http://192.168.133.190:9006/");
+      socket.emit("join", { userId: "linxi", symbol: this.symbol });
+      socket.on("tradingData", function(data) {
+        let res = JSON.parse(JSON.parse(data).tradingList).data;
+        c++;
+        console.log(c);
+        console.log(res);
+        that.newmarket = res;
       });
-      console.log(kline.data)
-      kline.draw();
-      
-      window.onresize = () => {
-        var height = this.$refs.kline_container.offsetHeight;
-        var width = this.$refs.kline_container.offsetWidth;
-        kline.resize(width, height);
+      socket.on("tradesData", function(data) {
+        let res = JSON.parse(JSON.parse(data).tradingList).data;
+        c++;
+        //console.log(c)
+        // console.log(res)
+        that.newmarket = res;
+      });
+      socket.on("depthData", function(data) {
+        let res = JSON.parse(JSON.parse(data).tradingList).data;
+        c++;
+        //console.log(c)
+        //console.log(res)
+        that.asksList = res.asks;
+        that.bidsList = res.bids;
+      });
+      socket.on("pairsData", function(data) {
+        let res = JSON.parse(JSON.parse(data).tradingList).data;
+        c++;
+        console.log(c);
+        console.log(res);
+        var symbol = that.symbol;
+        res.forEach(it => {
+          if (it.symbol == symbol) {
+            that.nowPairs = it;
+          }
+        });
+      });
+    },
+    getTime(time) {
+      //获取当前时间
+      var date = new Date();
+      if (time == 1) {
+      } else {
+        date = date - 1000 * 60 * 60 * 24 * time;
+      }
+      date = new Date(date);
+      var year = date.getFullYear();
+      var mon = date.getMonth() + 1;
+      var day = date.getDate();
+      var currentdate =
+        year +
+        "-" +
+        (mon < 10 ? "0" + mon : mon) +
+        "-" +
+        (day < 10 ? "0" + day : day);
+      return currentdate;
+    },
+    getTimeClick(time, type) {
+      var searchTime = this.getTime(time);
+      var postData = {
+        from: searchTime,
+        to: this.getTime(1)
+      };
+      //   console.log(postData)
+      if (type == "historyOrder") {
+        this.getHistoryOrder(postData);
+      } else if (type == "historytrading") {
+        this.getHistorytrading(postData);
       }
     },
-    methods: {
-      onReady() {
-        let that = this
-        let c = 0;
-        console.log('建立长连接！')
-        const socket = io.connect('http://192.168.133.190:9006/')
-        socket.emit('join', {userId: 'linxi',symbol: this.symbol})
-        socket.on('tradingData', function (data) {
-          let res = JSON.parse(JSON.parse(data).tradingList).data
-          c++
-          console.log(c)
-          console.log(res)
-          that.newmarket = res
+    getOpenOrder() {
+      var _this = this;
+      axios
+        .get("/api/orders", { status: 0 })
+        .then(function(res) {
+          _this.openOrder = res.data;
         })
-        socket.on('tradesData', function (data) {
-          let res = JSON.parse(JSON.parse(data).tradingList).data
-          c++
-          //console.log(c)
-         // console.log(res)
-          that.newmarket = res
+        .catch(function(res) {
+          console.log(res);
+        });
+    },
+    getHistoryOrder(postData) {
+      var _this = this;
+      axios
+        .get("/api/orders", postData ? postData : {})
+        .then(function(res) {
+          _this.historyOrder = res.data;
         })
-        socket.on('depthData', function (data) {
-          let res = JSON.parse(JSON.parse(data).tradingList).data
-          c++
-          //console.log(c)
-          //console.log(res)
-          that.asksList = res.asks;
-          that.bidsList = res.bids;
+        .catch(function(res) {
+          console.log(res);
+        });
+    },
+    getHistorytrading(postData) {
+      var _this = this;
+      if (postData) {
+        postData.status = 1;
+      }
+      axios
+        .get("/api/orders", postData ? postData : { status: 1 })
+        .then(function(res) {
+          _this.historytrading = res.data;
         })
-        socket.on('pairsData', function (data) {
-          let res = JSON.parse(JSON.parse(data).tradingList).data
-          c++
-          console.log(c)
-          console.log(res)
-          var symbol = that.symbol;
-          res.forEach(it =>{
-            if(it.symbol == symbol){
-              that.nowPairs = it;
-            }
-          })
-        })
-      },
-      getOpenOrder() {
-        var _this = this;
-        axios.get('/api/orders',{status:0}).then(function(res){  
-            _this.openOrder = res.data;
-        }).catch(function (res){  
-            console.log(res);
-        }); 
-      },
-      getHistoryOrder() {
-        var _this = this;
-        axios.get('/api/orders').then(function(res){  
-            _this.historyOrder = res.data;
-        }).catch(function (res){  
-            console.log(res);
-        }); 
-      },
-      getHistorytrading() {
-        var _this = this;
-        axios.get('/api/orders',{status:1}).then(function(res){  
-            _this.historytrading = res.data;
-        }).catch(function (res){  
-            console.log(res);
-        }); 
-      },
-      findName(coin_id) {
-        var _this = this;
-        var name;
-        this.coinList.forEach(it=>{
-        if(it.coin_id == coin_id){
-            name = it.coin_name
-          }
-        })
-        return name;
-      },
-      getAccounts() {
-        var _this = this;
-        axios.get('/api/accounts').then(function(res){ 
-            var dataList = res.data;
-            var balances = [];
-            var sum = 0;
-            dataList.forEach(it => {
-              var coinItem = {};
-              coinItem.id = it.id;
-              coinItem.goods = _this.findName(it.id);
-              coinItem.sum = it.available*1 + it.disabled*1;
-              coinItem.usable = it.available;
-              coinItem.freeze = it.disabled;
-              coinItem.appraisement = coinItem.sum * it.price;
-              coinItem.showPairsFlag = false;  //交易对列表
-              sum += coinItem.appraisement;
-              balances.push(coinItem);
-            });
-            _this.funds = balances;
-            _this.sum = sum;
-        }).catch(function (res){  
-            console.log(res);
-        }); 
-      },
-      createOrder(type) {
-        var _this = this;
-        if (type == 'buy'){
-          var postData = {
-            symbol: this.symbol,
-            side: 'BUY',
-            price: this.buyPrice,
-            number: this.buyNumber
-          }
-        }else{
-          var postData = {
-            symbol: this.symbol,
-            side: 'SELL',
-            price: this.sellPrice,
-            number: this.sellNumber
-          }
+        .catch(function(res) {
+          console.log(res);
+        });
+    },
+    searchHistoryOrder() {
+      var postData = {};
+      postData.from = this.startTime1;
+      postData.to = this.endTime1;
+      this.getHistoryOrder(postData);
+    },
+    searchHistorytrading() {
+      var postData = {};
+      postData.from = this.startTime2;
+      postData.to = this.endTime2;
+      this.getHistorytrading(postData);
+    },
+    findName(coin_id) {
+      var _this = this;
+      var name;
+      this.coinList.forEach(it => {
+        if (it.coin_id == coin_id) {
+          name = it.coin_name;
         }
-        
-        axios.post('/api/orders',postData).then(function(res){ 
-            console.log(res);
-            if(res.code == 0){
-              _this.$message({
-                message: '下单成功',
-                type: 'success'
-              });
-            }else{
-              _this.$message({
-                message: res,
-                type: 'error'
-              });
-            }
-        }).catch(function (res){  
-            console.log(res);
-        }); 
-      },
-      toPercent(point,num){
-          var str=Number(point*100).toFixed(num);
-          str+="%";
-          return str;
-      },
-      //退出登录
-      logout: function() {
-        this.$store.dispatch('LogOut');
-      },
-      formatDateTime(time, format) {//时间戳转换
-        var t = new Date(time);  
-          var tf = function(i){return (i < 10 ? '0' : '') + i};  
-          return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function(a){  
-            switch(a){  
-              case 'yyyy':  
-                  return tf(t.getFullYear());  
-                  break;  
-              case 'MM':  
-                  return tf(t.getMonth() + 1);  
-                  break;  
-              case 'dd':  
-                  return tf(t.getDate());  
-                  break;  
-              case 'HH':  
-                  return tf(t.getHours());  
-                  break;  
-              case 'mm':  
-                  return tf(t.getMinutes());  
-                  break; 
-              case 'ss':  
-                  return tf(t.getSeconds());  
-                  break;  
-            }  
-          })  
-      },
-      handleSetLanguage(lang) { //语言切换
-        this.$i18n.locale = lang
-        this.$store.dispatch('setLanguage', lang)
-      },
+      });
+      return name;
     },
-    filters: {
-      toFixed: ([value,num]) => {
-        if (value != 0 && !value) return ''
-        value = (value*1).toFixed(num)
-        return value;
-      },
-      mul: ([value1,value2,fixed]) => {
-        return calc.mul(value1, value2).toFixed(fixed)
+    getAccounts() {
+      var _this = this;
+      axios
+        .get("/api/accounts")
+        .then(function(res) {
+          var dataList = res.data;
+          var balances = [];
+          var sum = 0;
+          dataList.forEach(it => {
+            var coinItem = {};
+            coinItem.id = it.id;
+            coinItem.goods = _this.findName(it.id);
+            coinItem.sum = it.available * 1 + it.disabled * 1;
+            coinItem.usable = it.available;
+            coinItem.freeze = it.disabled;
+            coinItem.appraisement = coinItem.sum * it.price;
+            coinItem.showPairsFlag = false; //交易对列表
+            sum += coinItem.appraisement;
+            balances.push(coinItem);
+          });
+          _this.funds = balances;
+          _this.sum = sum;
+        })
+        .catch(function(res) {
+          console.log(res);
+        });
+    },
+    createOrder(type) {
+      var _this = this;
+      if (type == "buy") {
+        var postData = {
+          symbol: this.symbol,
+          side: "BUY",
+          price: this.buyPrice,
+          number: this.buyNumber
+        };
+      } else {
+        var postData = {
+          symbol: this.symbol,
+          side: "SELL",
+          price: this.sellPrice,
+          number: this.sellNumber
+        };
       }
+
+      axios
+        .post("/api/orders", postData)
+        .then(function(res) {
+          console.log(res);
+          if (res.code == 0) {
+            _this.$message({
+              message: "下单成功",
+              type: "success"
+            });
+          } else {
+            _this.$message({
+              message: res,
+              type: "error"
+            });
+          }
+        })
+        .catch(function(res) {
+          console.log(res);
+        });
     },
-    computed: {
-      ...mapGetters([
-          'email',
-          'token',
-          'userInfo',
-          'coinList'
-      ]),
-      language() {
-        return this.$store.getters.language
+    toPercent(point, num) {
+      var str = Number(point * 100).toFixed(num);
+      str += "%";
+      return str;
+    },
+    delAllOrder() {
+      //撤销全部订单
+      axios
+        .del("/api/orders")
+        .then(function(res) {
+          if (res.code == 0) {
+            _this.$message({
+              message: "撤销成功",
+              type: "success"
+            });
+          } else {
+            _this.$message({
+              message: res,
+              type: "error"
+            });
+          }
+        })
+        .catch(function(res) {
+          console.log(res);
+        });
+    },
+    //退出登录
+    logout: function() {
+      this.$store.dispatch("LogOut");
+    },
+    formatDateTime(time, format) {
+      //时间戳转换
+      var t = new Date(time);
+      var tf = function(i) {
+        return (i < 10 ? "0" : "") + i;
+      };
+      return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function(a) {
+        switch (a) {
+          case "yyyy":
+            return tf(t.getFullYear());
+            break;
+          case "MM":
+            return tf(t.getMonth() + 1);
+            break;
+          case "dd":
+            return tf(t.getDate());
+            break;
+          case "HH":
+            return tf(t.getHours());
+            break;
+          case "mm":
+            return tf(t.getMinutes());
+            break;
+          case "ss":
+            return tf(t.getSeconds());
+            break;
+        }
+      });
+    },
+    handleSetLanguage(lang) {
+      //语言切换
+      this.$i18n.locale = lang;
+      this.$store.dispatch("setLanguage", lang);
+    }
+  },
+  filters: {
+    toFixed: ([value, num]) => {
+      if (value != 0 && !value) return "";
+      value = (value * 1).toFixed(num);
+      return value;
+    },
+    mul: ([value1, value2, fixed]) => {
+      return calc.mul(value1, value2).toFixed(fixed);
+    }
+  },
+  computed: {
+    ...mapGetters(["email", "token", "userInfo", "coinList"]),
+    language() {
+      return this.$store.getters.language;
+    },
+    openOrderItems: function() {
+      var name = this.symbol;
+      if (this.hideOrder) {
+        return this.openOrder.filter(function(product) {
+          return Object.keys(product).some(function() {
+            return product.symbol == name;
+          });
+        });
       }
+      return this.openOrder;
     },
+    historyOrderItems: function() {
+      var name = this.symbol;
+      if (this.hideOrder) {
+        return this.historyOrder.filter(function(product) {
+          return Object.keys(product).some(function() {
+            return product.symbol == name;
+          });
+        });
+      }
+      return this.historyOrder;
+    },
+    historytradingItems: function() {
+      var name = this.symbol;
+      if (this.hideOrder) {
+        return this.historytrading.filter(function(product) {
+          return Object.keys(product).some(function() {
+            return product.symbol == name;
+          });
+        });
+      }
+      return this.historytrading;
+    }
   }
+};
 </script>
 
 <style lang="scss" scoped>
-$baseColor : #FC9217;
+$baseColor: #fc9217;
 //基础样式
-.tradingCenterBox{
-  .hoverB{
-    &:hover{
+.tradingCenterBox {
+  .hoverB {
+    &:hover {
       font-weight: 600;
     }
   }
-  .fz12{
+  .fz12 {
     font-size: 12px;
   }
-  .fz13{
+  .fz13 {
     font-size: 13px;
   }
-  .fz14{
-    font-size: 14px;
-  }
-  .fz16{
-    font-size: 16px;
-  }
-  .fz18{
-    font-size: 18px;
-  }
-  .baseColor{
-    color: $baseColor;
-  }
-  .white{
-    color: #ffffff;
-  }
-  .fcB{
-    color: #7D7D7D;
-  }
-  
   .fz14 {
     font-size: 14px;
   }
@@ -902,25 +1003,44 @@ $baseColor : #FC9217;
     color: #ffffff;
   }
   .fcB {
-    color: #7D7D7D;
+    color: #7d7d7d;
+  }
+
+  .fz14 {
+    font-size: 14px;
+  }
+  .fz16 {
+    font-size: 16px;
+  }
+  .fz18 {
+    font-size: 18px;
+  }
+  .baseColor {
+    color: $baseColor;
+  }
+  .white {
+    color: #ffffff;
+  }
+  .fcB {
+    color: #7d7d7d;
   }
   .red {
-    color: #DD6B73;
+    color: #dd6b73;
     &:hover {
-      color: #E14655;
+      color: #e14655;
     }
   }
   .redBg {
     background: rgba(242, 119, 176, 0.33);
   }
   .green {
-    color: #7EC28D;
+    color: #7ec28d;
     &:hover {
       color: #69e083;
     }
   }
   .greenBg {
-    background: rgba(142, 201, 25, 0.21);;
+    background: rgba(142, 201, 25, 0.21);
   }
   a {
     color: #ffffff;
@@ -949,7 +1069,7 @@ $baseColor : #FC9217;
   overflow-x: hidden;
   width: 100%;
   height: 100%;
-  color: #CDCDCD;
+  color: #cdcdcd;
   background: #212121;
   font-size: 12px;
   box-sizing: border-box;
@@ -1023,11 +1143,11 @@ $baseColor : #FC9217;
         i {
           margin-left: 10px;
         }
-        &:hover{
-          background-color: #383636;;
+        &:hover {
+          background-color: #383636;
         }
       }
-      .langList{
+      .langList {
         background-color: #383636;
         width: 110px;
         position: absolute;
@@ -1035,12 +1155,12 @@ $baseColor : #FC9217;
         top: 40px;
         z-index: 10;
         cursor: pointer;
-        .langItem{
+        .langItem {
           line-height: 30px;
           text-align: center;
           border-bottom: 1px solid #1f262c;
         }
-        .langItem.active{
+        .langItem.active {
           color: $baseColor;
           background-color: #212121;
         }
@@ -1054,7 +1174,8 @@ $baseColor : #FC9217;
     display: flex;
 
     //选项卡样式
-    .orderSelect, .dealSelect {
+    .orderSelect,
+    .dealSelect {
       display: flex;
       border-bottom: 1px solid #101010;
       li {
@@ -1079,7 +1200,8 @@ $baseColor : #FC9217;
       }
     }
     //滚动条
-    .newmarket, .tableBox {
+    .newmarket,
+    .tableBox {
       &::-webkit-scrollbar {
         width: 6px;
         height: 10px;
@@ -1088,14 +1210,18 @@ $baseColor : #FC9217;
         display: none;
       }
       &::-webkit-scrollbar-track {
-        background-color: #3D454D;
+        background-color: #3d454d;
       }
       &::-webkit-scrollbar-thumb {
-        background: #5F6266;
+        background: #5f6266;
       }
     }
 
-    .tradMainLT, .tradMainLB, .marketL, .marketR, .tradMainRB {
+    .tradMainLT,
+    .tradMainLB,
+    .marketL,
+    .marketR,
+    .tradMainRB {
       background: #000000;
     }
     .tradMainL {
@@ -1132,7 +1258,7 @@ $baseColor : #FC9217;
                   margin-right: 16px;
                   padding: 0 4px;
                   &:hover {
-                    border-color: #7EC28D;
+                    border-color: #7ec28d;
                   }
                 }
               }
@@ -1156,30 +1282,29 @@ $baseColor : #FC9217;
                 height: 20px;
                 line-height: 20px;
                 text-align: center;
-                background: #8DCC9B;
+                background: #8dcc9b;
                 color: #ffffff;
                 margin-left: 12px;
                 cursor: pointer;
               }
             }
-            .searchTime{
+            .searchTime {
               display: block;
               // width: 38px;
               padding: 0 4px;
               height: 20px;
               line-height: 20px;
               text-align: center;
-              background: #8DCC9B;
+              background: #8dcc9b;
               color: #ffffff;
               margin-left: 12px;
-              cursor:pointer;
+              cursor: pointer;
             }
           }
-          .tableBox{
-            height:170px;
+          .tableBox {
+            height: 170px;
             overflow-y: auto;
           }
-          
         }
         .table {
           width: 100%;
@@ -1195,7 +1320,7 @@ $baseColor : #FC9217;
           // }
           tr {
             &:hover {
-              background: #424C55;
+              background: #424c55;
             }
           }
           td {
@@ -1210,7 +1335,7 @@ $baseColor : #FC9217;
           }
           tr td:nth-last-child(1) {
             .options {
-              color: #7D7D7D;
+              color: #7d7d7d;
               &:hover {
                 color: #ffffff;
               }
@@ -1277,40 +1402,40 @@ $baseColor : #FC9217;
       }
     }
 
-    .tradMainR{
+    .tradMainR {
       width: 530px;
       height: 100%;
       margin-left: 8px;
       display: flex;
       flex-direction: column;
-      .tradMainRT{
+      .tradMainRT {
         flex: 1;
         display: flex;
-        .table{
+        .table {
           width: 100%;
           border-collapse: collapse;
           border-spacing: 0;
-          cursor:pointer;
-          
-          th{
+          cursor: pointer;
+
+          th {
             padding: 2px 10px;
             font-weight: 500;
           }
           // th:nth-child(3){
           //   padding-right: 12px;
           // }
-          tr{
-            &:hover{
-              background: #1B1B1B;
+          tr {
+            &:hover {
+              background: #1b1b1b;
             }
           }
-          td{
+          td {
             box-sizing: border-box;
             padding: 2px 0px;
             line-height: 12px;
             position: relative;
-            span{
-              z-index:2;
+            span {
+              z-index: 2;
               position: relative;
             }
             // th:nth-child(3){
@@ -1318,24 +1443,24 @@ $baseColor : #FC9217;
             // }
             tr {
               &:hover {
-                background: #1B1B1B;
+                background: #1b1b1b;
               }
             }
-            .zhuzhuang{
+            .zhuzhuang {
               position: absolute;
               top: 1px;
               bottom: 0;
               right: 0;
             }
           }
-          tr td:nth-child(1){
+          tr td:nth-child(1) {
             padding-left: 12px;
           }
-          tr td:nth-child(3){
+          tr td:nth-child(3) {
             padding-right: 6px;
           }
         }
-        
+
         .marketL {
           height: 100%;
           width: 346px;
@@ -1373,7 +1498,7 @@ $baseColor : #FC9217;
                 i {
                   margin-left: 4px;
                 }
-                .flortList{
+                .flortList {
                   position: absolute;
                   z-index: 10;
                   right: -1px;
@@ -1381,19 +1506,19 @@ $baseColor : #FC9217;
                   top: 18px;
                   border: 1px solid #858282;
                   cursor: pointer;
-                  .flortItem{
+                  .flortItem {
                     padding: 5px 0px;
                     border-bottom: 1px solid #858282;
                     background: #000000;
                     text-align: center;
-                    &:hover{
+                    &:hover {
                       background: #383636;
                     }
-                    &:nth-last-child(1){
+                    &:nth-last-child(1) {
                       border: 0;
                     }
                   }
-                  .flortItem.active{
+                  .flortItem.active {
                     color: $baseColor;
                   }
                 }
@@ -1411,7 +1536,6 @@ $baseColor : #FC9217;
               tr td:nth-child(3) {
                 padding-right: 12px;
               }
-
             }
             .tableBox.toHeight0 {
               height: 0;
@@ -1424,7 +1548,7 @@ $baseColor : #FC9217;
               justify-content: space-between;
               align-items: center;
               height: 20px;
-              background: #56585B;
+              background: #56585b;
               padding: 0 12px;
               .depthL {
                 i {
@@ -1473,30 +1597,28 @@ $baseColor : #FC9217;
             overflow-y: auto;
           }
         }
-        
-        
       }
-      .tradMainRB{
+      .tradMainRB {
         height: 254px;
         margin-top: 10px;
         display: flex;
         flex-direction: column;
-        
-        .dealbox{
+
+        .dealbox {
           flex: 1;
           padding: 0 14px;
           display: flex;
           justify-content: space-between;
-          .dealItem{
+          .dealItem {
             width: 240px;
-            .dealT{
+            .dealT {
               height: 28px;
               line-height: 28px;
-              i{
+              i {
                 margin-right: 10px;
               }
             }
-            
+
             .inputItem {
               height: 32px;
               width: 100%;
@@ -1509,10 +1631,11 @@ $baseColor : #FC9217;
                 width: 180px;
                 height: 32px;
                 float: right;
-                background: #424C55;
+                background: #424c55;
                 border: 0;
-                color: #CDCDCD;
-                &:focus + .legalMoney, &:focus + .most {
+                color: #cdcdcd;
+                &:focus + .legalMoney,
+                &:focus + .most {
                   display: block;
                 }
                 &:hover {
@@ -1593,17 +1716,17 @@ $baseColor : #FC9217;
                 }
               }
             }
-            
-            .numBox{
+
+            .numBox {
               width: 100%;
               overflow: hidden;
-              .numList{
+              .numList {
                 float: right;
                 width: 180px;
                 display: flex;
                 justify-content: space-between;
                 margin: 6px 0;
-                .options{
+                .options {
                   width: 37px;
                   height: 20px;
                   line-height: 20px;
@@ -1611,7 +1734,7 @@ $baseColor : #FC9217;
                   border: 1px dashed #424c55;
                   color: #808385;
                   text-align: center;
-                  &:hover{
+                  &:hover {
                     color: $baseColor;
                     border-color: $baseColor;
                   }
@@ -1631,63 +1754,58 @@ $baseColor : #FC9217;
               border: 0;
             }
             .buy {
-              background: #7EC28D;
+              background: #7ec28d;
               &:hover {
                 background: #69e083;
               }
             }
             .sell {
-              background: #DD6B73;
+              background: #dd6b73;
               &:hover {
-                background: #FF9299;
+                background: #ff9299;
               }
             }
-            
           }
         }
       }
     }
   }
 }
-    
-
-  
 </style>
 
 <style lang="scss">
-  .tradingCenterBox {
-    .el-checkbox__inner {
-      background: #050505;
+.tradingCenterBox {
+  .el-checkbox__inner {
+    background: #050505;
+  }
+
+  .timeBox .el-date-editor.el-input {
+    &:hover .el-input__prefix {
+      display: none;
     }
-
-    .timeBox .el-date-editor.el-input {
-      &:hover .el-input__prefix {
-        display: none;
-      }
-      width: 94px;
-      font-size: 12px;
-      .el-input__prefix {
-        left: 68px;
-        i {
-          line-height: 20px;
-        }
-      }
-      input {
-        padding-left: 8px;
-        padding-right: 12px;
-        background: #050505;
-        height: 20px;
+    width: 94px;
+    font-size: 12px;
+    .el-input__prefix {
+      left: 68px;
+      i {
         line-height: 20px;
-        border-radius: 0;
-
       }
-      .el-input__suffix {
-        right: 0px;
-        i {
-          line-height: 20px;
-        }
+    }
+    input {
+      padding-left: 8px;
+      padding-right: 12px;
+      background: #050505;
+      height: 20px;
+      line-height: 20px;
+      border-radius: 0;
+    }
+    .el-input__suffix {
+      right: 0px;
+      i {
+        line-height: 20px;
       }
     }
   }
+}
 </style>
 

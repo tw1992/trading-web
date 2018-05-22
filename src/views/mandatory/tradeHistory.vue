@@ -1,7 +1,7 @@
 <template>
   <div class="historyBox">
     <p class="title">
-      {{$t('route.orderHistory')}}
+      {{$t('route.tradeHistory')}}
     </p>
     <div class="searchBox">
       <div class="searchItem">
@@ -157,7 +157,7 @@ export default {
         if(postData){
           postData.status = 1;
         }
-        axios.get('/api/orders',postData?postData:{status:1}).then(function(res){  
+        axios.get('/api/orders/trades',postData?postData:{status:1}).then(function(res){  
             console.log(res);
             _this.openOrder = res.data;
             _this.openOrder.map(function(item){
@@ -171,6 +171,17 @@ export default {
         }).catch(function (res){  
             console.log(res);
         }); 
+      },
+      searchClick() {
+          var postData = {};
+          if(this.time.length>0){
+              postData.from = this.time[0];
+              postData.to = this.time[1];
+          }
+          postData.market = this.trade;
+          postData.coin = this.currency;
+          postData.side = this.direction;
+          this.getRecord(postData)
       },
       getMarketList(marketList) {
         this.tradeList = marketList;

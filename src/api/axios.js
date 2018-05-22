@@ -191,7 +191,9 @@ var fetch = {
     },
     get: (url, params)=>{
         return new Promise((resolve, reject) => {
-            axios.get(url, params)
+            axios.get(url, {
+                params: params
+            })
               .then(response => {
                 resolve(response.data);
               }, err => {

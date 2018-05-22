@@ -10,6 +10,7 @@
           v-model="time"
           size="mini"
           type="daterange"
+          value-format="yyyy-MM-dd"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
@@ -49,7 +50,7 @@
         </el-select>
       </div>
       <div class="searchItem">
-        <el-button type="primary" size="mini">{{$t('button.search')}}</el-button>
+        <el-button type="primary" size="mini" @click="searchClick()">{{$t('button.search')}}</el-button>
         <el-button size="mini" @click="reset()">{{$t('button.reset')}}</el-button>
       </div>
       <div class="searchItem">
@@ -286,6 +287,7 @@ export default {
     methods: {
       getEntrusted(postData){
         var _this = this;
+        console.log(postData)
         axios.get('/api/orders',postData?postData:{}).then(function(res){  
             console.log(res);
             _this.openOrder = res.data;
@@ -300,6 +302,17 @@ export default {
         }).catch(function (res){  
             console.log(res);
         }); 
+      },
+      searchClick() {
+          var postData = {};
+          if(this.time.length>0){
+              postData.from = this.time[0];
+              postData.to = this.time[1];
+          }
+          postData.market = this.trade;
+          postData.coin = this.currency;
+          postData.side = this.direction;
+          this.getEntrusted(postData)
       },
       // getTrades() {
       //   var _this = this;

@@ -618,12 +618,6 @@ export default {
       swiper,
       swiperSlide
     },
-    computed: {
-      ...mapGetters([
-          'marketList',
-          'pairsList'
-      ])
-    },
     filters: {
       toFixed: ([value,num]) => {
         if (value != 0 && !value) return ''
@@ -645,6 +639,10 @@ export default {
       },
     },
     computed: {
+      ...mapGetters([
+          'marketList',
+          'pairsList'
+      ]),
       BTCitems: function() {
         var _search = this.search.toLocaleLowerCase();
         var _this = this;

@@ -72,7 +72,7 @@
             <th>{{$t('funds.operation')}}</th>
           </tr>
           
-          <tr v-for="(item,idx) in balances" :key="idx">
+          <tr v-for="(item,idx) in balancesitems" :key="idx">
             <td class="firstCol">{{item.goods}}</td>
             <td>{{item.sum}}</td>
             <td>{{item.usable}}</td>
@@ -170,7 +170,29 @@ export default {
         'marketList',
         'coinList',
         'pairsList'
-    ])
+    ]),
+    balancesitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        if (_search) {
+          return this.balances.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              if(key == 'goods'||key == 'sum'||key == 'usable'||key == 'freeze'||key == 'appraisement'){
+                return String(product[key]).toLowerCase().indexOf(_search) > -1
+              }
+              
+            })
+          })
+        }
+        if(this.hidesmall){
+          return this.balances.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return product.appraisement*1 > 0.001
+            })
+          })
+        }
+        return this.balances;
+      },
   },
   created() {
     this.getAccounts();
