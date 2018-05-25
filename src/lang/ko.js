@@ -147,6 +147,7 @@ export default {
       SMStips: "提现,修改密码及安全设置时,用以收取短信验证",
       APItips: "创建API密钥可以让您借助第三方网站或移动应用使用币加的行情查询，实时交易等服务。请参阅API文档了解如何使用您的API Keys",
       enable: "启用",
+      close: "关闭",
       GoogleAuthentication: "谷歌验证",
       Googletips: "提现,修改密码及安全设置时,用以收取短信验证",
       lastlogin: "最近登录",

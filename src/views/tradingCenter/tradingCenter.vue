@@ -4,7 +4,7 @@
       <router-link to="/Home" class="logoBox">
         <img src="../../assets/img/logo.png" alt="logo">
       </router-link>
-      <p class="time">2018-04-01 12:00:04</p>
+      <p class="time">{{nowTime}}</p>
       <div class="block"></div>
       <ul class="fz12 marketList">
         <li>{{$t('home.lastPrice')}}<span style="margin:0 2px;" class="fb16 red">{{[nowPairs.close,2] | toFixed}}</span>≈ 44851.40 CNY</li>
@@ -353,14 +353,14 @@
             <div class="marketLTop">
               <ul class="selectList">
                 <li>
-                  <div class="options" href="javascript:;" :class="marketSelect == 1?'tableActive':''"
+                  <div class="options buysellbtn" href="javascript:;" :class="marketSelect == 1?'tableActive':''"
                        @click="marketSelect = 1"></div>
                 </li>
                 <li>
-                  <div class="options" :class="marketSelect == 2?'tableActive':''" @click="marketSelect = 2"></div>
+                  <div class="options sellbtn" :class="marketSelect == 2?'tableActive':''" @click="marketSelect = 2"></div>
                 </li>
                 <li>
-                  <div class="options" :class="marketSelect == 3?'tableActive':''" @click="marketSelect = 3"></div>
+                  <div class="options buybtn" :class="marketSelect == 3?'tableActive':''" @click="marketSelect = 3"></div>
                 </li>
               </ul>
               <div class="flort">
@@ -614,20 +614,28 @@ export default {
       buyPrice: "",
       buyNumber: "",
       sellPrice: "",
-      sellNumber: ""
+      sellNumber: "",
+      nowTime: "",
     };
   },
   beforeMount() {
+    if(this.email){
+        this.getOpenOrder();
+        this.getHistoryOrder();
+        this.getHistorytrading();
+        this.getAccounts();
+    }
     this.coin = this.$route.params.coin;
     this.market = this.$route.params.market;
     this.symbol = `${this.coin}/${this.market}`;
     this.onReady();
-    this.getOpenOrder();
-    this.getHistoryOrder();
-    this.getAccounts();
+    
     console.log(this.symbol);
-    var num = calc.add(0.00000001, 0.00000002);
-    console.log(num.toFixed(8));
+    var that = this;
+    that.nowTime = that.formatDateTime(new Date(),"yyyy-MM-dd HH:mm:ss");
+    setInterval(function(){
+        that.nowTime = that.formatDateTime(new Date(),"yyyy-MM-dd HH:mm:ss");
+    },1000)
   },
   mounted() {
     const that = this;
@@ -918,7 +926,7 @@ export default {
       //语言切换
       this.$i18n.locale = lang;
       this.$store.dispatch("setLanguage", lang);
-    }
+    },
   },
   filters: {
     toFixed: ([value, num]) => {
@@ -1063,6 +1071,15 @@ $baseColor: #fc9217;
 }
 
 .tradingCenterBox {
+  .buysellbtn{
+      background: url("../../assets/img/buysell_03.jpg") no-repeat center;
+  }
+  .buybtn{
+      background: url("../../assets/img/buy.jpg") no-repeat center;
+  }
+  .sellbtn{
+      background: url("../../assets/img/sell.jpg") no-repeat center;
+  }
   .options {
     cursor: pointer;
   }

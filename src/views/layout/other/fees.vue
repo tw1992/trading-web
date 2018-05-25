@@ -87,6 +87,7 @@ export default {
 .feesBox{
     width: 1040px;
     margin: auto;
+    padding-bottom: 60px;
     .feesTitle{
         font-size: 24px;
         height: 80px;

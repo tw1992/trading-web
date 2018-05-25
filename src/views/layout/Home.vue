@@ -38,12 +38,13 @@
       <div class="block" v-show="!hasBorder"></div>
       <el-tabs class="" :type="hasBorder?'card':''" :class="{'tabClass':!hasBorder}" v-model="activeName" @tab-click="handleClick">
         
-        <el-tab-pane>
+        <el-tab-pane name="star">
           <span slot="label"><i class="el-icon-star-on"></i> {{$t('home.favorites')}}</span>
           <el-row class="tabContent">
             <el-table
-            :data="collectList"
+            :data="collectitems"
             stripe
+            ref="starTable"
             @row-click="linkToGoods"
             style="width: 100%">
             <span slot="empty">{{$t('home.noData')}}</span>
@@ -51,7 +52,7 @@
               align="center"
               width="80">
               <template slot-scope="scope">
-                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+                <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
               </template>
             </el-table-column>
             <el-table-column
@@ -70,6 +71,7 @@
             <el-table-column
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
@@ -79,18 +81,21 @@
               prop="high"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="low"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="number"
               align="right"
               sortable
+              width="186"
               class-name="lastList"
               :label="'24h'+$t('home.volume')">
             </el-table-column>
@@ -104,6 +109,7 @@
             <el-table
             :data="BTCitems"
             stripe
+            ref="BTCTable"
             @row-click="linkToGoods"
             style="width: 100%">
             <span slot="empty">{{$t('home.noData')}}</span>
@@ -111,7 +117,7 @@
               align="center"
               width="80">
               <template slot-scope="scope">
-                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+                <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
               </template>
             </el-table-column>
             <el-table-column
@@ -130,6 +136,7 @@
             <el-table-column
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
@@ -139,18 +146,21 @@
               prop="high"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="low"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="number"
               align="right"
               sortable
+              width="186"
               class-name="lastList"
               :label="'24h'+$t('home.volume')">
             </el-table-column>
@@ -164,6 +174,7 @@
             <el-table
             :data="ETHitems"
             stripe
+            ref="ETHTable"
             @row-click="linkToGoods"
             style="width: 1198px">
             <span slot="empty">{{$t('home.noData')}}</span>
@@ -171,7 +182,7 @@
               align="center"
               width="80">
               <template slot-scope="scope">
-                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+                <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
               </template>
             </el-table-column>
             <el-table-column
@@ -190,6 +201,7 @@
             <el-table-column
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
@@ -199,18 +211,21 @@
               prop="high"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="low"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="number"
               align="right"
               sortable
+              width="186"
               class-name="lastList"
               :label="'24h'+$t('home.volume')">
             </el-table-column>
@@ -223,6 +238,7 @@
           <el-row class="tabContent">
             <el-table
             :data="OMGitems"
+            ref="OMGTable"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
@@ -231,7 +247,7 @@
               align="center"
               width="80">
               <template slot-scope="scope">
-                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+                <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
               </template>
             </el-table-column>
             <el-table-column
@@ -250,6 +266,7 @@
             <el-table-column
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
@@ -259,18 +276,21 @@
               prop="high"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="low"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="number"
               align="right"
               sortable
+              width="186"
               class-name="lastList"
               :label="'24h'+$t('home.volume')">
             </el-table-column>
@@ -283,6 +303,7 @@
           <el-row class="tabContent">
             <el-table
             :data="DOGEitems"
+            ref="DOGETable"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
@@ -291,7 +312,7 @@
               align="center"
               width="80">
               <template slot-scope="scope">
-                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+                <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
               </template>
             </el-table-column>
             <el-table-column
@@ -310,6 +331,7 @@
             <el-table-column
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
@@ -319,18 +341,21 @@
               prop="high"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="low"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="number"
               align="right"
               sortable
+              width="186"
               class-name="lastList"
               :label="'24h'+$t('home.volume')">
             </el-table-column>
@@ -343,6 +368,7 @@
           <el-row class="tabContent">
             <el-table
             :data="WWWitems"
+            ref="WWWTable"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
@@ -351,7 +377,7 @@
               align="center"
               width="80">
               <template slot-scope="scope">
-                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+                <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
               </template>
             </el-table-column>
             <el-table-column
@@ -370,6 +396,7 @@
             <el-table-column
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
@@ -379,18 +406,21 @@
               prop="high"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="low"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="number"
               align="right"
               sortable
+              width="186"
               class-name="lastList"
               :label="'24h'+$t('home.volume')">
             </el-table-column>
@@ -403,6 +433,7 @@
           <el-row class="tabContent">
             <el-table
             :data="RNGitems"
+            ref="RNGTable"
             stripe
             @row-click="linkToGoods"
             style="width: 100%">
@@ -411,7 +442,7 @@
               align="center"
               width="80">
               <template slot-scope="scope">
-                <i @click.stop="changeStar(scope.row.star)" class="el-icon-star-on" :class="scope.row.star=='off'?'star-off':'star-on'"></i>
+                <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
               </template>
             </el-table-column>
             <el-table-column
@@ -430,6 +461,7 @@
             <el-table-column
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.change')">
               <template slot-scope="scope">
                 <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
@@ -439,18 +471,21 @@
               prop="high"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.high')">
             </el-table-column>
             <el-table-column
               prop="low"
               align="right"
               sortable
+              width="188"
               :label="'24h'+$t('home.low')">
             </el-table-column>
             <el-table-column
               prop="number"
               align="right"
               sortable
+              width="186"
               class-name="lastList"
               :label="'24h'+$t('home.volume')">
             </el-table-column>
@@ -513,11 +548,13 @@ export default {
         DOGEList: [],
         WWWList: [],
         RNGList: [],
+        allList: [],
+        index: 0,
       };
     },
     methods: {
       handleClick(tab, event) {
-        //console.log(tab, event);
+        //console.log(tab.$el.id);
       },
       sliceArray(array, size){
         var result = [];
@@ -535,8 +572,15 @@ export default {
         console.log(row.name);
         this.$router.push('/tradingCenter/'+row.symbol)
       },
-      changeStar(star){
-        console.log(star)
+      changeStar(name,star){
+        console.log(name,star)
+        if(star){
+            var idx = this.localList.indexOf(name);
+            this.localList.splice(idx, 1);
+        }else{
+            this.localList.push(name);
+        }
+        console.log(this.localList)
       },
       handleScroll(){
         var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
@@ -581,6 +625,8 @@ export default {
           that.DOGEList = [];
           that.WWWList = [];
           that.RNGList = [];
+          that.allList = res;
+        //   that.collectList = [];
           res.forEach(item => {
             if(item.market_name == "BTC"){
               that.BTCList.push(item);
@@ -595,6 +641,9 @@ export default {
             }else if(item.market_name == "RNG"){
               that.RNGList.push(item);
             }
+            // if(that.localList.indexOf(item.symbol)>-1){
+            //     that.collectList.push(item);
+            // }
           })
         })
       },
@@ -617,6 +666,11 @@ export default {
     components: {
       swiper,
       swiperSlide
+    },
+    watch: {
+        localList: function() {
+            localStorage.localList = JSON.stringify(this.localList);
+        }
     },
     filters: {
       toFixed: ([value,num]) => {
@@ -645,20 +699,20 @@ export default {
       ]),
       BTCitems: function() {
         var _search = this.search.toLocaleLowerCase();
+        var starList = this.localList;
         var _this = this;
-        this.BTCList.map(it => {
+        this.BTCList.map((it,idx) => {
           it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
           if(_this.localList.indexOf(it.symbol) != -1){
-            it.star = 'on'
-            _this.collectList.push(it);
+            _this.$set(_this.$data.BTCList[idx], 'star', true);
           }else{
-            it.star = 'off'
+            _this.$set(_this.$data.BTCList[idx], 'star', false);
           }
         })
         if (_search) {
           return this.BTCList.filter(function(product) {
             return Object.keys(product).some(function(key) {
-              return String(product[key]).toLowerCase().indexOf(_search) > -1
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
             })
           })
         }
@@ -670,15 +724,15 @@ export default {
         this.ETHList.map(it => {
           it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
           if(_this.localList.indexOf(it.symbol) != -1){
-            it.star = 'on'
+            it.star = true;
           }else{
-            it.star = 'off'
+            it.star = false
           }
         })
         if (_search) {
           return this.ETHList.filter(function(product) {
             return Object.keys(product).some(function(key) {
-              return String(product[key]).toLowerCase().indexOf(_search) > -1
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
             })
           })
         }
@@ -689,11 +743,16 @@ export default {
         var _this = this;
         this.OMGList.map(it => {
           it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+          }else{
+            it.star = false
+          }
         })
         if (_search) {
           return this.OMGList.filter(function(product) {
             return Object.keys(product).some(function(key) {
-              return String(product[key]).toLowerCase().indexOf(_search) > -1
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
             })
           })
         }
@@ -704,11 +763,16 @@ export default {
         var _this = this;
         this.DOGEList.map(it => {
           it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+          }else{
+            it.star = false
+          }
         })
         if (_search) {
           return this.DOGEList.filter(function(product) {
             return Object.keys(product).some(function(key) {
-              return String(product[key]).toLowerCase().indexOf(_search) > -1
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
             })
           })
         }
@@ -719,11 +783,16 @@ export default {
         var _this = this;
         this.WWWList.map(it => {
           it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+          }else{
+            it.star = false
+          }
         })
         if (_search) {
           return this.WWWList.filter(function(product) {
             return Object.keys(product).some(function(key) {
-              return String(product[key]).toLowerCase().indexOf(_search) > -1
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
             })
           })
         }
@@ -734,11 +803,16 @@ export default {
         var _this = this;
         this.RNGList.map(it => {
           it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+          }else{
+            it.star = false
+          }
         })
         if (_search) {
           return this.RNGList.filter(function(product) {
             return Object.keys(product).some(function(key) {
-              return String(product[key]).toLowerCase().indexOf(_search) > -1
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
             })
           })
         }
@@ -747,21 +821,28 @@ export default {
       collectitems: function() {
         var _search = this.search.toLocaleLowerCase();
         var _this = this;
-        this.RNGList.map(it => {
+        var collectList = [];
+        this.allList.map(it => {
           it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+            collectList.push(it)
+          }
         })
         if (_search) {
-          return this.RNGList.filter(function(product) {
+          return collectList.filter(function(product) {
             return Object.keys(product).some(function(key) {
-              return String(product[key]).toLowerCase().indexOf(_search) > -1
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
             })
           })
         }
-        return this.RNGList;
+        return collectList;
       },
     },
     created() {
       this.getNewsList();
+    //   localStorage.localList =  JSON.stringify([]);
+      this.localList = JSON.parse(localStorage.localList);
     },
     beforeMount () {
       window.addEventListener('scroll', this.handleScroll);
@@ -812,12 +893,16 @@ export default {
       }
       .swiper-slide{
         display: flex;
-        justify-content: space-between;
+        // justify-content: space-between;
         align-items: center;
         .newBox{
           position: relative;
           width: 226px;
           height: 180px;
+          margin-right:90px;
+          &:nth-last-child(1){
+            margin-right:0;
+          }
           img{
             width: 100%;
             height: 100%;

@@ -42,13 +42,14 @@
                         {{$t('user.SMStips')}}
                         </p>
                     </div>
-                    <div class="boxR" style="padding-right: 30px;">
+                    <div class="boxR" style="padding-right:40px;">
                         <div class="switchBtn" @click="switchClick('phoneFlag')"></div>
                         <el-switch
                         v-model="phoneFlag"
                         active-color="#F73946"
                         inactive-color="#3ABC56">
                         </el-switch>
+                        <!-- <el-button type="primary" @click="switchClick('phoneFlag')">{{phoneFlag?$t('user.close'):$t('user.enable')}}</el-button> -->
                     </div>
                 </div>
             </div>
@@ -77,7 +78,7 @@
                                 {{$t('user.Googletips')}}
                             </p>
                         </div>
-                        <div class="boxR" style="padding-right: 30px;">
+                        <div class="boxR" style="padding-right:40px;">
                             <div class="switchBtn" @click="switchClick('googleFlag')"></div>
                             <el-switch
                             @change="googleClick"
@@ -85,10 +86,43 @@
                             active-color="#F73946"
                             inactive-color="#3ABC56">
                             </el-switch>
+                            <!-- <el-button type="primary" @click="switchClick('googleFlag')">{{googleFlag?$t('user.close'):$t('user.enable')}}</el-button> -->
                         </div>
                 </div>
             </div>
         </div>
+
+        <div class="tableBox">
+                <p class="tabTip">{{$t('user.distribution')}}</p>
+                <el-table
+                :data="tableData"
+                class="latelyTab"
+                style="width: 100%">
+                <span slot="empty">{{$t('home.noData')}}</span>
+                <el-table-column
+                prop="time"
+                :label="$t('user.date')"
+                class-name="firstCol">
+                </el-table-column>
+                <el-table-column
+                prop="ip"
+                :label="$t('tradingCenter.type')">
+                </el-table-column>
+                <el-table-column
+                prop="time"
+                :label="$t('tradingCenter.coin')">
+                </el-table-column>
+                <el-table-column
+                prop="address"
+                :label="$t('tradingCenter.amount')">
+                </el-table-column>
+                <el-table-column
+                prop="address"
+                :label="$t('user.note')">
+                </el-table-column>
+            </el-table>
+        </div>
+
         <div class="tableBox">
                 <p class="tabTip">{{$t('user.lastlogin')}}</p>
                 <el-table

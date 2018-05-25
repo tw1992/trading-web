@@ -147,6 +147,7 @@ export default {
     SMStips: "提现,修改密码及安全设置时,用以收取短信验证",
     APItips: "创建API密钥可以让您借助第三方网站或移动应用使用币加的行情查询，实时交易等服务。请参阅API文档了解如何使用您的API Keys",
     enable: "启用",
+    close: "关闭",
     GoogleAuthentication: "谷歌验证",
     Googletips: "提现,修改密码及安全设置时,用以收取短信验证",
     lastlogin: "最近登录",
@@ -161,7 +162,16 @@ export default {
     useGoogleAPP2: "扫描该二维码",
     Resetting: "通过人工客服重置你的谷歌验证需提交工单，可能需要至少7天时间来处理。",
     key: "16位密钥",
+    distribution: "分发记录",
+    note: "备注",
     
+  },
+  autonym: {
+      personal: "实名认证",
+      name: "姓名",
+      cardType: "证件类型",
+      idCard: "证件号",
+      cardPrcture: "",
   },
   login: {
     login: "登录",

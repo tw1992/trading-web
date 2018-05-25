@@ -148,6 +148,7 @@ export default {
     SMStips: "Used for withdrawals and security modifications",
     APItips: "Creating API private key can get you access to market, real-time trading services on Binance via a third-party website or mobile APP.",
     enable: "Enable",
+    close: "Close",
     GoogleAuthentication: "Google Authentication",
     Googletips: "Used for withdrawals and security modifications",
     lastlogin: "Last login",
@@ -162,8 +163,13 @@ export default {
     useGoogleAPP2: "APP to scan this QR code",
     Resetting: "Resetting your Google Authentication requires opening a support ticket and takes at least 7 days to process.",
     key: "Key",
-    
+    distribution: "Distribution History",
+    note: "Note",
 
+  },
+  autonym: {
+      personal: "Personal",
+      
   },
   login: {
     login: "Login",

@@ -11,8 +11,8 @@
             </div>
 
             <div class="step1 stepItem" v-show="steps == 1">
-                <img class="logo" src="../../assets/img/appstore.png">
-                <img class="logo" src="../../assets/img/googlePlay.png">
+                <a target="_block" href="https://itunes.apple.com/cn/app/google-authenticator/id388497605?mt=8"><img class="logo" src="../../assets/img/appstore.png"></a>
+                <a target="_block" href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"><img class="logo" src="../../assets/img/googlePlay.png"></a>
                 <el-button type="primary" size="mini" class="btnBase" @click="steps++">{{$t('user.nextStep')}}</el-button>
             </div>
             <div class="step2 stepItem" v-show="steps == 2">
@@ -20,7 +20,7 @@
                 <p class="theKey">{{this.googleQR}}</p>
                 <div class="yardBox">
                     <!-- <img src="../../assets/img/pic.jpg" class="yard"> -->
-                    <vue-qr :text="googleQR" :margin="0" :size="150"></vue-qr>
+                    <vue-qr :text="qrUrl" :margin="0" :size="150"></vue-qr>
                     <p class="tips">{{$t('user.useGoogleAPP1')}}</p>
                     <p class="tips">{{$t('user.useGoogleAPP2')}}</p>
                 </div>
@@ -35,6 +35,7 @@
                         <el-input
                         class="inputBase"
                         placeholder=""
+                        :disabled="true"
                         v-model="googleForm.googleAuthenticatorSecret">
                         </el-input>
                     </el-form-item>
@@ -80,6 +81,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import VueQr from 'vue-qr'
 import axios from '../../api/axios'
 export default {
@@ -108,7 +110,7 @@ export default {
         },
         finishFlag: false,
         googleQR: '',
-
+        qrUrl: '',
     };
   },
   methods: {
@@ -120,8 +122,6 @@ export default {
                 console.log(res);
                 _this.finishFlag = true;
                 _this.$store.dispatch('getUserInfo');
-                // _this.googleQR = res.data.googleAuthenticatorSecret;
-                // _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
             }).catch(function (res){  
                 console.log(res);
             }); 
@@ -138,6 +138,11 @@ export default {
       }
     },
     components: {VueQr},
+    computed: {
+        ...mapGetters([
+            'email',
+        ])
+    },
     created() {
         var _this = this;
 
@@ -145,6 +150,7 @@ export default {
             console.log(res);
             _this.googleQR = res.data.googleAuthenticatorSecret;
             _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
+            _this.qrUrl = `otpauth://totp/${_this.email}?secret=${_this.googleQR}&issuer=BIEX.IO`
         }).catch(function (res){  
             console.log(res);
         }); 

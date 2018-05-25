@@ -73,6 +73,8 @@ export default {
 <style lang='scss' scoped>
 .termsBox{
     padding: 0 100px 100px 100px;
+    width: 1200px;
+    margin: 0 auto;
     .agreementTitle{
         font-size: 30px;
         color: #272f35;

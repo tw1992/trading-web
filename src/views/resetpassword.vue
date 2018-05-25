@@ -28,7 +28,7 @@
         </div>
         <div class="formB">
           <el-form-item>
-            <el-button type="primary" class="submitBtn" @click="submitForm('loginForm')">确认</el-button>
+            <el-button type="primary" class="submitBtn" @click="resetPwd()">确认</el-button>
           </el-form-item>
           </div>
       </el-form>
@@ -39,16 +39,27 @@
 
 <script>
 import loginFooter from './components/loginFooter'
+import { isPoneAvailable,isPassword } from '../utils/common'
+import axios from '../api/axios'
 export default {
   data() {
-      var validateEmail = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入邮箱'));
+      var validatePass = (rule, value, callback) => {
+        if (!isPassword(value)) {
+          callback(new Error('请输入正确的密码'));
         } else {
-          var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
-          if (!reg.test(value)) {
-            callback(new Error('请输入正确的邮箱'));
+          if (this.resetForm.pass2 !== '') {
+            this.$refs.resetForm.validateField('pass2');
           }
+          callback();
+        }
+      };
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.resetForm.pass1) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
         }
       };
       return {
@@ -57,23 +68,31 @@ export default {
           pass2:""
         },
         rules:{
-          email:[{ validator: validateEmail, trigger: 'blur' }],
-          pass1:[{ required: true, message: '请输入密码', trigger: 'blur' },],
-          pass2:[{ required: true, message: '请输入密码', trigger: 'blur' },],
+          pass1:[{ validator: validatePass, trigger: 'blur' }],
+          pass2:[{ validator: validatePass2, trigger: 'blur' }],
         },
       };
     },
     methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
+      resetPwd() {                     
+        var _this = this; 
+        this.$refs['resetForm'].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            axios.post('/api/auth/password_reset/',{
+                password: this.resetForm.pass1,
+            }).then(function(res){  
+                
+                console.log(res)
+                _this.$router.push('/login')
+            }).catch(function (res){  
+                console.log(res);
+            }); 
           } else {
             console.log('error submit!!');
             return false;
           }
         });
-      },
+      }
     },
     components: {
       loginFooter

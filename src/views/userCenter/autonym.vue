@@ -1,6 +1,6 @@
 <template>
     <div class="autonymBox">
-        <p class="topTip">安全建议：检查访问网址、开启二次验证、不要给他人转账和透露密码信息等。</p>
+        <p class="topTip">{{$t('user.recommendations')}}</p>
         <div class="autTop">
             <router-link to="/userCenter/account"><i class="el-icon-d-arrow-left"></i></router-link>
             <p class="topTitle">实名认证</p>
@@ -221,6 +221,8 @@ export default {
         }
       };
     return {
+        supportWebp: false,   // 是否支持webp
+        bucketHost: '',   // 上传图片的外链域名
         countryUrl:"http://192.168.133.190:8080/static/country",
         countryList:[],
         country: '',
@@ -254,7 +256,6 @@ export default {
           email:[{ validator: validateEmail, trigger: 'blur' }],
           pass:[{  message: '请输入密码', trigger: 'blur' },]
         },
-        domain:'',
         finishFlag: false,
         postData: {
             token: ''
@@ -275,13 +276,31 @@ export default {
           this.$router.push("/userCenter/account")
       },
       handleAvatarSuccess1(res, file) {
-        this.front = URL.createObjectURL(file.raw);
+        //this.front = URL.createObjectURL(file.raw);
+        let key = res.key
+        let name = file.name
+        let prefix = this.supportWebp ? 'webp/' : ''
+        let img = `http://${this.bucketHost}/${prefix}${encodeURI(key)}`
+        this.front = img
+        console.log(img)
       },
       handleAvatarSuccess2(res, file) {
-        this.back = URL.createObjectURL(file.raw);
+        //this.back = URL.createObjectURL(file.raw);
+        let key = res.key
+        let name = file.name
+        let prefix = this.supportWebp ? 'webp/' : ''
+        let img = `http://${this.bucketHost}/${prefix}${encodeURI(key)}`
+        this.back = img
+        console.log(img)
       },
       handleAvatarSuccess3(res, file) {
-        this.image = URL.createObjectURL(file.raw);
+        //this.image = URL.createObjectURL(file.raw);
+        let key = res.key
+        let name = file.name
+        let prefix = this.supportWebp ? 'webp/' : ''
+        let img = `http://${this.bucketHost}/${prefix}${encodeURI(key)}`
+        this.image = img
+        console.log(img)
       },
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg'||'image/png';
@@ -311,7 +330,7 @@ export default {
                 }
                 axios.post('/api/user/kyc',IDdata).then(function(res){  
                     console.log(res);
-                    _this.domain = res.data.domain;
+                    _this.bucketHost = res.data.domain;
                     _this.postData.token = res.data.token;
                 }).catch(function (res){  
                     console.log(res);
@@ -347,7 +366,7 @@ export default {
                 }
                 axios.post('/api/user/kyc',passportdata).then(function(res){  
                     console.log(res);
-                    _this.domain = res.data.domain;
+                    _this.bucketHost = res.data.domain;
                     _this.postData.token = res.data.token;
                 }).catch(function (res){  
                     console.log(res);
@@ -412,7 +431,7 @@ export default {
         var _this = this;
         axios.get('/api/qiniu_upload_token').then(function(res){  
             console.log(res);
-            _this.domain = res.data.domain;
+            _this.bucketHost = res.data.domain;
             _this.postData.token = res.data.token;
         }).catch(function (res){  
             console.log(res);

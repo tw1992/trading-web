@@ -1,9 +1,9 @@
 <template>
   <div class="bgBox">
     <div class="loginBox">
-      <div class="logoBox">
+      <router-link to="/home" class="logoBox">
         <img class="logo" src="../assets/img/logo.png" alt="logo">
-      </div>
+      </router-link>
       <el-form :model="loginForm" size="small" :rules="rules" ref="loginForm" class="loginForm formbase">
         <div class="formT">
           <div class="formTitle">
@@ -20,6 +20,7 @@
             <el-input
               :placeholder="$t('login.password')"
               type="password"
+              @keyup.enter.native="submitForm('loginForm')"
               v-model="loginForm.password">
               <i slot="prefix" class="iconfont icon-suozi"></i>
             </el-input>
@@ -27,7 +28,8 @@
         </div>
         <div class="formB">
           <el-form-item>
-            <el-button type="primary" class="submitBtn" @click="submitForm('loginForm')">{{$t('login.login')}}</el-button>
+            <div id="your-dom-id" class="nc-container"></div>
+            <el-button type="primary" :disabled="!btnFlag" class="submitBtn" @click="submitForm('loginForm')" >{{$t('login.login')}}</el-button>
           </el-form-item>
           </div>
       </el-form>
@@ -110,6 +112,11 @@
           </p>
         </span>
     </el-dialog>
+    
+    <!-- 国内使用 -->
+    <remote-js :js-url="'https://g.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs"></remote-js>
+    <!-- 若您的主要用户来源于海外，请替换使用下面的js资源 -->
+    <!-- <remote-js :js-url="'//aeis.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs"></remote-js> -->
   </div>
 </template>
 
@@ -118,6 +125,7 @@ import { mapGetters } from 'vuex'
 import VueRouter from 'vue-router'
 import axios from '../api/axios'
 import loginFooter from './components/loginFooter'
+import RemoteJs from './components/loginTest'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -132,8 +140,9 @@ export default {
         callback();
       };
       return {
+        btnFlag: false,
         loginForm:{
-          email:"466865383@qq.com",
+          email:"", //466865383@qq.com
           password:""
         },
         rules:{
@@ -165,47 +174,54 @@ export default {
     },
     methods: {
       submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            this.$store.dispatch('Login', this.loginForm).then((res) => {  
-              console.log(res)
-              if(res.code == 100){    //双重验证
-                this.loginToken = res.data.loginToken;
-                this.twoFactorAuthType = res.data.twoFactorAuthType;
-                this.phoneForm.phone = res.data.mobile;
-                if(this.twoFactorAuthType == "MOBILE"){
-                  this.phoneDialog = true;
-                }else if(this.twoFactorAuthType == "GOOGLE"){
-                  this.googleDialog = true;
-                }else if(this.twoFactorAuthType == "BOTH"){
-                  this.doubleDialog = true;
+          if(this.btnFlag){
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.$store.dispatch('Login', this.loginForm).then((res) => {  
+                    console.log(res)
+                    if(res.code == 100){    //双重验证
+                        this.loginToken = res.data.loginToken;
+                        this.twoFactorAuthType = res.data.twoFactorAuthType;
+                        this.phoneForm.phone = res.data.mobile;
+                        if(this.twoFactorAuthType == "MOBILE"){
+                        this.phoneDialog = true;
+                        }else if(this.twoFactorAuthType == "GOOGLE"){
+                        this.googleDialog = true;
+                        }else if(this.twoFactorAuthType == "BOTH"){
+                        this.doubleDialog = true;
+                        }
+                    }else{
+                        this.$message({
+                        message: '登录成功',
+                        type: 'success'
+                        });
+                        var _this = this;
+                        setTimeout(()=>{
+                        let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
+                        console.log(redirect)
+                        _this.$router.push({ path: redirect })
+                        console.log(123)
+                        },2000)
+                    }
+                    //this.loading = false;  
+                    //this.$router.push({path: '/login'});  
+                    
+                    }).catch((e) => {  
+                    //this.loading = false  
+                    // console.log("err")
+                    // console.log(e)
+                    })
+                } else {
+                    console.log('error submit!!');
+                    return false;
                 }
-              }else{
-                this.$message({
-                  message: '登录成功',
-                  type: 'success'
-                });
-                var _this = this;
-                setTimeout(()=>{
-                  let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
-                  console.log(redirect)
-                  _this.$router.push({ path: redirect })
-                  console.log(123)
-                },2000)
-              }
-              //this.loading = false;  
-              //this.$router.push({path: '/login'});  
-              
-            }).catch((e) => {  
-              //this.loading = false  
-              // console.log("err")
-              // console.log(e)
-            })
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
+            });
+        }else{
+            this.$message({
+                message: '请先完成验证',
+                type: 'error'
+            });
+        }
       },
       getVerificationCode(mobile) {     //获取验证码
         var _this = this;
@@ -283,6 +299,49 @@ export default {
             // console.log(e)
           })
         }
+      },
+      loadRongJs() {
+        var _this = this;
+        var nc_token = ["FFFF0N00000000005F77", (new Date()).getTime(), Math.random()].join(':');
+        var NC_Opt =
+            {
+                renderTo: "#your-dom-id",
+                appkey: "FFFF0N00000000005F77",
+                // appkey: "CF_APP_1",
+                scene: "nc_login",
+                token: nc_token,
+                customWidth: 340,
+                trans: { "key1": "code0" },
+                elementID: ["usernameID"],
+                is_Opt: 0,
+                language: "cn",
+                isEnabled: true,
+                timeout: 3000,
+                times: 5,
+                apimap: {
+                    // 'analyze': '//a.com/nocaptcha/analyze.jsonp',
+                    // 'get_captcha': '//b.com/get_captcha/ver3',
+                    // 'get_captcha': '//pin3.aliyun.com/get_captcha/ver3'
+                    // 'get_img': '//c.com/get_img',
+                    // 'checkcode': '//d.com/captcha/checkcode.jsonp',
+                    // 'umid_Url': '//e.com/security/umscript/3.2.1/um.js',
+                    // 'uab_Url': '//aeu.alicdn.com/js/uac/909.js',
+                    // 'umid_serUrl': 'https://g.com/service/um.json'
+                },
+                callback: function (data) {
+                    // window.console && console.log(nc_token)
+                    // window.console && console.log(data.csessionid)
+                    // window.console && console.log(data.sig)
+                    _this.btnFlag = true;
+                }
+            }
+        var nc = new noCaptcha(NC_Opt)
+        nc.upLang('cn', {
+            _startTEXT: "请按住滑块，拖动到最右边",
+            _yesTEXT: "验证通过",
+            _error300: "哎呀，出错了，点击<a href=\"javascript:__nc.reset()\">刷新</a>再来一次",
+            _errorNetwork: "网络不给力，请<a href=\"javascript:__nc.reset()\">点击刷新</a>",
+        })
       }
     },
     computed: {
@@ -293,9 +352,10 @@ export default {
       ]),
     },
     components: {
-      loginFooter
+      loginFooter,
+      RemoteJs
     },
-    beforeMount (){
+    beforeMount() {
       console.log(this.email)
       console.log(this.token)
     }

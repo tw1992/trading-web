@@ -147,6 +147,7 @@ export default {
     SMStips: "提現，修改密碼及安全設置時，用以收取簡訊驗證",
     APItips: "創建API金鑰可以讓您借助協力廠商網站或移動應用使用幣加的行情査詢，實时交易等服務。請參閱API檔案瞭解如何使用您的API Keys",
     enable: "啟用",
+    close: "關閉",
     GoogleAuthentication: "谷歌驗證",
     Googletips: "提現，修改密碼及安全設置時，用以收取簡訊驗證",
     lastlogin: "最近登入",
@@ -161,7 +162,13 @@ export default {
     useGoogleAPP2: "掃描該二維碼",
     Resetting: "通過人工客服重置你的穀歌驗證需提交工單，可能需要至少7天時間來處理。",
     key: "16位密钥",
+    distribution: "分發記錄",
+    note: "備註",
     
+  },
+  autonym: {
+      personal: "實名認證",
+      
   },
   login: {
     login: "登入",
