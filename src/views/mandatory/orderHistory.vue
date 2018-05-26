@@ -29,7 +29,7 @@
       </div>
       <div class="searchItem">
         <span class="searchLabel">{{$t('tradingCenter.coin')}}：</span>
-        <el-select size="mini" v-model="currency" placeholder="请选择">
+        <el-select size="mini" filterable v-model="currency" placeholder="请选择">
           <el-option
             v-for="(item,idx) in currencyList"
             :key="idx"
@@ -175,12 +175,12 @@
           <template v-for="(item,idx) in openOrder">
             <tr :key="idx+'a'">
               <td class="firstCol">{{item.created_at}}</td>
-              <td>{{item.coin_id}}</td>
+              <td>{{item.symbol}}</td>
               <td>{{item.type}}</td>
-              <td :class="item.direction=='SELL'?'red':'green'">{{item.direction}}</td>
-              <td>{{item.prices}}</td>
+              <td :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?'卖出':'买入'}}</td>
+              <td>{{item.price}}</td>
               <td>{{item.number}}</td>
-              <td>{{item.probability}}</td>
+              <td>{{[item.probability,2] | toPercent}}</td>
               <td>{{item.total}}</td>
               <td>{{item.condition}}</td>
               <td><span @click="item.show = !item.show" class="baseColor">成交详情</span></td>
@@ -290,13 +290,13 @@ export default {
         console.log(postData)
         axios.get('/api/orders',postData?postData:{}).then(function(res){  
             console.log(res);
-            _this.openOrder = res.data;
-            _this.openOrder.map(function(item){
+            res.data.map(function(item){
               item.show = false;
               item.condition = '—— ——';
               item.type = "限价";
-              item.probability = item.deal_number/item.number.toFixed(5);
+              item.probability = (item.deal_number/item.number).toFixed(2);
             });
+            _this.openOrder = res.data;
             // _this.googleQR = res.data.googleAuthenticatorSecret;
             // _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
         }).catch(function (res){  

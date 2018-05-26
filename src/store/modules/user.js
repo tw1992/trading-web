@@ -27,7 +27,11 @@ const user = {
         //console.log(userInfo)
         var loginData = {};
         loginData.email = userInfo.email.trim();   
-        loginData.password = userInfo.password.trim();    
+        loginData.password = userInfo.password.trim();   
+        loginData.sessionId = userInfo.sessionId;
+        loginData.token = userInfo.token;
+        loginData.sig = userInfo.sig;
+        loginData.scene = userInfo.scene;
         return new Promise((resolve, reject) => {  
             axios.post("/api/auth/login", loginData).then(response => {  
                 const data = response.data;  
@@ -83,6 +87,10 @@ const user = {
         data.email = userInfo.email.trim();   
         data.password = userInfo.password.trim();   
         data.pid = userInfo.recommend.trim() || "";
+        data.sessionId = userInfo.sessionId;
+        data.token = userInfo.token;
+        data.sig = userInfo.sig;
+        data.scene = userInfo.scene;
         return new Promise((resolve, reject) => {   
             axios.post('/api/auth/register', data).then(response => {   
                  
@@ -130,6 +138,20 @@ const user = {
             vuexAlong.clean();
             router.replace({ //跳转到home
                 path: '/'
+            });
+            resolve()  
+        })  
+    },
+    //修改密码登出
+    changeLogOut({ commit }) {   
+        return new Promise(resolve => {  
+            setEmail('');  
+            setToken(false);  
+            commit('SET_EMAIL', '');  
+            commit('SET_TOKEN', false);  
+            vuexAlong.clean();
+            router.replace({ //跳转到login
+                path: '/login'
             });
             resolve()  
         })  

@@ -514,7 +514,8 @@
 <script>
 import calc from 'calculatorjs'
 import 'swiper/dist/css/swiper.css';
-import axios from '../../api/axios'
+import axios from '../../api/axios';
+import { toFixed, add, sub, mul, div } from '../../filter/filters.js'
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import { mapGetters } from 'vuex'
 import io from 'socket.io-client'
@@ -671,26 +672,6 @@ export default {
         localList: function() {
             localStorage.localList = JSON.stringify(this.localList);
         }
-    },
-    filters: {
-      toFixed: ([value,num]) => {
-        if (value != 0 && !value) return ''
-        value = (value*1).toFixed(num)
-        return value;
-      },
-      sub: ([value1,value2,fixed]) => {
-        return calc.sub(value1, value2).toFixed(fixed)
-      },
-      mul: ([value1,value2,fixed]) => {
-        return calc.mul(value1, value2).toFixed(fixed)
-      },
-      div: ([value1,value2,fixed]) => {
-        if(value2 == 0){
-          var val = 0;
-          return val.toFixed(fixed)
-        }
-        return calc.div(value1, value2).toFixed(fixed)
-      },
     },
     computed: {
       ...mapGetters([

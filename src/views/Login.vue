@@ -143,7 +143,11 @@ export default {
         btnFlag: false,
         loginForm:{
           email:"", //466865383@qq.com
-          password:""
+          password:"",
+          sessionId: "",
+          token: "",
+          sig: "",
+          scene: "",
         },
         rules:{
           email:[{ validator: validateEmail, trigger: 'blur' }],
@@ -174,6 +178,7 @@ export default {
     },
     methods: {
       submitForm(formName) {
+          var _this = this;
           if(this.btnFlag){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
@@ -210,6 +215,7 @@ export default {
                     //this.loading = false  
                     // console.log("err")
                     // console.log(e)
+                    _this.loadRongJs()
                     })
                 } else {
                     console.log('error submit!!');
@@ -333,6 +339,10 @@ export default {
                     // window.console && console.log(data.csessionid)
                     // window.console && console.log(data.sig)
                     _this.btnFlag = true;
+                    _this.loginForm.sessionId = data.csessionid;
+                    _this.loginForm.token = nc_token;
+                    _this.loginForm.sig = data.sig;
+                    _this.loginForm.scene = "nc_login";
                 }
             }
         var nc = new noCaptcha(NC_Opt)
@@ -342,6 +352,7 @@ export default {
             _error300: "哎呀，出错了，点击<a href=\"javascript:__nc.reset()\">刷新</a>再来一次",
             _errorNetwork: "网络不给力，请<a href=\"javascript:__nc.reset()\">点击刷新</a>",
         })
+        nc.reload();
       }
     },
     computed: {

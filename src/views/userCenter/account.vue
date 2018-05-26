@@ -165,7 +165,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="mini" @click="changePwdDialog = false">{{$t('Dialog.confirm')}}</el-button>
+                <el-button type="primary" size="mini" @click="changePwd()">{{$t('Dialog.confirm')}}</el-button>
             </span>
         </el-dialog>
 
@@ -477,10 +477,9 @@ export default {
                 password: this.changePwdForm.pwd1,
                 newPassword: this.changePwdForm.newpwd1,
             }).then(function(res){  
-                
                 console.log(res)
-                // _this.phoneDialog = false;
-                // _this.phoneFlag = true;
+                _this.changePwdDialog = false;
+                _this.$store.dispatch('changeLogOut');
             }).catch(function (res){  
                 console.log(res);
             }); 

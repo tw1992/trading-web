@@ -29,7 +29,7 @@
       </div>
       <div class="searchItem">
         <span class="searchLabel">{{$t('tradingCenter.coin')}}：</span>
-        <el-select size="mini" v-model="currency" placeholder="请选择">
+        <el-select size="mini" filterable v-model="currency" placeholder="请选择">
           <el-option
             v-for="(item,idx) in currencyList"
             :key="idx"
@@ -148,7 +148,7 @@ export default {
           probability: '0.00029%',
           sum: '3,454.72846',
           condition: '—— ——'
-        }]
+        }],
 
       };
     },

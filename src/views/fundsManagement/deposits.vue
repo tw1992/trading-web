@@ -5,19 +5,22 @@
     </p>
 
     <div class="depLbox">
-      <el-select class="selectInput" @change="changeSelect" v-model="state3" filterable :placeholder="$t('funds.placeHolder')">
-        <el-option
-          v-for="(item,idx) in restaurants"
-          :key="idx"
-          :label="item.coin_name"
-          :value="item.coin_id">
-        </el-option>
-      </el-select>
+      <div class="selectBox">
+        <p v-show="tipFlag" class="selectTip">{{$t('funds.placeHolder')}}</p>
+        <el-select class="selectInput" @visible-change="tipshow" @change="changeSelect" v-model="state3" filterable placeholder="">
+            <el-option
+            v-for="(item,idx) in restaurants"
+            :key="idx"
+            :label="item.coin_name"
+            :value="item.coin_id">
+            </el-option>
+        </el-select>
+      </div>
       <div class="priceBox">
         <ul class="priceList">
           <li>
             <span class="name">{{$t('tradingCenter.totalBalance')}}</span>
-            <span class="num">{{[accounts.address,accounts.disabled,8] | add}} {{coin_name}}</span>
+            <span class="num">{{[accounts.available,accounts.disabled,8] | add}} {{coin_name}}</span>
           </li>
           <li>
             <span class="name">{{$t('tradingCenter.inOrder')}}</span>
@@ -37,7 +40,7 @@
         <p class="warning">{{changeTips.tip1}}</p>
       </div>
       <div class="btnBox">
-        <a href="javascript:;" class="copy" :data-clipboard-text = "depositsAdd" @click="copy"><i class="iconfont icon-fuzhi"></i>{{$t('funds.copyAddress')}}</a>
+        <a href="javascript:;" class="copy" :data-clipboard-text = "accounts.address" @click="copy"><i class="iconfont icon-fuzhi"></i>{{$t('funds.copyAddress')}}</a>
         <a href="javascript:;" class="showcode" @click="codeDialog = true"><i class="iconfont icon-erweima"></i><span>{{$t('funds.showQRCode')}}</span></a>
       </div>
       <div class="tipsBox">
@@ -75,7 +78,7 @@
           <div class="itemL">
             <div class="itemT">
               <div class="nodes">
-                <p class="nodeTitle">{{it.status == 0?'成功':'失败'}}</p>
+                <p class="nodeTitle">{{it.status == 0?'确认中':'成功'}}</p>
                 <p class="nodeMain">{{it.created_at}}</p>
               </div>
             </div>
@@ -100,7 +103,8 @@
             <div class="itemB">
               <div class="nodes">
                 <p class="nodeTitle">Txid</p>
-                <p class="nodeMain">{{it.txid}}</p>
+                <a v-if="coin_name == 'BTC'" :href="'https://blockchain.info/zh-cn/tx/'+it.txid" class="nodeMain">{{it.txid}}</a>
+                <a v-if="coin_name == 'ETH'" :href="'https://etherscan.io/tx/'+it.txid" class="nodeMain">{{it.txid}}</a>
               </div>
             </div>
           </div>
@@ -145,6 +149,7 @@ export default {
           tip2: '',
         },
         changeFlag: false,      //判断进入页面后是否改变过币种
+        tipFlag: false,
         historyList: [],
         accounts: {
           available: '',
@@ -184,6 +189,10 @@ export default {
         console.log(name)
         this.getRechargeHistory(value);
         this.getAccounts(value);
+      },
+      tipshow(flag) {
+          //console.log(flag)
+          this.tipFlag = flag;
       },
       copy(){
         var clipboard = new Clipboard('.copy')  
@@ -259,6 +268,7 @@ export default {
         width: 310px;
         margin: auto;
         padding-bottom: 20px;
+        text-align: center;
       }
     }
 }

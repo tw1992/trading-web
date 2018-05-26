@@ -74,7 +74,11 @@ export default {
       return {
         btnFlag: false,
         retrieveForm:{
-          email:""
+          email:"",
+          sessionId: "",
+          token: "",
+          sig: "",
+          scene: "",
         },
         rules:{
           email:[{ validator: validateEmail, trigger: 'blur' }]
@@ -88,11 +92,19 @@ export default {
         var _this = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            axios.post('/api/auth/password_reset',{email:this.retrieveForm.email}).then(function(res){  
+            var data = {
+                email:this.retrieveForm.email,
+                sessionId:this.retrieveForm.sessionId,
+                token:this.retrieveForm.token,
+                sig:this.retrieveForm.sig,
+                scene:this.retrieveForm.scene
+            }
+            axios.post('/api/auth/password_reset',data).then(function(res){  
                 console.log(res);
                 _this.sendFlag = true;
             }).catch(function (res){  
                 console.log(res);
+                _this.loadRongJs()
             }); 
           } else {
             console.log('error submit!!');
@@ -133,6 +145,10 @@ export default {
                     // window.console && console.log(data.csessionid)
                     // window.console && console.log(data.sig)
                     _this.btnFlag = true;
+                    _this.retrieveForm.sessionId = data.csessionid;
+                    _this.retrieveForm.token = nc_token;
+                    _this.retrieveForm.sig = data.sig;
+                    _this.retrieveForm.scene = "nc_login";
                 }
             }
         var nc = new noCaptcha(NC_Opt)
@@ -142,6 +158,7 @@ export default {
             _error300: "哎呀，出错了，点击<a href=\"javascript:__nc.reset()\">刷新</a>再来一次",
             _errorNetwork: "网络不给力，请<a href=\"javascript:__nc.reset()\">点击刷新</a>",
         })
+        nc.reload();
       }
     },
     components: {

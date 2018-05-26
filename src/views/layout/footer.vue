@@ -8,19 +8,19 @@
             <a href="#">{{$t('home.about')}}</a>
           </li>
           <li>
-            <router-link to="/terms">{{$t('home.terms')}}</router-link>
+            <router-link target="_blank" to="/terms">{{$t('home.terms')}}</router-link>
           </li>
           <!-- <li>
             <a href="#">隐私声明</a>
           </li> -->
           <li>
-            <router-link to="/fees">{{$t('home.fees')}}</router-link>
+            <router-link target="_blank" to="/fees">{{$t('home.fees')}}</router-link>
           </li>
           <li>
             <a href="#">{{$t('home.api')}}</a>
           </li>
           <li>
-            <a href="#">{{$t('home.applyToList')}}</a>
+            <a target="_blank" href="https://goo.gl/forms/2h5NWFzZVdJC4jdX2">{{$t('home.applyToList')}}</a>
           </li>
           <li>
             <a href="#">{{$t('home.contact')}}</a>

@@ -5,14 +5,17 @@
     </p>
 
     <div class="depLbox">
-      <el-select class="selectInput" @change="changeSelect" v-model="state3" filterable :placeholder="$t('funds.placeHolder')">
-        <el-option
-          v-for="(item,idx) in restaurants"
-          :key="idx"
-          :label="item.coin_name"
-          :value="item.coin_id">
-        </el-option>
-      </el-select>
+      <div class="selectBox">
+        <p v-show="tipFlag" class="selectTip">{{$t('funds.placeHolder')}}</p>
+        <el-select class="selectInput" @visible-change="tipshow" @change="changeSelect" v-model="state3" filterable :placeholder="$t('funds.placeHolder')">
+            <el-option
+            v-for="(item,idx) in restaurants"
+            :key="idx"
+            :label="item.coin_name"
+            :value="item.coin_id">
+            </el-option>
+        </el-select>
+      </div>
       <div class="priceBox">
         <ul class="priceList">
           <li>
@@ -255,6 +258,7 @@ export default {
         state3: '3',
         addList:[],
         changeFlag: false,      //判断进入页面后是否改变过币种
+        tipFlag: false,
         siteForm: {
           label: '',
           site: '',
@@ -408,6 +412,10 @@ export default {
         console.log(name)
         this.getWithdrawHistory(value);
         this.getWithdrawAdd(value)
+      },
+      tipshow(flag) {
+          //console.log(flag)
+          this.tipFlag = flag;
       },
       getWithdrawHistory(coin_id) {
         var _this = this;

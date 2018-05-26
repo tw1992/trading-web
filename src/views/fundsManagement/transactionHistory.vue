@@ -54,10 +54,19 @@
             label="信息">
             <template slot-scope="scope">
               <div style="margin-bottom:4px;" class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.address}}</p></div>
-              <div class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://etherscan.io/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
+              <div v-if="scope.row.coin_id == 1" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://blockchain.info/zh-cn/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
+              <div v-if="scope.row.coin_id == 2" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://etherscan.io/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+            layout="prev, pager, next"
+            @current-change="pageChange1"
+            @next-click="pageChange1"
+            @prev-click="pageChange1"
+            :page-size="pagination1.per_page*1"
+            :total="pagination1.total">
+        </el-pagination>
       </div>
     </div>
 
@@ -98,10 +107,19 @@
             :label="$t('funds.information')">
             <template slot-scope="scope">
               <div class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.address}}</p></div>
-              <div class="tdItem"><p class="tdname">Txid</p><p class="tdmain">{{scope.row.txid}}</p></div>
+              <div v-if="scope.row.coin_id == 1" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://blockchain.info/zh-cn/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
+              <div v-if="scope.row.coin_id == 2" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://etherscan.io/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+            layout="prev, pager, next"
+            @current-change="pageChange2"
+            @next-click="pageChange2"
+            @prev-click="pageChange2"
+            :page-size="pagination2.per_page*1"
+            :total="pagination2.total">
+        </el-pagination>
       </div>
       
     </div>
@@ -154,7 +172,23 @@ export default {
           created_at: '2018-04-11 18:08:11',
           address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
           txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-        },]
+        },],
+        pagination1: {
+            total: 0,
+            links: [],
+            count: '',
+            current_page: 1,
+            per_page: '',
+            total_pages: ''
+        },
+        pagination2: {
+            total: 0,
+            links: [],
+            count: '',
+            current_page: 1,
+            per_page: '',
+            total_pages: ''
+        },
 
       };
     },
@@ -162,24 +196,31 @@ export default {
       changeActive(idx) {
         this.activeIdx = idx;
       },
-      getRecharge(){
+      getRecharge(url){
         var _this = this;
-        axios.get('/api/accounts/imports').then(function(res){  
+        axios.get(url).then(function(res){  
             console.log(res);
             _this.recharge = res.data;
-            _this.pagination = res.meta.pagination;
+            _this.pagination1 = res.meta.pagination;
         }).catch(function (res){  
             console.log(res);
         });
       },
-      getWithdraw(){
+      getWithdraw(url){
         var _this = this;
-        axios.get('/api/accounts/exports').then(function(res){  
+        axios.get(url).then(function(res){  
             console.log(res);
             _this.withdraw = res.data;
+            _this.pagination2 = res.meta.pagination;
         }).catch(function (res){  
             console.log(res);
         });
+      },
+      pageChange1(page) {
+        this.getRecharge(`/api/accounts/imports?page=${page}`);
+      },
+      pageChange2(page) {
+        this.getWithdraw(`/api/accounts/exports?page=${page}`);
       },
       exportD() {
         require.ensure([], () => {
@@ -227,8 +268,8 @@ export default {
       ])
     },
     created() {
-      this.getRecharge();
-      this.getWithdraw();
+      this.getRecharge('/api/accounts/imports');
+      this.getWithdraw('/api/accounts/exports');
     }
 }
 </script>

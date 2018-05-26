@@ -105,7 +105,11 @@ export default {
           password:"",  //123456
           password2:"",
           recommend:"",
-          consent:[]
+          consent:[],
+          sessionId: "",
+          token: "",
+          sig: "",
+          scene: "",
         },
         rules:{
           email:[{ validator: validateEmail, trigger: 'blur' }],
@@ -123,6 +127,7 @@ export default {
     // }, 
     methods: {
       submitForm(formName) {
+          var _this = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$store.dispatch('Regist', this.registerForm).then((res) => {  
@@ -141,6 +146,7 @@ export default {
               //this.loading = false  
               // console.log("err")
               // console.log(e)
+              _this.loadRongJs()
             }) 
           } else {
             console.log('error submit!!');
@@ -181,6 +187,10 @@ export default {
                     // window.console && console.log(data.csessionid)
                     // window.console && console.log(data.sig)
                     _this.btnFlag = true;
+                    _this.registerForm.sessionId = data.csessionid;
+                    _this.registerForm.token = nc_token;
+                    _this.registerForm.sig = data.sig;
+                    _this.registerForm.scene = "nc_login";
                 }
             }
         var nc = new noCaptcha(NC_Opt)
@@ -190,6 +200,7 @@ export default {
             _error300: "哎呀，出错了，点击<a href=\"javascript:__nc.reset()\">刷新</a>再来一次",
             _errorNetwork: "网络不给力，请<a href=\"javascript:__nc.reset()\">点击刷新</a>",
         })
+        nc.reload();
       }
     },
     components: {

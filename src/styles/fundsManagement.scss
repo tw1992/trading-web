@@ -34,6 +34,18 @@
       width: 520px;
       float: left;
       padding: 34px 30px 120px 30px;
+      .selectBox{
+          position: relative;
+          .selectTip{
+              position: absolute;
+              right: 80px;
+              top: 0;
+              line-height: 40px;
+              z-index: 10;
+            //   font-size: 14px;
+              color: #999999;
+          }
+      }
       .selectInput{
         width: 100%;
         margin-bottom: 50px;
@@ -184,6 +196,12 @@
             }
             .nodeMain{
               font-size: 13px;
+              line-height: 16px;
+              color: #666666;
+              &:hover{
+                  color: #F5A623;
+                  text-decoration: underline;
+              }
             }
           }
           .itemT{

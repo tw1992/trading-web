@@ -88,15 +88,15 @@
         
         <template v-for="(item,idx) in openOrder">
           <tr :key="idx+'a'">
-            <td class="firstCol">{{item.time}}</td>
-            <td>{{item.goods}}</td>
-            <td>{{item.type}}</td>
-            <td :class="item.direction=='卖出'?'red':'green'">{{item.direction}}</td>
-            <td>{{item.prices}}</td>
-            <td>{{item.num}}</td>
-            <td>{{item.probability}}</td>
-            <td>{{item.sum}}</td>
-            <td>{{item.condition}}</td>
+            <td class="firstCol">{{item.created_at}}</td>
+            <td>{{item.symbol}}</td>
+            <td>限价</td>
+            <td :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?'卖出':'买入'}}</td>
+            <td>{{item.price}}</td>
+            <td>{{item.number}}</td>
+            <td>{{[([item.deal_number,item.number,2] | divide) , 2] | toPercent}}</td>
+            <td>{{item.total}}</td>
+            <td>—— ——</td>
             <td><span @click="item.show = !item.show" class="baseColor">成交详情</span></td>
             
           </tr>
@@ -176,107 +176,7 @@ import axios from '../../api/axios'
             sum: '445.161 BTC'
           }],
         transaction:'0.28738938 BTC',
-        openOrder: [{
-          time: '2018-04-11 18:08:11',
-          goods: 'BTC',
-          type: '限价',
-          direction: '买入',
-          prices: '0.00000051',
-          num: '3,374.74628467',
-          probability: '0.00029%',
-          sum: '3,454.72846',
-          condition: '—— ——',
-          transaction: '0.28738938 BTC',
-          show: false,
-          historyList: [{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          },{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          }]
-        }, {
-          time: '2018-04-11 18:08:11',
-          goods: 'BTC',
-          type: '限价',
-          direction: '卖出',
-          prices: '0.00000051',
-          num: '3,374.74628467',
-          probability: '0.00029%',
-          sum: '3,454.72846',
-          condition: '—— ——',
-          transaction: '0.28738938 BTC',
-          show: false,
-          historyList: [{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          },{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          }]
-        },{
-          time: '2018-04-11 18:08:11',
-          goods: 'BTC',
-          type: '限价',
-          direction: '卖出',
-          prices: '0.00000051',
-          num: '3,374.74628467',
-          probability: '0.00029%',
-          sum: '3,454.72846',
-          condition: '—— ——',
-          transaction: '0.28738938 BTC',
-          show: false,
-          historyList: [{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          },{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          }]
-        },{
-          time: '2018-04-11 18:08:11',
-          goods: 'BTC',
-          type: '限价',
-          direction: '卖出',
-          prices: '0.00000051',
-          num: '3,374.74628467',
-          probability: '0.00029%',
-          sum: '3,454.72846',
-          condition: '—— ——',
-          transaction: '0.28738938 BTC',
-          show: false,
-          historyList: [{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          },{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          }]
-        }]
+        openOrder: []
       }
     },
     methods: {
@@ -286,7 +186,12 @@ import axios from '../../api/axios'
       var _this = this;
       axios.get('/api/orders',{status:0}).then(function(res){  
           console.log(res);
+          
+          res.data.map(item => {
+              item.show = false;
+          })
           _this.openOrder = res.data;
+          console.log(_this.openOrder)
       }).catch(function (res){  
           console.log(res);
       }); 

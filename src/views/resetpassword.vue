@@ -71,6 +71,7 @@ export default {
           pass1:[{ validator: validatePass, trigger: 'blur' }],
           pass2:[{ validator: validatePass2, trigger: 'blur' }],
         },
+        uuid: "",
       };
     },
     methods: {
@@ -78,7 +79,7 @@ export default {
         var _this = this; 
         this.$refs['resetForm'].validate((valid) => {
           if (valid) {
-            axios.post('/api/auth/password_reset/',{
+            axios.post(`/api/auth/password_reset/${this.uuid}`,{
                 password: this.resetForm.pass1,
             }).then(function(res){  
                 
@@ -93,6 +94,10 @@ export default {
           }
         });
       }
+    },
+    created() {
+        this.uuid = this.$route.query.uuid
+        //console.log(this.$route.query.uuid)
     },
     components: {
       loginFooter
