@@ -9,6 +9,11 @@ import './styles/DialogInit.scss'
 import './assets/iconfont/iconfont.css'
 import router from './routes'
 import i18n from './lang'
+import * as custom from './filter/filters'
+
+Object.keys(custom).forEach(key => {
+    Vue.filter(key, custom[key])
+})
 
 
 Vue.use(ElementUI)
