@@ -20,15 +20,15 @@
         <ul class="priceList">
           <li>
             <span class="name">{{$t('tradingCenter.totalBalance')}}</span>
-            <span class="num">0.00000000 {{coin_name}}</span>
+            <span class="num">{{[accounts.available,accounts.disabled,8] | add}} {{coin_name}}</span>
           </li>
           <li>
             <span class="name">{{$t('tradingCenter.inOrder')}}</span>
-            <span class="num">0.00000000 {{coin_name}}</span>
+            <span class="num">{{accounts.disabled}} {{coin_name}}</span>
           </li>
           <li>
             <span class="name">{{$t('tradingCenter.availableBalance')}}</span>
-            <span class="num">0.00000000 {{coin_name}}</span>
+            <span class="num">{{accounts.available}} {{coin_name}}</span>
           </li>
         </ul>
         <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>{{$t('funds.whats')+coin_name}}</span></a>
@@ -53,7 +53,7 @@
         <p class="siteTips">请在下方输入本次提现地址</p>
         <el-form :model="siteForm" status-icon :rules="siteForm.rules" ref="siteForm" class="siteForm">
           <el-form-item prop="addSelect">
-              <el-select class="addList" v-model="siteForm.addSelect" placeholder="请选择">
+              <el-select class="addList" @change="getTag" v-model="siteForm.addSelect" placeholder="请选择">
                 <el-option key="new" label="新地址" value="new"></el-option>
                 <el-option
                   v-for="item in addList"
@@ -85,7 +85,7 @@
             <span>{{$t('funds.youWillGet')}}:  0.00000000</span>
           </div>
           <el-form-item>
-            <el-button class="submit" type="primary" @click="submitForm('siteForm')">{{$t('button.submit')}}</el-button>
+            <el-button class="submit" type="primary" @click="siteSubmit()">{{$t('button.submit')}}</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -187,7 +187,7 @@
         custom-class="baseDialog changePwd"
         center>
         <el-form :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
-            <el-form-item label="您的手机号" prop="phone">
+            <!-- <el-form-item label="您的手机号" prop="phone">
                 <el-input placeholder="(仅限中国大陆)" v-model="phoneForm.phone" type="tel" auto-complete="off" class="inputBase input-with-select">
                     <el-select v-model="phoneForm.select" slot="prepend" placeholder="请选择">
                     <el-option label="+86" value="+86"></el-option>
@@ -195,10 +195,10 @@
                     <el-option label="+89" value="+89"></el-option>
                     </el-select>
                 </el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)" placeholder="请输入短信验证码" v-model="phoneForm.newpwd" auto-complete="off"></el-input>
-                <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
+                <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)" placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+                <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode()">{{$t('Dialog.sendSMS')}}</a>
                 <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
             </el-form-item>
         </el-form>
@@ -230,7 +230,7 @@
         <el-form v-show="doubleSelect == 2" :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
             <el-form-item label="验证码" class="verCode" prop="verCode">
                 <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)"  placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
-                <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
+                <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode()">{{$t('Dialog.sendSMS')}}</a>
                 <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
             </el-form-item>
         </el-form>
@@ -259,6 +259,12 @@ export default {
         addList:[],
         changeFlag: false,      //判断进入页面后是否改变过币种
         tipFlag: false,
+        tag: "",
+        accounts: {
+          available: '',
+          disabled: '',
+          address: ''
+        },
         siteForm: {
           label: '',
           site: '',
@@ -299,19 +305,9 @@ export default {
       };
     },
     methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
-      getVerificationCode(mobile) {     //获取验证码
+      getVerificationCode() {     //获取验证码
         var _this = this;
-        axios.get(`/api/sms/to_mobile/${mobile}`).then(function(res){  
+        axios.get('/api/sms/to_user').then(function(res){  
             console.log(res);
             _this.VerCodeFlag = false;
             _this.verCodeTime = 60;
@@ -332,25 +328,37 @@ export default {
           }
         },1000)
       },
+      getAccounts(coin_id) {
+        var _this = this;
+        axios.get(`/api/accounts/${coin_id}`).then(function(res){  
+            console.log(res);
+            _this.accounts.available = res.data.available;
+            _this.accounts.disabled = res.data.disabled;
+            _this.accounts.address = res.data.address;
+        }).catch(function (res){  
+            console.log(res);
+        }); 
+      },
       siteSubmit() {
         var _this = this; 
         this.$refs['siteForm'].validate((valid) => {
           if (valid) {
             var submitData = {};
             this.submitData.coinId = this.coin_id;
-            this.submitData.number = this.num;
-            if(this.siteForm.addList == 'new'){
+            this.submitData.number = this.siteForm.num;
+            if(this.siteForm.addSelect == 'new'){
               this.submitData.address = this.siteForm.site
             }else{
-              this.submitData.address = this.siteForm.addList
+              this.submitData.address = this.siteForm.addSelect
             }
             if(this.tag != ''){
               this.submitData.tag = this.tag;
             }
+            // console.log(this.submitData)
             if(this.userInfo.two_factor_auth_type == 'CLOSE'){
               axios.post('/api/accounts/exports',this.submitData).then(function(res){  
                 console.log(res)
-
+                _this.submitFin();
               }).catch(function (res){  
                   console.log(res);
               }); 
@@ -374,11 +382,11 @@ export default {
         if(smsCode.length == 6){
           var phoneDate = this.submitData;
           phoneDate.smsId = this.phoneForm.smsId;
-          phoneDate.smsCode = this.phoneForm.smsCode;
-          
+          phoneDate.smsCode = smsCode;
           axios.post('/api/accounts/exports',phoneDate).then(function(res){  
                 console.log(res)
-
+                _this.phoneDialog = false;
+                _this.submitFin();
           }).catch(function (res){  
               console.log(res);
           }); 
@@ -389,20 +397,26 @@ export default {
         var _this = this;
         var googleCode = verCode.trim();
         if(googleCode.length == 6){
-          var googleLoginDate = {
-            loginToken: this.loginToken,
-            twoFactorAuthType: 'GOOGLE',
-            googleCode: googleCode
-          };
           var googleDate = this.submitData;
           googleDate.googleCode = googleCode;
           axios.post('/api/accounts/exports',googleDate).then(function(res){  
                 console.log(res)
-
+                _this.googleDialog = false;
+                _this.submitFin();
           }).catch(function (res){  
               console.log(res);
           }); 
         }
+      },
+      submitFin() {
+          this.siteForm.label = "";
+          this.siteForm.site = "";
+          this.siteForm.addSelect = "";
+          this.siteForm.num = "";
+          this.getWithdrawHistory(this.coin_id)
+          this.getAccounts(this.coin_id);
+          this.phoneForm.verCode = "";
+          this.googleForm.verCode = "";
       },
       changeSelect(value){
         this.changeFlag = true;   //改变过币
@@ -411,7 +425,8 @@ export default {
         this.coin_name = name;
         console.log(name)
         this.getWithdrawHistory(value);
-        this.getWithdrawAdd(value)
+        this.getWithdrawAdd(value);
+        this.getAccounts(value);
       },
       tipshow(flag) {
           //console.log(flag)
@@ -445,6 +460,16 @@ export default {
         })
         return name;
       },
+      getTag(add){
+        var _this = this;
+        var tag = "";
+        this.addList.forEach(it=>{
+        if(it.address == add){
+            tag = it.tag
+          }
+        })
+        this.tag = tag;
+      }
     },
     computed: {
       ...mapGetters([
@@ -460,6 +485,7 @@ export default {
       this.restaurants = this.coinList;
       this.getWithdrawHistory(this.coin_id)
       this.getWithdrawAdd(this.coin_id)
+      this.getAccounts(this.coin_id);
     }
 }
 </script>

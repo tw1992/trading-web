@@ -232,11 +232,6 @@ export default {
           'coinList',
       ])
     },
-    filters: {
-      add: ([value1,value2,fixed]) => {
-        return calc.add(value1, value2).toFixed(fixed)
-      }
-    },
     components: {VueQr},
     created() {
       this.coin_id = this.$route.params.coin_id;

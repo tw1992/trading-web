@@ -71,7 +71,7 @@
                 <div class="GoogleBox itemBox">
                         <div class="boxL">
                             <p class="titles">
-                                <i class="iconfont icon-APIwendang"></i>
+                                <i class="googleLogo"></i>
                                 <span class="title">{{$t('user.GoogleAuthentication')}}</span>
                             </p>
                             <p class="tips">
@@ -616,6 +616,13 @@ export default {
                 font-size: 30px;
                 margin-right: 6px;
                 vertical-align: middle;
+            }
+            .googleLogo{
+                vertical-align: middle;
+                height: 30px;
+                width: 30px;
+                display: inline-block;
+                background: url('../../assets/img/googleLogo.svg') no-repeat center;
             }
             .title{
                 font-size: 15px;

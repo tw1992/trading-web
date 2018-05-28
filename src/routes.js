@@ -219,6 +219,20 @@ let routes = [{
     name: '费率标准'
   },
   {
+    path: '/about',
+    component: function (resolve) {
+        require(['./views/layout/other/aboutUs.vue'], resolve)
+    },
+    name: '关于我们'
+  },
+  {
+    path: '/brand',
+    component: function (resolve) {
+        require(['./views/layout/other/brand.vue'], resolve)
+    },
+    name: '品牌形象'
+  },
+  {
       path: '/helpCenter',
       component: function (resolve) {
           require(['./views/helpCenter/helpCenter.vue'], resolve)

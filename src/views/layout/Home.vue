@@ -629,6 +629,7 @@ export default {
           that.allList = res;
         //   that.collectList = [];
           res.forEach(item => {
+            item.star = false;
             if(item.market_name == "BTC"){
               that.BTCList.push(item);
             }else if(item.market_name == "ETH"){

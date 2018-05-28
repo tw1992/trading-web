@@ -114,7 +114,7 @@
     </el-dialog>
     
     <!-- 国内使用 -->
-    <remote-js :js-url="'https://g.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs"></remote-js>
+    <remote-js :js-url="'https://g.alicdn.com/sd/ncpc/nc.js?t=201802012'" :js-load-call-back="loadRongJs"></remote-js>
     <!-- 若您的主要用户来源于海外，请替换使用下面的js资源 -->
     <!-- <remote-js :js-url="'//aeis.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs"></remote-js> -->
   </div>

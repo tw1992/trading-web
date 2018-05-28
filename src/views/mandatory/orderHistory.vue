@@ -44,7 +44,7 @@
           <el-option
             v-for="item in directionList"
             :key="item.value"
-            :label="item.name"
+            :label="item.label"
             :value="item.value">
           </el-option>
         </el-select>
@@ -172,48 +172,50 @@
             <th>操作</th>
           </tr>
           
-          <template v-for="(item,idx) in openOrder">
+          <template v-for="(item,idx) in orderItems">
             <tr :key="idx+'a'">
               <td class="firstCol">{{item.created_at}}</td>
               <td>{{item.symbol}}</td>
               <td>{{item.type}}</td>
-              <td :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?'卖出':'买入'}}</td>
+              <td><span :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?'卖出':'买入'}}</span></td>
               <td>{{item.price}}</td>
               <td>{{item.number}}</td>
               <td>{{[item.probability,2] | toPercent}}</td>
               <td>{{item.total}}</td>
               <td>{{item.condition}}</td>
-              <td><span @click="item.show = !item.show" class="baseColor">成交详情</span></td>
+              <td><span @click="item.show = !item.show;getDetail(item.id,item.show)" class="baseColor">成交详情</span></td>
               
             </tr>
             <tr v-show="item.show" :key="idx+'b'">
               <td colspan="10">
                 <div class="detail">
-                  <p class="title">成交总额<span class="sum">{{transaction}}</span></p>
+                  <p class="title">成交总额<span class="sum">{{item.detailAll + " BTC"}}</span></p>
                 <el-table
                   class="detailTable"
-                  :data="historyList"
+                  :data="item.detail"
                   style="width: 100%">
                     <el-table-column
                       class-name="firstCol"
-                      prop="time"
+                      prop="created_at"
                       label="成交时间">
                     </el-table-column>
                     <el-table-column
-                      prop="prices"
+                      prop="price"
                       label="成交价格">
                     </el-table-column>
                     <el-table-column
-                      prop="num"
+                      prop="number"
                       label="成交数量">
                     </el-table-column>
                     <el-table-column
-                      prop="commission"
+                      prop="fee"
                       label="手续费">
                     </el-table-column>
                     <el-table-column
-                      prop="sum"
                       label="成交金额">
+                       <template slot-scope="scope">
+                           <span>{{[scope.row.price,scope.row.number,8] | mul}}</span>
+                       </template>
                     </el-table-column>
                   </el-table>
                 </div>
@@ -229,12 +231,22 @@
         </tbody>
 
       </table>
+      <el-pagination
+        layout="prev, pager, next"
+        @current-change="pageChange"
+        @next-click="pageChange"
+        @prev-click="pageChange"
+        v-show="pagination.total"
+        :page-size="pagination.per_page*1"
+        :total="pagination.total">
+      </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { add, mul, toFixed } from '../../utils/common.js'
 import axios from '../../api/axios'
 export default {
   data() {
@@ -254,55 +266,77 @@ export default {
           value: "SELL",
         }],
         conceal: false,
-        transaction: '0.28738938 BTC',
-          historyList: [{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          },{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          }],
-        openOrder: [{
-          created_at: '2018-04-11 18:08:11',
-          coin_id: 'BTC',
-          type: '限价',
-          side: '卖出',
-          price: '0.00000051',
-          number: '3,374.74628467',
-          deal_number: '0.00029%',
-          total: '3,454.72846',
-          condition: '—— ——',
-          status: "",
-          show: false
-        }]
-
+        openOrder: [],
+        pagination: {
+            oldTotal: 0,
+            total: 0,
+            links: [],
+            count: '',
+            current_page: 1,
+            per_page: '',
+            total_pages: ''
+        },
+        postData: {}
       };
     },
     methods: {
-      getEntrusted(postData){
+      getEntrusted(url,postData){
         var _this = this;
         console.log(postData)
-        axios.get('/api/orders',postData?postData:{}).then(function(res){  
+        axios.get(url,postData?postData:{}).then(function(res){  
             console.log(res);
             res.data.map(function(item){
               item.show = false;
               item.condition = '—— ——';
               item.type = "限价";
               item.probability = (item.deal_number/item.number).toFixed(2);
+              item.detail = [{
+                  "created_at": "",
+                  "price": "",
+                  "number": "",
+                  "fee": ""
+              }]
+              item.detailAll = ""
             });
             _this.openOrder = res.data;
+            _this.pagination = res.meta.pagination;
+            _this.pagination.oldTotal = _this.pagination.total;
             // _this.googleQR = res.data.googleAuthenticatorSecret;
             // _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
         }).catch(function (res){  
             console.log(res);
         }); 
       },
+      pageChange(page) {
+            this.getEntrusted(`/api/orders?page=${page}`,this.postData);
+      },
+      getDetail(id,show) {
+          if(show){
+                var _this = this;
+                axios.get(`/api/orders/detail/${id}`).then(function(res){  
+                    // console.log(res);
+                    var sum = toFixed(0,8);
+                    res.data.map(it => {
+                        sum = add(sum,mul(it.price,it.number,8),8)
+                    })
+
+                    _this.openOrder.map(it => {
+                        if(it.id == id){
+                            it.detail = res.data;
+                            it.detailAll = sum;
+                        }
+                    })
+                    // res.data.map(item => {
+                    //     item.show = false;
+                    //     item.bargain = _this.div(item.deal_number,item.number,4);
+                    // })
+                    // _this.openOrder = res.data;
+                    // _this.pagination = res.meta.pagination;
+                }).catch(function (res){  
+                    console.log(res);
+                });
+            }
+        },
       searchClick() {
           var postData = {};
           if(this.time.length>0){
@@ -312,18 +346,9 @@ export default {
           postData.market = this.trade;
           postData.coin = this.currency;
           postData.side = this.direction;
-          this.getEntrusted(postData)
+          this.postData = postData;
+          this.getEntrusted('/api/orders',postData)
       },
-      // getTrades() {
-      //   var _this = this;
-      //   axios.get('/api/market/pairs').then(function(res){  
-      //       console.log(res);
-      //       _this.tradeList = res.data;
-            
-      //   }).catch(function (res){  
-      //       console.log(res);
-      //   }); 
-      // },
       getMarketList(marketList) {
         this.tradeList = marketList;
       },
@@ -351,10 +376,29 @@ export default {
       ...mapGetters([
           'marketList',
           'coinList',
-      ])
+      ]),
+      orderItems: function() {
+          var showFlag = this.conceal;
+          if(showFlag){
+            return this.openOrder.filter(function(product) {
+                return product.status != 2;
+            })
+          }
+          return this.openOrder;
+      }
+    },
+    watch: {
+        conceal: function(val) {
+            if(val){
+                this.pagination.total = this.orderItems.length;
+            }else{
+                this.pagination.total = this.pagination.oldTotal;
+            }
+            
+        }
     },
     created (){
-      this.getEntrusted();
+      this.getEntrusted('/api/orders');
       console.log(this.marketList)
       this.getMarketList(this.marketList);
       this.getCoinList(this.coinList);

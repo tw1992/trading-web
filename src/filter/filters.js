@@ -16,15 +16,15 @@ export function add([value1,value2,fixed]) {        //加
     if(!fixed){
         var fixed = 2;
     }
-    return calc.round(calc.add(value1, value2),fixed);
+    return calc.add(value1, value2).toFixed(fixed);
 }
 
 export function sub([value1,value2,fixed]) {        //减
-    return calc.round(calc.sub(value1, value2),fixed);
+    return ccalc.sub(value1, value2).toFixed(fixed);
 }
 
 export function mul([value1,value2,fixed]) {        //乘
-    return calc.round(calc.mul(value1, value2),fixed);
+    return calc.mul(value1, value2).toFixed(fixed);
 }
 
 export function divide([value1,value2,fixed]) {        //除
@@ -35,9 +35,9 @@ export function divide([value1,value2,fixed]) {        //除
         var val = 0;
         return calc.round(val,fixed);
       }
-    return calc.round(calc.div(value1, value2),fixed);
+    return calc.div(value1, value2).toFixed(fixed);
 }
 
-export function round([value,fixed]) {              //保留小数
+export function round([value,fixed]) {              //四舍五入
     return calc.round(value,fixed);
 }

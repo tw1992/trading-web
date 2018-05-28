@@ -91,46 +91,48 @@
             <td class="firstCol">{{item.created_at}}</td>
             <td>{{item.symbol}}</td>
             <td>限价</td>
-            <td :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?'卖出':'买入'}}</td>
+            <td><span :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?'卖出':'买入'}}</span></td>
             <td>{{item.price}}</td>
             <td>{{item.number}}</td>
-            <td>{{[([item.deal_number,item.number,2] | divide) , 2] | toPercent}}</td>
+            <td>{{[item.bargain , 2] | toPercent}}</td>
             <td>{{item.total}}</td>
             <td>—— ——</td>
-            <td><span @click="item.show = !item.show" class="baseColor">成交详情</span></td>
+            <td><span @click="item.show = !item.show;getDetail(item.id,item.show)" class="baseColor">成交详情</span></td>
             
           </tr>
           <tr v-show="item.show" :key="idx+'b'">
             <td colspan="10">
               <div class="detail">
-                <p class="title">成交总额<span class="sum">{{transaction}}</span></p>
-              <el-table
-                class="detailTable"
-                :data="historyList"
-                style="width: 100%">
-                  <el-table-column
-                    class-name="firstCol"
-                    prop="time"
-                    label="成交时间">
-                  </el-table-column>
-                  <el-table-column
-                    prop="prices"
-                    label="成交价格">
-                  </el-table-column>
-                  <el-table-column
-                    prop="num"
-                    label="成交数量">
-                  </el-table-column>
-                  <el-table-column
-                    prop="commission"
-                    label="手续费">
-                  </el-table-column>
-                  <el-table-column
-                    prop="sum"
-                    label="成交金额">
-                  </el-table-column>
-                </el-table>
-              </div>
+                  <p class="title">成交总额<span class="sum">{{item.detailAll + " BTC"}}</span></p>
+                <el-table
+                  class="detailTable"
+                  :data="item.detail"
+                  style="width: 100%">
+                    <el-table-column
+                      class-name="firstCol"
+                      prop="created_at"
+                      label="成交时间">
+                    </el-table-column>
+                    <el-table-column
+                      prop="price"
+                      label="成交价格">
+                    </el-table-column>
+                    <el-table-column
+                      prop="number"
+                      label="成交数量">
+                    </el-table-column>
+                    <el-table-column
+                      prop="fee"
+                      label="手续费">
+                    </el-table-column>
+                    <el-table-column
+                      label="成交金额">
+                       <template slot-scope="scope">
+                           <span>{{[scope.row.price,scope.row.number,8] | mul}}</span>
+                       </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
               
             </td>
           </tr>
@@ -142,6 +144,15 @@
       </tbody>
 
     </table>
+    <el-pagination
+        layout="prev, pager, next"
+        @current-change="pageChange"
+        @next-click="pageChange"
+        @prev-click="pageChange"
+        v-show="pagination.total"
+        :page-size="pagination.per_page*1"
+        :total="pagination.total">
+    </el-pagination>
   </div>
 </div>
 
@@ -159,42 +170,87 @@
 
 <script>
 import axios from '../../api/axios'
+import { add, mul, toFixed } from '../../utils/common.js'
+import calc from 'calculatorjs'
   export default {
     data() {
       return {
-        historyList: [{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          },{
-            time: '2018-04-11 13:05:17',
-            prices: '0.00003287',
-            num: '1.29387478',
-            commission: '34.239 BTC',
-            sum: '445.161 BTC'
-          }],
-        transaction:'0.28738938 BTC',
-        openOrder: []
+        openOrder: [],
+        pagination: {
+            total: 0,
+            links: [],
+            count: '',
+            current_page: 1,
+            per_page: '',
+            total_pages: ''
+        },
       }
     },
     methods: {
+        pageChange(page) {
+            this.getOpenOrders(`/api/orders?page=${page}`);
+        },
+        getOpenOrders(url){
+            var _this = this;
+            axios.get(url,{status:0}).then(function(res){  
+                console.log(res);
+                res.data.map(item => {
+                    item.show = false;
+                    item.bargain = _this.div(item.deal_number,item.number,4);
+                })
+                _this.openOrder = res.data;
+                _this.pagination = res.meta.pagination;
+                item.detail = [{
+                  "created_at": "",
+                  "price": "",
+                  "number": "",
+                  "fee": ""
+              }]
+              item.detailAll = ""
+            }).catch(function (res){  
+                console.log(res);
+            });
+        },
+        getDetail(id,show) {
+          if(show){
+                var _this = this;
+                axios.get(`/api/orders/detail/${id}`).then(function(res){  
+                    // console.log(res);
+                    var sum = toFixed(0,8);
+                    res.data.map(it => {
+                        sum = add(sum,mul(it.price,it.number,8),8)
+                    })
 
+                    _this.openOrder.map(it => {
+                        if(it.id == id){
+                            it.detail = res.data;
+                            it.detailAll = sum;
+                        }
+                    })
+                    // res.data.map(item => {
+                    //     item.show = false;
+                    //     item.bargain = _this.div(item.deal_number,item.number,4);
+                    // })
+                    // _this.openOrder = res.data;
+                    // _this.pagination = res.meta.pagination;
+                }).catch(function (res){  
+                    console.log(res);
+                });
+            }
+        },
+        div(value1, value2, fixed) {    //除
+            if(!fixed){
+                var fixed = 2;
+            }
+            if(value2 == 0){
+                var val = 0;
+                return calc.round(val,fixed);
+            }
+            return calc.div(value1, value2).toFixed(fixed);
+        }
     },
     created() {
-      var _this = this;
-      axios.get('/api/orders',{status:0}).then(function(res){  
-          console.log(res);
-          
-          res.data.map(item => {
-              item.show = false;
-          })
-          _this.openOrder = res.data;
-          console.log(_this.openOrder)
-      }).catch(function (res){  
-          console.log(res);
-      }); 
+        this.getOpenOrders('/api/orders')
     }
   }
 </script>

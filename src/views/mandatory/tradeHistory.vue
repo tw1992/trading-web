@@ -67,33 +67,47 @@
           class-name="firstCol"
           :label="$t('tradingCenter.date')"
           width="180"
-          prop="time">
+          prop="created_at">
         </el-table-column>
         <el-table-column
           :label="$t('home.pair')"
-          prop="goods">
+          prop="symbol">
         </el-table-column>
         <el-table-column
-          :label="$t('tradingCenter.side')"
-          prop="direction">
+          :label="$t('tradingCenter.side')">
+            <template slot-scope="scope">
+                <span :class="scope.row.side=='SELL'?'red':'green'">{{scope.row.side=='SELL'?'卖出':'买入'}}</span>
+            </template>
         </el-table-column>
         <el-table-column
-          :label="$t('funds.price')"
-          prop="prices">
+          :label="$t('tradingCenter.price')"
+          prop="price">
         </el-table-column>
         <el-table-column
           :label="$t('funds.filled')"
-          prop="num">
+          prop="number">
         </el-table-column>
         <el-table-column
           :label="$t('tradingCenter.fee')"
-          prop="sum">
+          prop="fee">
         </el-table-column>
         <el-table-column
           :label="$t('tradingCenter.sum')"
           prop="sum">
+            <template slot-scope="scope">
+                <span>{{[scope.row.price,scope.row.number,8] | mul}}</span>
+            </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        layout="prev, pager, next"
+        @current-change="pageChange"
+        @next-click="pageChange"
+        @prev-click="pageChange"
+        v-show="pagination.total"
+        :page-size="pagination.per_page*1"
+        :total="pagination.total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -118,57 +132,36 @@ export default {
           label: '卖出'
         }],
         conceal: false,
-        openOrder: [{
-          time: '2018-04-11 18:08:11',
-          goods: 'BTC',
-          type: '限价',
-          direction: '卖出',
-          prices: '0.00000051',
-          num: '3,374.74628467',
-          probability: '0.00029%',
-          sum: '3,454.72846',
-          condition: '—— ——'
-        },{
-          time: '2018-04-11 18:08:11',
-          goods: 'BTC',
-          type: '限价',
-          direction: '卖出',
-          prices: '0.00000051',
-          num: '3,374.74628467',
-          probability: '0.00029%',
-          sum: '3,454.72846',
-          condition: '—— ——'
-        },{
-          time: '2018-04-11 18:08:11',
-          goods: 'BTC',
-          type: '限价',
-          direction: '卖出',
-          prices: '0.00000051',
-          num: '3,374.74628467',
-          probability: '0.00029%',
-          sum: '3,454.72846',
-          condition: '—— ——'
-        }],
-
+        openOrder: [],
+        pagination: {
+            oldTotal: 0,
+            total: 0,
+            links: [],
+            count: '',
+            current_page: 1,
+            per_page: '',
+            total_pages: ''
+        },
+        postData: {}
       };
     },
     methods: {
-      getRecord(postData) {
+      getRecord(url,postData) {
         var _this = this;
         if(postData){
           postData.status = 1;
         }
-        axios.get('/api/orders/trades',postData?postData:{status:1}).then(function(res){  
+        axios.get(url,postData?postData:{status:1}).then(function(res){  
             console.log(res);
             _this.openOrder = res.data;
             _this.openOrder.map(function(item){
               item.show = false;
               item.condition = '—— ——';
               item.type = "限价";
-              item.probability = item.deal_number/item.number.toFixed(5);
+              item.probability = (item.deal_number/item.number).toFixed(5);
             });
-            // _this.googleQR = res.data.googleAuthenticatorSecret;
-            // _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
+            _this.pagination = res.meta.pagination;
+            _this.pagination.oldTotal = _this.pagination.total;
         }).catch(function (res){  
             console.log(res);
         }); 
@@ -182,7 +175,11 @@ export default {
           postData.market = this.trade;
           postData.coin = this.currency;
           postData.side = this.direction;
-          this.getRecord(postData)
+          this.postData = postData;
+          this.getRecord('/api/orders/trades',postData)
+      },
+      pageChange(page) {
+            this.getRecord(`/api/orders/trades?page=${page}`,this.postData);
       },
       getMarketList(marketList) {
         this.tradeList = marketList;
@@ -211,10 +208,10 @@ export default {
       ...mapGetters([
           'marketList',
           'coinList',
-      ])
+      ]),
     },
     created (){
-      this.getRecord();
+      this.getRecord('/api/orders/trades');
       // console.log(this.marketList)
       this.getMarketList(this.marketList);
       this.getCoinList(this.coinList);

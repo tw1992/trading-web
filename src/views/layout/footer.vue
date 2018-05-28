@@ -5,7 +5,7 @@
       <div class="fTop">
         <ul class="linkList">
           <li>
-            <a href="#">{{$t('home.about')}}</a>
+            <router-link to="/about">{{$t('home.about')}}</router-link>
           </li>
           <li>
             <router-link target="_blank" to="/terms">{{$t('home.terms')}}</router-link>

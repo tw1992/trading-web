@@ -64,6 +64,7 @@
             @current-change="pageChange1"
             @next-click="pageChange1"
             @prev-click="pageChange1"
+            v-show="pagination.total1"
             :page-size="pagination1.per_page*1"
             :total="pagination1.total">
         </el-pagination>
@@ -117,6 +118,7 @@
             @current-change="pageChange2"
             @next-click="pageChange2"
             @prev-click="pageChange2"
+            v-show="pagination.total2"
             :page-size="pagination2.per_page*1"
             :total="pagination2.total">
         </el-pagination>
