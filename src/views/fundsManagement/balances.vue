@@ -83,7 +83,7 @@
               <router-link :to="'/fundsManagement/withdrawals/'+item.id">{{$t('funds.withdrawal')}}</router-link>
               <a class="linkPairs" @click="item.showPairsFlag = !item.showPairsFlag" :to="'/tradingCenter/'+item.goods">{{$t('funds.trade')}}
                 <div class="pairsList" v-show="item.showPairsFlag">
-                  <router-link :to="'/tradingCenter/'+it" class="pairsItem" v-for="(it,idx) in showPairsList" :key="idx">{{it}}</router-link>
+                  <router-link :to="'/tradingCenter/'+it" class="pairsItem" v-for="(it,idx) in item.showPairsList" :key="idx">{{it}}</router-link>
                 </div>
               </a>
             </td>
@@ -142,6 +142,7 @@ export default {
             coinItem.freeze = it.disabled;
             coinItem.appraisement = coinItem.sum * it.price;
             coinItem.showPairsFlag = false;  //交易对列表
+            coinItem.showPairsList = _this.findPairs(it.id);
             sum += coinItem.appraisement;
             balances.push(coinItem);
           });
@@ -152,7 +153,6 @@ export default {
       }); 
     },
     findName(coin_id) {
-      var _this = this;
       var name;
       this.coinList.forEach(it=>{
       if(it.coin_id == coin_id){
@@ -161,8 +161,15 @@ export default {
       })
       return name;
     },
-    findPairs(coin_name) {
-
+    findPairs(coin_id) {
+        var name = this.findName(coin_id)
+        var arr = [];
+        this.pairsList.forEach(it=>{
+        if(it.symbol.indexOf(name) != -1){
+            arr.push(it.symbol);
+            }
+        })
+      return arr;
     }
   },
   computed: {
@@ -196,7 +203,7 @@ export default {
   },
   created() {
     this.getAccounts();
-    console.log(this.coinList)
+    console.log(this.pairsList)
   },
 }
 </script>

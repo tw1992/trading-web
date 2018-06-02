@@ -332,6 +332,13 @@ export default {
                     console.log(res);
                     _this.bucketHost = res.data.domain;
                     _this.postData.token = res.data.token;
+                    _this.$message({
+                            message: '提交成功',
+                            type: 'success'
+                        });
+                    setTimeout(()=>{
+                        _this.$router.push('/userCenter/account');
+                    },2000)
                 }).catch(function (res){  
                     console.log(res);
                 });
@@ -368,6 +375,13 @@ export default {
                     console.log(res);
                     _this.bucketHost = res.data.domain;
                     _this.postData.token = res.data.token;
+                    _this.$message({
+                            message: '提交成功',
+                            type: 'success'
+                        });
+                    setTimeout(()=>{
+                        _this.$router.push('/userCenter/account');
+                    },2000)
                 }).catch(function (res){  
                     console.log(res);
                 });

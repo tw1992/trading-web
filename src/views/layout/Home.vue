@@ -26,9 +26,7 @@
   <el-row class="message">
     <el-col :span="24">
       <ul class="messageList">
-        <li><a href="">关于本体（ONT）上线交易的风险通知</a></li>
-        <li><a href="">第二期第二轮投票上币结果公布及第三轮投票开启通知</a></li>
-        <li><a href="">全球首家数字货币开采与交易一体化的矿池平台上线</a></li>
+        <li v-for="(item,idx) in noticeList" :key="idx"><a target="_blank" :href="item.html_url">{{item.title}}</a></li>
       </ul>
     </el-col>
   </el-row>
@@ -550,6 +548,7 @@ export default {
         WWWList: [],
         RNGList: [],
         allList: [],
+        noticeList: [],
         index: 0,
       };
     },
@@ -597,6 +596,17 @@ export default {
       smoothscroll() {
         document.body.scrollTop = 0
         document.documentElement.scrollTop = 0
+      },
+      getNoticeList() {     //获取公告
+        var _this = this;
+        axios.get('https://support.bjex.io/api/v2/help_center/zh-cn/categories/360000431912/articles.json').then(function(res){  
+            var noticeList = res.articles.splice(0,2);
+            _this.noticeList = noticeList;
+            console.log(noticeList);
+            // _this.sliceArray(_this.newList,4);
+        }).catch(function (res){  
+            console.log(res);
+        }); 
       },
       getNewsList() {
         var _this = this;
@@ -825,6 +835,7 @@ export default {
       this.getNewsList();
     //   localStorage.localList =  JSON.stringify([]);
       this.localList = JSON.parse(localStorage.localList);
+      this.getNoticeList();
     },
     beforeMount () {
       window.addEventListener('scroll', this.handleScroll);

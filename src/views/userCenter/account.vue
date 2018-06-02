@@ -11,8 +11,10 @@
                 <p class="UID">UID: {{userInfo.id}}</p>
             </div>
             <div class="attest">
-                <router-link v-if="!userInfo.is_human_validated" class="toattest" to="/autonym">{{$t('user.unverified')}}&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
-                <a v-if="userInfo.is_human_validated" class="toattest" style="color:#3ABC56">已实名认证</a>
+                <router-link v-if="userInfo.is_human_validated == 0" class="toattest" to="/autonym">{{$t('user.unverified')}}&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
+                <a v-if="userInfo.is_human_validated == 1" class="toattest" style="color:#3ABC56">已实名认证</a>
+                <a v-if="userInfo.is_human_validated == 2" class="toattest">实名认证审核中</a>
+                <router-link v-if="userInfo.is_human_validated == 3" class="toattest" to="/autonym">实名认证失败，请重新实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
             </div>
         </div>
         <div class="otherBox">

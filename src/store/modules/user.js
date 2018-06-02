@@ -119,6 +119,21 @@ const user = {
             }) 
         })  
     },
+    tcLogOut({ commit, state }) {       //交易中心退出
+        var _this = this;
+        return new Promise((resolve, reject) => { 
+            axios.get('/api/auth/logout', '').then(response => {   
+                setEmail('');  
+                setToken(false);  
+                commit('SET_EMAIL', '');  
+                commit('SET_TOKEN', false);
+                vuexAlong.clean()
+                resolve(response);  
+            }).catch(error => {   
+                reject(error) 
+            }) 
+        })  
+    },
     //从localstorage里取email和token
     // initLogin({ commit }) {
     //     return new Promise(resolve => {  

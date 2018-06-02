@@ -1,8 +1,7 @@
 <template>
-  <div class="bgBox">
-    <div class="loginBox">
+  <div class="loginBox">
       <router-link to="/home" class="logoBox">
-        <img class="logo" src="../assets/img/logo.png" alt="logo">
+        <img class="logo" src="../../assets/img/logo.png" alt="logo">
       </router-link>
       <el-form :model="loginForm" size="small" :rules="rules" ref="loginForm" class="loginForm formbase">
         <div class="formT">
@@ -37,8 +36,6 @@
         <router-link to="/retrieve">{{$t('login.forgotPassword')}}</router-link>
         <div class="register"><span>{{$t('login.NotonBJEXyet')}}</span><router-link to="/register">{{$t('login.register')}}</router-link></div>
       </div>
-    </div>
-    <login-footer></login-footer>
 
     <!-- 手机验证 -->
     <el-dialog
@@ -123,9 +120,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import VueRouter from 'vue-router'
-import axios from '../api/axios'
-import loginFooter from './components/loginFooter'
-import RemoteJs from './components/loginTest'
+import axios from '../../api/axios'
+import RemoteJs from './loginTest'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -363,7 +359,6 @@ export default {
       ]),
     },
     components: {
-      loginFooter,
       RemoteJs
     },
     beforeMount() {
@@ -404,7 +399,7 @@ export default {
 </style>
 
 <style lang="scss">
-@import "../styles/login.scss";
+@import "../../styles/login.scss";
 
 .bgBox{
   .baseDialog .el-dialog__footer{
@@ -417,8 +412,4 @@ export default {
   }
 }
 </style>
-
-
-
-
 

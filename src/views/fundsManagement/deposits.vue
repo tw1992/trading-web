@@ -85,7 +85,7 @@
             <div class="itemB">
               <div class="nodes">
                 <p class="nodeTitle">地址</p>
-                <p class="nodeMain">{{it.address}}</p>
+                <p class="nodeMain">{{it.address | tooLong}}</p>
               </div>
             </div>
           </div>
@@ -103,8 +103,8 @@
             <div class="itemB">
               <div class="nodes">
                 <p class="nodeTitle">Txid</p>
-                <a v-if="coin_name == 'BTC'" :href="'https://blockchain.info/zh-cn/tx/'+it.txid" class="nodeMain">{{it.txid}}</a>
-                <a v-if="coin_name == 'ETH'" :href="'https://etherscan.io/tx/'+it.txid" class="nodeMain">{{it.txid}}</a>
+                <a v-if="coin_name == 'BTC'" :href="'https://blockchain.info/zh-cn/tx/'+it.txid" class="nodeMain linkTo">{{it.txid}}</a>
+                <a v-if="coin_name == 'ETH'" :href="'https://etherscan.io/tx/'+it.txid" class="nodeMain linkTo">{{it.txid}}</a>
               </div>
             </div>
           </div>
@@ -231,6 +231,15 @@ export default {
           'marketList',
           'coinList',
       ])
+    },
+    filters: {
+        tooLong: function(value) {
+            if(value.length>70){
+                var str = value.slice(0,70) + "...";
+                return str;
+            }
+            return value;
+        }
     },
     components: {VueQr},
     created() {

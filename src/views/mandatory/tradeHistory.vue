@@ -9,7 +9,7 @@
         <el-date-picker
           v-model="time"
           size="mini"
-          type="daterange"
+          type="datetimerange"
           value-format="yyyy-MM-dd"
           range-separator="至"
           start-placeholder="开始日期"

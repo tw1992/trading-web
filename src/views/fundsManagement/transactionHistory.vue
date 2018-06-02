@@ -29,8 +29,8 @@
             width="120">
             <template slot-scope="scope">
               <span class="success" v-if="scope.row.status == 1">成功</span>
-              <span class="defeat" v-if="scope.row.status == 0">失败</span>
-              <span class="processed" v-if="scope.row.status == 2">处理中</span>
+              <!-- <span class="defeat" v-if="scope.row.status == 0">失败</span> -->
+              <span class="processed" v-if="scope.row.status == 0">确认中</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -53,7 +53,7 @@
           <el-table-column
             label="信息">
             <template slot-scope="scope">
-              <div style="margin-bottom:4px;" class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.address}}</p></div>
+              <div style="margin-bottom:4px;" class="tdItem"><p class="tdname">地址</p><p class="tdmain"><a :title="scope.row.address">{{scope.row.address | tooLong}}</a></p></div>
               <div v-if="scope.row.coin_id == 1" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://blockchain.info/zh-cn/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
               <div v-if="scope.row.coin_id == 2" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://etherscan.io/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
             </template>
@@ -64,7 +64,7 @@
             @current-change="pageChange1"
             @next-click="pageChange1"
             @prev-click="pageChange1"
-            v-show="pagination.total1"
+            v-show="pagination1.total"
             :page-size="pagination1.per_page*1"
             :total="pagination1.total">
         </el-pagination>
@@ -83,8 +83,8 @@
             width="120">
             <template slot-scope="scope">
               <span class="success" v-if="scope.row.status == 1">成功</span>
-              <span class="defeat" v-if="scope.row.status == 0">失败</span>
-              <span class="processed" v-if="scope.row.status == 2">处理中</span>
+              <!-- <span class="defeat" v-if="scope.row.status == 0">失败</span> -->
+              <span class="processed" v-if="scope.row.status == 0">确认中</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -107,7 +107,7 @@
           <el-table-column
             :label="$t('funds.information')">
             <template slot-scope="scope">
-              <div class="tdItem"><p class="tdname">地址</p><p class="tdmain">{{scope.row.address}}</p></div>
+              <div class="tdItem"><p class="tdname">地址</p><p class="tdmain"><a :title="scope.row.address">{{scope.row.address | tooLong}}</a></p></div>
               <div v-if="scope.row.coin_id == 1" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://blockchain.info/zh-cn/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
               <div v-if="scope.row.coin_id == 2" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://etherscan.io/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
             </template>
@@ -118,7 +118,7 @@
             @current-change="pageChange2"
             @next-click="pageChange2"
             @prev-click="pageChange2"
-            v-show="pagination.total2"
+            v-show="pagination2.total"
             :page-size="pagination2.per_page*1"
             :total="pagination2.total">
         </el-pagination>
@@ -268,6 +268,15 @@ export default {
       ...mapGetters([
           'coinList',
       ])
+    },
+    filters: {
+        tooLong: function(value) {
+            if(value.length>110){
+                var str = value.slice(0,110) + "...";
+                return str;
+            }
+            return value;
+        }
     },
     created() {
       this.getRecharge('/api/accounts/imports');

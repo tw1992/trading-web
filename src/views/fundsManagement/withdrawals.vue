@@ -56,10 +56,12 @@
               <el-select class="addList" @change="getTag" v-model="siteForm.addSelect" placeholder="请选择">
                 <el-option key="new" label="新地址" value="new"></el-option>
                 <el-option
-                  v-for="item in addList"
-                  :key="item.address"
-                  :label="item.address"
-                  :value="item.address">
+                  v-for="(item,idx) in addList"
+                  :key="idx"
+                  :label="item.label"
+                  :value="item.address"
+                  >
+                  <a :title="item.tag+' - '+item.address">{{item.label}}</a>
                 </el-option>
               </el-select>
           </el-form-item>
@@ -123,14 +125,14 @@
           <div class="itemL">
             <div class="itemT">
               <div class="nodes">
-                <p class="nodeTitle">{{it.status == 0?'成功':'失败'}}</p>
+                <p class="nodeTitle">{{it.status == 0?'确认中':'成功'}}</p>
                 <p class="nodeMain">{{it.created_at}}</p>
               </div>
             </div>
             <div class="itemB">
               <div class="nodes">
                 <p class="nodeTitle">地址</p>
-                <p class="nodeMain">{{it.address}}</p>
+                <a :title="it.address" class="nodeMain">{{it.address | tooLong}}</a>
               </div>
             </div>
           </div>
@@ -148,7 +150,8 @@
             <div class="itemB">
               <div class="nodes">
                 <p class="nodeTitle">Txid</p>
-                <p class="nodeMain">{{it.txid}}</p>
+                <a v-if="coin_name == 'BTC'" :href="'https://blockchain.info/zh-cn/tx/'+it.txid" class="nodeMain linkTo">{{it.txid}}</a>
+                <a v-if="coin_name == 'ETH'" :href="'https://etherscan.io/tx/'+it.txid" class="nodeMain linkTo">{{it.txid}}</a>
               </div>
             </div>
           </div>
@@ -347,11 +350,10 @@ export default {
             this.submitData.coinId = this.coin_id;
             this.submitData.number = this.siteForm.num;
             if(this.siteForm.addSelect == 'new'){
-              this.submitData.address = this.siteForm.site
+              this.submitData.address = this.siteForm.site;
+              this.submitData.tag = this.siteForm.label;
             }else{
-              this.submitData.address = this.siteForm.addSelect
-            }
-            if(this.tag != ''){
+              this.submitData.address = this.siteForm.addSelect;
               this.submitData.tag = this.tag;
             }
             // console.log(this.submitData)
@@ -409,6 +411,10 @@ export default {
         }
       },
       submitFin() {
+          this.$message({
+                message: '提现成功',
+                type: 'success'
+            });
           this.siteForm.label = "";
           this.siteForm.site = "";
           this.siteForm.addSelect = "";
@@ -445,7 +451,14 @@ export default {
         var _this = this;
         axios.get(`/api/accounts/addresses/${coin_id}`).then(function(res){  
             console.log(res);
-            _this.addList = res.data;
+            res.data.forEach(it => {
+                var label = it.tag + " - " +it.address;
+                if(label.length > 50){
+                    label = label.slice(0,50) + "...";
+                }
+                it.label = label;
+            })
+            _this.addList = res.data.slice(0,5);
         }).catch(function (res){  
             console.log(res);
         }); 
@@ -477,6 +490,15 @@ export default {
           'coinList',
           'userInfo',
       ])
+    },
+    filters: {
+        tooLong: function(value) {
+            if(value.length>70){
+                var str = value.slice(0,70) + "...";
+                return str;
+            }
+            return value;
+        }
     },
     beforeMount() {
       this.coin_id = this.$route.params.coin_id;

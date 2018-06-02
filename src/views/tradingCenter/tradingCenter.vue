@@ -1,5 +1,10 @@
 <template>
   <div class="tradingCenterBox">
+      <!-- 登录框 -->
+      <div class="bgBox toLogin" @click="loginFlag = false" v-show="loginFlag">
+          <div @click.stop><login-box></login-box></div>
+      </div>
+    
     <div class="tradHeader">
       <router-link to="/Home" class="logoBox">
         <img src="../../assets/img/logo.png" alt="logo">
@@ -22,7 +27,7 @@
       </div>
       <div class="userBox fz14 white" v-if="email">
         <router-link to="/userCenter/account" class="options">{{$t('route.account')}}</router-link>
-        <router-link to="" @click="logout">{{$t('route.logout')}}</router-link>
+        <a href="javascript:;" @click="logout()">{{$t('route.logout')}}</a>
       </div>
       <div class="langsBox fz14 white" @click="langFlag = !langFlag">
         <div class="showLangs options">{{$t('route.lang')}}<i class="el-icon-arrow-down"></i></div>
@@ -37,7 +42,12 @@
       <div class="tradMainL">
         <!-- K线面板 -->
         <div class="tradMainLT" ref="kline_container">
-          <div id="kline_container"></div>
+          <div id="kline_container" v-show="klineFlag"></div>
+          <div id="myChart" style="width:100%;height:100%;" v-show="!klineFlag"></div>
+          <div class="typeList">
+              <span @click="klineFlag = true">K线图</span>
+              <span @click="klineFlag = false">深度图</span>
+          </div>
         </div>
         <!-- 订单面板 -->
         <div class="tradMainLB">
@@ -116,7 +126,7 @@
                         <td><span>{{toPercent(item.deal_number/item.number,2)}}</span></td>
                         <td><span>{{item.total}}</span></td>
                         <td><span>条件</span></td>
-                        <td style="text-align: center;"><div class="options">{{$t('tradingCenter.cancel')}}</div></td>
+                        <td style="text-align: center;"><div class="options" @click="delOrder(item.id)">{{$t('tradingCenter.cancel')}}</div></td>
                       </tr>
 										</tbody>
 									</table>
@@ -137,18 +147,18 @@
                   <span class="lable">{{$t('tradingCenter.form')}}</span>
                   <el-date-picker
                     v-model="startTime1"
-                    type="date"
+                    type="datetime"
                     size="mini"
-                    value-format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                     prefix-icon="el-icon-caret-bottom"
                     :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
                   <div class="line"></div>
                   <el-date-picker
                     v-model="endTime1"
-                    type="date"
+                    type="datetime"
                     size="mini"
-                    value-format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                     prefix-icon="el-icon-caret-bottom"
                     :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
@@ -233,18 +243,18 @@
                   <span class="lable">{{$t('tradingCenter.form')}}</span>
                   <el-date-picker
                     v-model="startTime2"
-                    type="date"
+                    type="datetime"
                     size="mini"
-                    value-format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                     prefix-icon="el-icon-caret-bottom"
                     :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
                   <div class="line"></div>
                   <el-date-picker
                     v-model="endTime2"
-                    type="date"
+                    type="datetime"
                     size="mini"
-                    value-format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                     prefix-icon="el-icon-caret-bottom"
                     :placeholder="$t('tradingCenter.dateOption')">
                   </el-date-picker>
@@ -428,9 +438,9 @@
                   <colgroup style="width:30%;"></colgroup>
                   <tbody>
                   <tr v-for="(it,idx) in asksList" :key="idx">
-                    <td class="f-left green hoverB"><span>{{it.price}}</span></td>
-                    <td class="f-center"><span class="hoverSpan">{{it.num}}</span></td>
-                    <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{it.time}}</span>
+                    <td class="f-left green hoverB"><span>{{it[0]}}</span></td>
+                    <td class="f-center"><span class="hoverSpan">{{it[1]}}</span></td>
+                    <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{[it[0],it[1],fixed] | mul }}</span>
                       <div class="zhuzhuang greenBg" :style="{width: Math.random()*346+'px'}"></div>
                     </td>
                   </tr>
@@ -573,14 +583,24 @@
 
 <script>
 import calc from "calculatorjs";
-import $ from "expose-loader?$!jquery";
-import Kline from "kline";
+
 // import SockJS from 'sockjs';
 // var SockJS = require('sockjs');
 // import StompJS from 'stompjs';
 import io from "socket.io-client";
 import axios from "../../api/axios";
 import { mapGetters } from "vuex";
+import Kline from "kline";
+import  loginBox  from "../components/loginForm";
+
+//引入echarts
+// 引入基本模板
+let echarts = require("echarts/lib/echarts");
+// 引入柱状图组件
+require("echarts/lib/chart/line");
+// 引入提示框和title组件
+require("echarts/lib/component/tooltip");
+require("echarts/lib/component/title");
 
 export default {
   data() {
@@ -616,26 +636,122 @@ export default {
       sellPrice: "",
       sellNumber: "",
       nowTime: "",
+      loginFlag: false,
+      klineFlag: true,
+      echartsOption: {
+        title: {
+            text: "市场深度图",
+            textStyle: {
+                color: "#cdcdcd"
+            }
+        },
+        tooltip: {
+            trigger: "axis"
+        },
+        grid: {
+            left: "3%",
+            right: "4%",
+            bottom: "3%",
+            containLabel: true,
+            show: false,
+            borderColor: {
+                color: "#000"
+            }
+        },
+        toolbox: {
+            feature: {
+            saveAsImage: {}
+            }
+        },
+        axisLine: {
+            lineStyle: {
+                color: "#cdcdcd"
+            }
+        },
+        axisLabel: {
+            color: "#cdcdcd"
+        },
+        xAxis: {
+            type: "value",
+        },
+        yAxis: {
+            type: "value",
+        },
+        series: [
+            {
+            name: "买单",
+            type: "line",
+            step: "middle",
+            areaStyle: {
+                color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                    {
+                    offset: 0,
+                    color: "red" // 0% 处的颜色
+                    },
+                    {
+                    offset: 1,
+                    color: "blue" // 100% 处的颜色
+                    }
+                ],
+                globalCoord: false // 缺省为 false
+                }
+            },
+            data: []
+            },
+            {
+            name: "卖单",
+            type: "line",
+            step: "middle",
+            areaStyle: {
+                color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                    {
+                    offset: 0,
+                    color: "red" // 0% 处的颜色
+                    },
+                    {
+                    offset: 1,
+                    color: "blue" // 100% 处的颜色
+                    }
+                ],
+                globalCoord: false // 缺省为 false
+                }
+            },
+            data: []
+            }
+        ]
+      }
     };
   },
   beforeMount() {
-    if(this.email){
-        this.getOpenOrder();
-        this.getHistoryOrder();
-        this.getHistorytrading();
-        this.getAccounts();
+    if (this.email) {
+      this.getOpenOrder();
+      this.getHistoryOrder();
+      this.getHistorytrading();
+      this.getAccounts();
     }
     this.coin = this.$route.params.coin;
     this.market = this.$route.params.market;
     this.symbol = `${this.coin}/${this.market}`;
     this.onReady();
-    
+
     console.log(this.symbol);
     var that = this;
-    that.nowTime = that.formatDateTime(new Date(),"yyyy-MM-dd HH:mm:ss");
-    setInterval(function(){
-        that.nowTime = that.formatDateTime(new Date(),"yyyy-MM-dd HH:mm:ss");
-    },1000)
+    that.nowTime = that.formatDateTime(new Date(), "yyyy-MM-dd HH:mm:ss");
+    setInterval(function() {
+      that.nowTime = that.formatDateTime(new Date(), "yyyy-MM-dd HH:mm:ss");
+    }, 1000);
   },
   mounted() {
     const that = this;
@@ -657,13 +773,15 @@ export default {
       type: "poll", // poll/stomp
       url: `http://192.168.22.208/api/market/kline?interval=5`
     });
-    console.log(kline.data);
     kline.draw();
+
 
     window.onresize = () => {
       var height = this.$refs.kline_container.offsetHeight;
       var width = this.$refs.kline_container.offsetWidth;
       kline.resize(width, height);
+      this.drawLine();
+      //myChart.resize(width, height);
     };
   },
   methods: {
@@ -694,6 +812,7 @@ export default {
         //console.log(res)
         that.asksList = res.asks;
         that.bidsList = res.bids;
+        that.drawLine();
       });
       socket.on("pairsData", function(data) {
         let res = JSON.parse(JSON.parse(data).tradingList).data;
@@ -707,6 +826,14 @@ export default {
           }
         });
       });
+    },
+    drawLine() {
+        //渲染echarts
+        let myChart = echarts.init(document.getElementById("myChart"));
+        this.echartsOption.series[0].data = this.asksList;
+        this.echartsOption.series[1].data = this.bidsList;
+        // 绘制图表
+        myChart.setOption(this.echartsOption);
     },
     getTime(time) {
       //获取当前时间
@@ -826,30 +953,60 @@ export default {
         });
     },
     createOrder(type) {
-      var _this = this;
-      if (type == "buy") {
-        var postData = {
-          symbol: this.symbol,
-          side: "BUY",
-          price: this.buyPrice,
-          number: this.buyNumber
-        };
-      } else {
-        var postData = {
-          symbol: this.symbol,
-          side: "SELL",
-          price: this.sellPrice,
-          number: this.sellNumber
-        };
-      }
+      if (this.email) {
+        var _this = this;
+        if (type == "buy") {
+          var postData = {
+            symbol: this.symbol,
+            side: "BUY",
+            price: this.buyPrice,
+            number: this.buyNumber
+          };
+        } else {
+          var postData = {
+            symbol: this.symbol,
+            side: "SELL",
+            price: this.sellPrice,
+            number: this.sellNumber
+          };
+        }
 
+        axios
+          .post("/api/orders", postData)
+          .then(function(res) {
+            console.log(res);
+            if (res.code == 0) {
+              _this.$message({
+                message: "下单成功",
+                type: "success"
+              });
+            } else {
+              _this.$message({
+                message: res,
+                type: "error"
+              });
+            }
+          })
+          .catch(function(res) {
+            console.log(res);
+          });
+      } else {
+        this.loginFlag = true;
+      }
+    },
+    toPercent(point, num) {
+      var str = Number(point * 100).toFixed(num);
+      str += "%";
+      return str;
+    },
+    delOrder(id) {
+      var _this = this;
       axios
-        .post("/api/orders", postData)
+        .del(`/api/orders/${id}`)
         .then(function(res) {
-          console.log(res);
           if (res.code == 0) {
             _this.$message({
-              message: "下单成功",
+              message: "撤销成功",
               type: "success"
             });
           } else {
@@ -863,12 +1020,8 @@ export default {
           console.log(res);
         });
     },
-    toPercent(point, num) {
-      var str = Number(point * 100).toFixed(num);
-      str += "%";
-      return str;
-    },
     delAllOrder() {
+      var _this = this;
       //撤销全部订单
       axios
         .del("/api/orders")
@@ -891,7 +1044,11 @@ export default {
     },
     //退出登录
     logout: function() {
-      this.$store.dispatch("LogOut");
+      this.$store.dispatch("tcLogOut");
+      this.openOrder = []; //清空订单数据
+      this.historyOrder = [];
+      this.historytrading = [];
+      this.funds = [];
     },
     formatDateTime(time, format) {
       //时间戳转换
@@ -926,7 +1083,7 @@ export default {
       //语言切换
       this.$i18n.locale = lang;
       this.$store.dispatch("setLanguage", lang);
-    },
+    }
   },
   filters: {
     toFixed: ([value, num]) => {
@@ -937,6 +1094,9 @@ export default {
     mul: ([value1, value2, fixed]) => {
       return calc.mul(value1, value2).toFixed(fixed);
     }
+  },
+  components: {
+      loginBox
   },
   computed: {
     ...mapGetters(["email", "token", "userInfo", "coinList"]),
@@ -1071,14 +1231,24 @@ $baseColor: #fc9217;
 }
 
 .tradingCenterBox {
-  .buysellbtn{
-      background: url("../../assets/img/buysell_03.jpg") no-repeat center;
+  position: relative;
+  .toLogin {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.4);
   }
-  .buybtn{
-      background: url("../../assets/img/buy.jpg") no-repeat center;
+  .buysellbtn {
+    background: url("../../assets/img/buysell_03.jpg") no-repeat center;
   }
-  .sellbtn{
-      background: url("../../assets/img/sell.jpg") no-repeat center;
+  .buybtn {
+    background: url("../../assets/img/buy.jpg") no-repeat center;
+  }
+  .sellbtn {
+    background: url("../../assets/img/sell.jpg") no-repeat center;
   }
   .options {
     cursor: pointer;
@@ -1246,9 +1416,22 @@ $baseColor: #fc9217;
       display: flex;
       flex-direction: column;
       .tradMainLT {
+        position: relative;
         flex: 1;
         min-width: 620px;
         min-height: 270px;
+        #chart_show_tools,
+        #chart_toolbar_theme {
+          //隐藏划线工具和主题切换
+          display: none;
+        }
+        .typeList {
+          position: absolute;
+          right: 36px;
+          top: 0;
+          z-index: 10;
+          line-height: 30px;
+        }
       }
       .tradMainLB {
         height: 254px;
@@ -1791,6 +1974,17 @@ $baseColor: #fc9217;
 </style>
 
 <style lang="scss">
+@import "../../styles/login.scss";
+.bgBox {
+  .baseDialog .el-dialog__footer {
+    .tips {
+      margin-bottom: 40px;
+      a {
+        color: #fc9217;
+      }
+    }
+  }
+}
 .tradingCenterBox {
   .el-checkbox__inner {
     background: #050505;
