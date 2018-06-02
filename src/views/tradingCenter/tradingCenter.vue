@@ -758,9 +758,10 @@ export default {
     console.log(this.$refs.kline_container.offsetHeight);
     var height = this.$refs.kline_container.offsetHeight;
     var width = this.$refs.kline_container.offsetWidth;
+    var symbol = this.symbol;
     var kline = new Kline({
       element: "#kline_container",
-      symbol: "ETH/BTC",
+      symbol: symbol,
       symbolName: "比特币",
       height: height,
       width: width,
@@ -770,11 +771,16 @@ export default {
       showTrade: false,
       disableFirebase: true,
       theme: "dark",
+    //   debug: false,
       type: "poll", // poll/stomp
-      url: `http://192.168.22.208/api/market/kline?interval=5`
+      url: `http://192.168.22.208/api/market/kline?interval=5`,
+      onRangeChange: function(range) {
+          console.log(range)
+          var time = range/60000;
+          this.url = `http://192.168.22.208/api/market/kline?interval=${time}`
+      }
     });
     kline.draw();
-
 
     window.onresize = () => {
       var height = this.$refs.kline_container.offsetHeight;
