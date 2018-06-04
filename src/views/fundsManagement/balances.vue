@@ -81,11 +81,19 @@
             <td class="operation">
               <router-link :to="'/fundsManagement/deposits/'+item.id">{{$t('funds.deposit')}}</router-link>
               <router-link :to="'/fundsManagement/withdrawals/'+item.id">{{$t('funds.withdrawal')}}</router-link>
-              <a class="linkPairs" @click="item.showPairsFlag = !item.showPairsFlag" :to="'/tradingCenter/'+item.goods">{{$t('funds.trade')}}
-                <div class="pairsList" v-show="item.showPairsFlag">
+              
+              <el-popover
+                placement="right-start"
+                width="80"
+                trigger="click">
+                <div class="pairsList" v-show="item.showPairsList&&item.showPairsList.length>0">
                   <router-link :to="'/tradingCenter/'+it" class="pairsItem" v-for="(it,idx) in item.showPairsList" :key="idx">{{it}}</router-link>
                 </div>
+                <p v-show="!item.showPairsList||item.showPairsList.length==0">暂无交易</p>
+                <a class="linkPairs" slot="reference">{{$t('funds.trade')}}
+                
               </a>
+              </el-popover>
             </td>
             
           </tr>
@@ -235,13 +243,14 @@ export default {
     display: inline-block;
     position: relative;
     // overflow: auto;
-    .pairsList{
-      position: absolute;
+    
+  }
+}
+
+.pairsList{
       width: 80px;
       text-align: center;
       line-height: 28px;
-      top: 0;
-      right: -84px;
       background: #fff;
       z-index: 10;
       border: 1px solid #ccc;
@@ -256,10 +265,10 @@ export default {
           border-bottom: 0;
         }
       }
+      a{
+          color: #333333;
+      }
     }
-  }
-}
-
 </style>
 
 <style lang="scss">
@@ -268,5 +277,8 @@ export default {
   .el-table .cell{
     overflow: auto;
   }
+}
+.el-popover{
+    min-width: 80px;
 }
 </style>

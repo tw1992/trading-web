@@ -45,8 +45,8 @@
           <div id="kline_container" v-show="klineFlag"></div>
           <div id="myChart" style="width:100%;height:100%;" v-show="!klineFlag"></div>
           <div class="typeList">
-              <span @click="klineFlag = true">K线图</span>
-              <span @click="klineFlag = false">深度图</span>
+              <span class="options" @click="klineFlag = true">K线图</span>
+              <span class="options" @click="klineFlag = false">深度图</span>
           </div>
         </div>
         <!-- 订单面板 -->
@@ -773,10 +773,11 @@ export default {
       theme: "dark",
     //   debug: false,
       type: "poll", // poll/stomp
-      url: `http://192.168.22.208/api/market/kline?interval=5`,
+      url: `http://192.168.22.208/api/market/kline?interval=60`,
       onRangeChange: function(range) {
-          console.log(range)
+          //console.log(range)
           var time = range/60000;
+          //console.log(time)
           this.url = `http://192.168.22.208/api/market/kline?interval=${time}`
       }
     });
