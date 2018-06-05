@@ -798,7 +798,9 @@ export default {
       let that = this;
       let c = 0;
       console.log("建立长连接！");
-      const socket = io.connect("http://ws.bjex.io:9006/");
+      var url = process.env.NODE_API;
+      const socket = io.connect(url);
+    //   const socket = io.connect("http://ws.bjex.io:9006/");
     //   const socket = io.connect("http://192.168.133.190:9006/");
       socket.emit("join", { userId: "linxi", symbol: this.symbol });
       socket.on("tradingData", function(data) {
