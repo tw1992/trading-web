@@ -749,11 +749,21 @@ export default {
     this.onReady();
 
     console.log(this.symbol);
+    //获取时间
     var that = this;
-    that.nowTime = that.formatDateTime(new Date(), "yyyy-MM-dd HH:mm:ss");
-    setInterval(function() {
-      that.nowTime = that.formatDateTime(new Date(), "yyyy-MM-dd HH:mm:ss");
-    }, 1000);
+      axios
+        .get("/api/time", { status: 0 })
+        .then(function(res) {
+            var time = res.data.timestamp*1000;
+            that.nowTime = that.formatDateTime(time, "yyyy-MM-dd HH:mm:ss");
+            setInterval(function() {
+                time = time + 1000;
+                that.nowTime = that.formatDateTime(time, "yyyy-MM-dd HH:mm:ss");
+            }, 1000);
+        })
+        .catch(function(res) {
+          console.log(res);
+        });
   },
   mounted() {
     const that = this;
@@ -775,7 +785,7 @@ export default {
       theme: "dark",
     //   debug: false,
       type: "poll", // poll/stomp
-      url: `http://api.bjex.io/api/market/kline`,
+      url: process.env.KLINE,
     });
     kline.draw();
 
