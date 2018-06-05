@@ -772,6 +772,7 @@ export default {
     var height = this.$refs.kline_container.offsetHeight;
     var width = this.$refs.kline_container.offsetWidth;
     var symbol = this.symbol;
+    console.log(symbol)
     var klineUrl = process.env.KLINE;
     var kline = new Kline({
       element: "#kline_container",
@@ -789,6 +790,7 @@ export default {
       type: "poll", // poll/stomp
       url: klineUrl,
     });
+    kline.setSymbol(symbol, symbol);
     kline.draw();
 
     window.onresize = () => {
@@ -834,6 +836,12 @@ export default {
         c++;
         //console.log(c)
         // console.log(res)
+        res.asks.map(it => {
+            it[1] = String(it[1]);
+        })
+        res.bids.map(it => {
+            it[1] = String(it[1]);
+        })
         that.asksList = res.asks;
         that.bidsList = res.bids;
         that.drawLine();
