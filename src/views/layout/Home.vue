@@ -101,13 +101,13 @@
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane name="BTC">
-          <span slot="label">BTC {{$t('home.markets')}}</span>
+        <el-tab-pane name="CCC">
+          <span slot="label">CCC {{$t('home.markets')}}</span>
           <el-row class="tabContent">
             <el-table
-            :data="BTCitems"
+            :data="CCCitems"
             stripe
-            ref="BTCTable"
+            ref="CCCTable"
             @row-click="linkToGoods"
             style="width: 100%">
             <span slot="empty">{{$t('home.noData')}}</span>
@@ -231,7 +231,7 @@
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane name="OMG">
+        <!-- <el-tab-pane name="OMG">
           <span slot="label">OMG {{$t('home.markets')}}</span>
           <el-row class="tabContent">
             <el-table
@@ -489,7 +489,7 @@
             </el-table-column>
           </el-table>
           </el-row>
-        </el-tab-pane>
+        </el-tab-pane> -->
 
         <el-tab-pane name="search" :disabled="true">
           <span slot="label">
@@ -521,7 +521,7 @@ export default {
   data() {
       return {
         isTop: true,
-        activeName: 'BTC',
+        activeName: 'CCC',
         hasBorder:true,
         swiperOption: {
           direction : 'vertical',
@@ -541,6 +541,7 @@ export default {
         List: [],
         localList: [],
         collectList: [],
+        CCCList: [],
         BTCList: [],
         ETHList: [],
         OMGList: [],
@@ -622,7 +623,7 @@ export default {
         let that = this
         let c = 0;
         console.log('建立长连接！')
-        const socket = io.connect('http://192.168.133.190:9006/')
+        const socket = io.connect('http://ws.bjex.io:9006/')
         socket.emit('home', {userId: 'shehui'})
         
         socket.on('pairsData', function (data) {
@@ -631,6 +632,7 @@ export default {
           console.log(c)
           console.log(res)
           that.BTCList = [];
+          that.CCCList = [];
           that.ETHList = [];
           that.OMGList = [];
           that.DOGEList = [];
@@ -644,6 +646,8 @@ export default {
               that.BTCList.push(item);
             }else if(item.market_name == "ETH"){
               that.ETHList.push(item);
+            }else if(item.market_name == "CCC"){
+              that.CCCList.push(item);
             }else if(item.market_name == "OMG"){
               that.OMGList.push(item);
             }else if(item.market_name == "DOGE"){
@@ -689,6 +693,27 @@ export default {
           'marketList',
           'pairsList'
       ]),
+      CCCitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var starList = this.localList;
+        var _this = this;
+        this.CCCList.map((it,idx) => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            _this.$set(_this.$data.CCCList[idx], 'star', true);
+          }else{
+            _this.$set(_this.$data.CCCList[idx], 'star', false);
+          }
+        })
+        if (_search) {
+          return this.CCCList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.CCCList;
+      },
       BTCitems: function() {
         var _search = this.search.toLocaleLowerCase();
         var starList = this.localList;

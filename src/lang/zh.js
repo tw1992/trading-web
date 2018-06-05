@@ -171,7 +171,19 @@ export default {
       name: "姓名",
       cardType: "证件类型",
       idCard: "证件号",
-      cardPrcture: "",
+      passportNum: "护照号码",
+      country: "国籍",
+      cardPicture: "证件照片",
+      idphotoTip: "请您上传一张手持身份证正面照和个人签字的照片，个人签字的内容包含“币加”和当前日期。请确保照片和个人签字的内容清晰可见。",
+      passportphotoTip: "请您上传一张手持护照信息页和个人签字的照片，个人签字的内容包含“币加”和当前日期。请确保照片和个人签字的内容清晰可见。",
+      example: "示例",
+      IDFrontSide: "上传身份证正面",
+      IDBackSide: "上传身份证反面",
+      passportcover: "请上传护照封面",
+      passportdatapage: "请上传护照信息页",
+      IDcard: "居民二代身份证",
+      passport: "护照"
+
   },
   login: {
     login: "登录",
@@ -221,6 +233,7 @@ export default {
     search: "搜索",
     submit: "提交",
     reset: "重置",
+    select: "请选择"
   },
   terms:{
     title: "服务协议",

@@ -419,8 +419,9 @@
               </div>
 
               <div class="depth">
-                <div style="color: #7EC28D;" class="depthL fz14">
-                  0.00000435<i class="el-icon-sort-up"></i><span class="price baseColor">&yen;0.18</span>
+                <div :class="nowPrice[1] == 'SELL'?'red':'green'" class="depthL fz14">
+                  {{nowPrice[2]}}  <i :class="nowPrice[1] == 'SELL'?'el-icon-sort-down':'el-icon-sort-up'"></i>
+                  <!-- <span class="price baseColor">&yen;0.18</span> -->
                 </div>
                 <div class="depthWrong" v-show="!depthFlag">
                   <img src="../../assets/img/depthFail.gif">
@@ -459,20 +460,20 @@
                 <th class="f-right fz13">{{$t('tradingCenter.time')}}</th>
               </tr>
               </tbody>
-              <colgroup style="width:30%;"></colgroup>
+              <colgroup style="width:33%;"></colgroup>
               <colgroup style="width:30%;"></colgroup>
               <colgroup style="width:30%;"></colgroup>
             </table>
             <div class="newmarket">
               <table class="table">
-                <colgroup style="width:30%;"></colgroup>
+                <colgroup style="width:33%;"></colgroup>
                 <colgroup style="width:30%;"></colgroup>
                 <colgroup style="width:30%;"></colgroup>
                 <tbody>
-                <tr v-for="(it,idx) in newmarket" :key="idx">
-                  <td class="" :class="it[1]=='SELL'?'red':'green'"><span>{{it[3]}}</span></td>
-                  <td class="f-center"><span>{{[it[2],0]|toFixed}}</span></td>
-                  <td class="f-right" style="color: #898989;"><span>{{formatDateTime(it[4],"HH:mm:ss")}}</span></td>
+                <tr v-for="(it,idx) in newmarketItems" :key="idx">
+                  <td class="" :class="it[1]=='SELL'?'red':'green'"><span>{{[it[2],0]|toFixed}}</span></td>
+                  <td class="f-center"><span>{{it[3]}}</span></td>
+                  <td class="f-right" style="color: #898989;"><span>{{formatDateTime(it[4]*1000,"HH:mm:ss")}}</span></td>
                 </tr>
                 </tbody>
 
@@ -503,10 +504,10 @@
                 <span class="fcB">{{$t('tradingCenter.price')}}：</span>
                 <label>{{market}}</label>
                 <input type="text" v-model="buyPrice">
-                <span class="legalMoney">￥0.41</span>
+                <!-- <span class="legalMoney">￥0.41</span> -->
                 <div class="jiantou baseColor">
-                  <i class="el-icon-caret-top"></i>
-                  <i class="el-icon-caret-bottom"></i>
+                  <i class="el-icon-caret-top" @click="addOnce(buyPrice,'buyPrice')"></i>
+                  <i class="el-icon-caret-bottom" @click="subOnce(buyPrice,'buyPrice')"></i>
                 </div>
               </div>
               <div class="inputItem">
@@ -529,7 +530,7 @@
               </div>
               <div class="sumBox">
                 <span class="fcB">{{$t('tradingCenter.total')}} ： </span>
-                <span class="sum">0.00000000000<span>{{market}}</span></span>
+                <span class="sum">0.00000000<span>{{market}}</span></span>
               </div>
               <el-button class="buy" @click="createOrder('buy')" type="success">{{$t('tradingCenter.buy')}}</el-button>
             </div>
@@ -543,10 +544,10 @@
                 <span class="fcB">{{$t('tradingCenter.price')}}：</span>
                 <label>{{market}}</label>
                 <input type="text" v-model="sellPrice">
-                <span class="legalMoney">￥0.41</span>
+                <!-- <span class="legalMoney">￥0.41</span> -->
                 <div class="jiantou baseColor">
-                  <i class="el-icon-caret-top"></i>
-                  <i class="el-icon-caret-bottom"></i>
+                  <i class="el-icon-caret-top" @click="addOnce(sellPrice,'sellPrice')"></i>
+                  <i class="el-icon-caret-bottom" @click="subOnce(sellPrice,'sellPrice')"></i>
                 </div>
               </div>
               <div class="inputItem">
@@ -569,7 +570,7 @@
               </div>
               <div class="sumBox">
                 <span class="fcB">{{$t('tradingCenter.total')}} ： </span>
-                <span class="sum">0.00000000000<span>{{market}}</span></span>
+                <span class="sum">0.00000000<span>{{market}}</span></span>
               </div>
               <el-button  @click="createOrder('sell')" class="sell" type="success">{{$t('tradingCenter.sell')}}</el-button>
             </div>
@@ -583,7 +584,7 @@
 
 <script>
 import calc from "calculatorjs";
-
+import { add, sub } from "../../utils/common.js"
 // import SockJS from 'sockjs';
 // var SockJS = require('sockjs');
 // import StompJS from 'stompjs';
@@ -624,6 +625,7 @@ export default {
       flortFlag: false,
       depthFlag: true, //行情正常/延迟
       langFlag: false,
+      nowPrice: [],       //当前价格
       market: "",
       coin: "",
       symbol: "",
@@ -773,12 +775,12 @@ export default {
       theme: "dark",
     //   debug: false,
       type: "poll", // poll/stomp
-      url: `http://192.168.22.208/api/market/kline?interval=60`,
+      url: `http://api.bjex.io/api/market/kline?interval=15`,
       onRangeChange: function(range) {
           //console.log(range)
           var time = range/60000;
           //console.log(time)
-          this.url = `http://192.168.22.208/api/market/kline?interval=${time}`
+          this.url = `http://api.bjex.io/api/market/kline?interval=${time}`;
       }
     });
     kline.draw();
@@ -796,27 +798,34 @@ export default {
       let that = this;
       let c = 0;
       console.log("建立长连接！");
-      const socket = io.connect("http://192.168.133.190:9006/");
+      const socket = io.connect("http://ws.bjex.io:9006/");
+    //   const socket = io.connect("http://192.168.133.190:9006/");
       socket.emit("join", { userId: "linxi", symbol: this.symbol });
       socket.on("tradingData", function(data) {
         let res = JSON.parse(JSON.parse(data).tradingList).data;
         c++;
         console.log(c);
-        console.log(res);
+        // console.log(res);
         that.newmarket = res;
+        
       });
       socket.on("tradesData", function(data) {
         let res = JSON.parse(JSON.parse(data).tradingList).data;
         c++;
         //console.log(c)
-        // console.log(res)
+        console.log('tradesData')
+        console.log(res)
         that.newmarket = res;
+        var length = res.length;
+        if(length){
+            that.nowPrice = res[length-1];
+        }
       });
       socket.on("depthData", function(data) {
         let res = JSON.parse(JSON.parse(data).tradingList).data;
         c++;
         //console.log(c)
-        //console.log(res)
+        // console.log(res)
         that.asksList = res.asks;
         that.bidsList = res.bids;
         that.drawLine();
@@ -824,8 +833,8 @@ export default {
       socket.on("pairsData", function(data) {
         let res = JSON.parse(JSON.parse(data).tradingList).data;
         c++;
-        console.log(c);
-        console.log(res);
+        // console.log(c);
+        // console.log(res);
         var symbol = that.symbol;
         res.forEach(it => {
           if (it.symbol == symbol) {
@@ -987,6 +996,10 @@ export default {
                 message: "下单成功",
                 type: "success"
               });
+                _this.getOpenOrder();
+                _this.getHistoryOrder();
+                _this.getHistorytrading();
+                _this.getAccounts();
             } else {
               _this.$message({
                 message: res,
@@ -1090,6 +1103,14 @@ export default {
       //语言切换
       this.$i18n.locale = lang;
       this.$store.dispatch("setLanguage", lang);
+    },
+    addOnce(num,name) {
+        this[name] = add(num,0.00000001,8);
+    },
+    subOnce(num,name) {
+        if(num>0){
+            this[name] = sub(num,0.00000001,8);
+        }
     }
   },
   filters: {
@@ -1142,6 +1163,10 @@ export default {
         });
       }
       return this.historytrading;
+    },
+    newmarketItems: function() {
+        var arr = this.newmarket;
+        return arr.reverse();
     }
   }
 };

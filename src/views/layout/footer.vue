@@ -42,11 +42,11 @@
           <li>
             <span class="name">24h&nbsp;{{$t('home.volume')}}</span><span class="num">277,050.93</span>
           </li>
-          <li>
+          <!-- <li>
             <span class="name">BNB&nbsp;/&nbsp;</span><span class="num">277,050.93</span>
-          </li>
+          </li> -->
           <li>
-            <span class="name">BTC&nbsp;/&nbsp;</span><span class="num">277,050.93</span>
+            <span class="name">CCC&nbsp;/&nbsp;</span><span class="num">277,050.93</span>
           </li>
           <li>
             <span class="name">ETH&nbsp;/&nbsp;</span><span class="num">277,050.93</span>

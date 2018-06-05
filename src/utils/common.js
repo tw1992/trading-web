@@ -37,7 +37,7 @@ export function add(value1,value2,fixed) {        //加
 }
 
 export function sub(value1,value2,fixed) {        //减
-    return ccalc.sub(value1, value2).toFixed(fixed);
+    return calc.sub(value1, value2).toFixed(fixed);
 }
 
 export function mul(value1,value2,fixed) {        //乘

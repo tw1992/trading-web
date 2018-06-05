@@ -3,15 +3,15 @@
         <p class="topTip">{{$t('user.recommendations')}}</p>
         <div class="autTop">
             <router-link to="/userCenter/account"><i class="el-icon-d-arrow-left"></i></router-link>
-            <p class="topTitle">实名认证</p>
+            <p class="topTitle">{{$t('autonym.personal')}}</p>
         </div>
 
         <div class="formBox">
             <div class="selectItem">
-                <p class="label">证件类型</p>
-                <el-select v-model="type" @change="selectChange()">
-                <el-option label="居民二代身份证" value="0"></el-option>
-                <el-option label="护照" value="1"></el-option>
+                <p class="label">{{$t('autonym.cardType')}}</p>
+                <el-select v-model="type" :placeholder="$t('button.select')" @change="selectChange()">
+                <el-option :label="$t('autonym.IDcard')" value="0"></el-option>
+                <el-option :label="$t('autonym.passport')" value="1"></el-option>
                 </el-select>
             </div>
             
@@ -22,14 +22,14 @@
                     <p class="tips">1. 国内用户可提供：国内居民二代身份证</p>
                     <p class="tips">2. 海外用户可提供：护照（不含中国公民）</p>
                 </el-form-item>
-                <el-form-item label="姓名" prop="name">
+                <el-form-item :label="$t('autonym.name')" prop="name">
                     <el-input placeholder="请填写姓名" v-model="IDForm.name"></el-input>
                 </el-form-item>
                 
-                <el-form-item label="证件号" class="mb76" prop="cardNum">
+                <el-form-item :label="$t('autonym.idCard')" class="mb76" prop="cardNum">
                     <el-input  placeholder="请填写证件号码" v-model="IDForm.cardNum"></el-input>
                 </el-form-item>
-                <el-form-item label="证件照片" class="labelInit mb46">
+                <el-form-item :label="$t('autonym.cardPicture')" class="labelInit mb46">
                     <p class="tips">照片形式请参考示例进行拍摄，图片横拍，脸部光线均匀不要有阴影，背景简单，头顶拍全。</p>
                     <p class="tips">身份证信息清晰可见，照片大小不要超过5M</p>
                     <p class="tips">(认证的身份证信息不可修改，请谨慎填写)</p>
@@ -46,10 +46,10 @@
                             <img v-if="front" :src="front" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
-                        <p class="Ltips">上传身份证正面</p>
+                        <p class="Ltips">{{$t('autonym.IDFrontSide')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">示例<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/ID  POSITIVE.png" alt="">
@@ -67,10 +67,10 @@
                             <img v-if="back" :src="back" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
-                        <p class="Ltips">上传身份证反面</p>
+                        <p class="Ltips">{{$t('autonym.IDBackSide')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">示例<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/ID  left.png" alt="">
@@ -88,10 +88,10 @@
                             <img v-if="image" :src="image" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
-                        <p class="Ltips textl">请您上传一张手持身份证正面照和个人签字的照片，个人签字的内容包含“币加”和当前日期。请确保照片和个人签字的内容清晰可见。</p>
+                        <p class="Ltips textl">{{$t('autonym.idphotoTip')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">示例<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/ID  hand.png" alt="">
@@ -99,7 +99,7 @@
                 </el-form-item>
                 
                 <el-form-item>
-                    <el-button class="btnBase" type="primary" @click="IDFormSubmit()">确定</el-button>
+                    <el-button class="btnBase" type="primary" @click="IDFormSubmit()">{{$t('button.submit')}}</el-button>
                 </el-form-item>
             </el-form>
 
@@ -110,8 +110,8 @@
                     <p class="tips">1. 国内用户可提供：国内居民二代身份证</p>
                     <p class="tips">2. 海外用户可提供：护照（不含中国公民）</p>
                 </el-form-item>
-                <el-form-item label="国籍" prop="country">
-                    <el-select v-model="country" filterable placeholder="请选择">
+                <el-form-item :label="$t('autonym.country')" prop="country">
+                    <el-select v-model="country" filterable :placeholder="$t('button.select')">
                         <el-option
                             v-for="item in countryList"
                             :key="item.id"
@@ -121,14 +121,14 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="姓名" prop="name">
+                <el-form-item :label="$t('autonym.name')" prop="name">
                     <el-input placeholder="请填写姓名" v-model="passportForm.name"></el-input>
                 </el-form-item>
                 
-                <el-form-item label="护照号码" class="mb76" prop="cardNum">
+                <el-form-item :label="$t('autonym.passportNum')" class="mb76" prop="cardNum">
                     <el-input placeholder="请填写护照号码" v-model="passportForm.cardNum"></el-input>
                 </el-form-item>
-                <el-form-item label="证件照片" class="labelInit mb46">
+                <el-form-item :label="$t('autonym.cardPicture')" class="labelInit mb46">
                     <p class="tips">照片形式请参考示例进行拍摄，图片横拍，脸部光线均匀不要有阴影，背景简单，头顶拍全。</p>
                     <p class="tips">身份证信息清晰可见，照片大小不要超过5M</p>
                     <p class="tips">(认证的身份证信息不可修改，请谨慎填写)</p>
@@ -145,10 +145,10 @@
                             <img v-if="front" :src="front" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
-                        <p class="Ltips">请上传护照封面</p>
+                        <p class="Ltips">{{$t('autonym.passportcover')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">示例<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/password.png" alt="">
@@ -166,10 +166,10 @@
                             <img v-if="back" :src="back" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
-                        <p class="Ltips">请上传护照信息页</p>
+                        <p class="Ltips">{{$t('autonym.passportdatapage')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">示例<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/ID passport.png" alt="">
@@ -187,10 +187,10 @@
                             <img v-if="image" :src="image" class="avatar">
                             <i v-else class="el-icon-circle-plus-outline avatar-uploader-icon"></i>
                         </el-upload>
-                        <p class="Ltips textl">请您上传一张手持护照信息页和个人签字的照片，个人签字的内容包含“币加”和当前日期。请确保照片和个人签字的内容清晰可见。</p>
+                        <p class="Ltips textl">{{$t('autonym.passportphotoTip')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">示例<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/passport  hand.png" alt="">
@@ -198,7 +198,7 @@
                 </el-form-item>
                 
                 <el-form-item>
-                    <el-button class="btnBase" type="primary" @click="passportSubmit()">确定</el-button>
+                    <el-button class="btnBase" type="primary" @click="passportSubmit()">{{$t('button.submit')}}</el-button>
                 </el-form-item>
             </el-form>
         </div>

@@ -169,7 +169,21 @@ export default {
   },
   autonym: {
       personal: "Personal",
-      
+      name: "Name",
+      cardType: "Card Type",
+      idCard: "ID Number",
+      passportNum: "Passport Number",
+      country: "Country",
+      cardPicture: "card photo",
+      idphotoTip: "Please provide a photo of you holding your Identity Card front side. In the same picture, make a reference to BJEX and today's date displayed. Make sure your face is clearly visible and that all passport details are clearly readable.",
+      passportphotoTip: "Please provide a photo of yourself holding your ID together with a note with the word 'BJEX' and today's date.Ensure that your face is clearly visible, and that your ID is clearly readable.",
+      example: "Example",
+      IDFrontSide: "Identity Card Front Side",
+      IDBackSide: "Identity Card Back Side",
+      passportcover: "Passport cover",
+      passportdatapage: "Passport data page",
+      IDcard: "ID Card",
+      passport: "Passport"
   },
   login: {
     login: "Login",
@@ -221,7 +235,7 @@ export default {
     search: "Search",
     submit: "Submit",
     reset: "Reset",
-
+    select: "Select"
   },
   terms:{
     title: "Terms of Use",

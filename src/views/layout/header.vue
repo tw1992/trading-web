@@ -10,7 +10,7 @@
         text-color="#333333"
         active-text-color="#FC9217">
           <el-menu-item index="/Home" class="logo"><img src="../../assets/img/logo.png" alt="logo"></el-menu-item>
-          <el-menu-item index="/tradingCenter/ETH/BTC">{{$t('route.tradingCenter')}}</el-menu-item>
+          <el-menu-item index="/tradingCenter/ETH/CCC">{{$t('route.tradingCenter')}}</el-menu-item>
           <el-menu-item index="" class="blank" disabled></el-menu-item>
           <el-menu-item v-if="!email" index=""><a href="https://support.bjex.io/hc/zh-cn" target="_block">{{$t('route.support')}}</a></el-menu-item>
           <el-menu-item v-if="!email" index="/login">{{$t('route.login')}}</el-menu-item>
@@ -33,7 +33,7 @@
             <el-menu-item index="/userCenter/account">{{email}}</el-menu-item>
             <el-menu-item class="sum" index="">
               <p>{{$t('route.assessment')}}</p>
-              <p>{{sum}}  BTC</p>
+              <p>{{sum}}  CCC</p>
             </el-menu-item>
             <el-menu-item index="" @click="logout">{{$t('route.logout')}}</el-menu-item>
         </el-submenu>
@@ -53,9 +53,9 @@
         </el-menu-item> -->
         <el-submenu index="changeLang">
             <template slot="title">{{$t('route.lang')}}</template>
-            <el-menu-item index="" :disabled="language==='zh'" @click="handleSetLanguage('zh')">简体中文</el-menu-item>
-            <el-menu-item index="" :disabled="language==='tw'" @click="handleSetLanguage('tw')">繁体中文</el-menu-item>
-            <el-menu-item index="" :disabled="language==='en'" @click="handleSetLanguage('en')">English</el-menu-item>
+            <el-menu-item index="" v-show="language!='zh'" @click="handleSetLanguage('zh')">简体中文</el-menu-item>
+            <el-menu-item index="" v-show="language!='tw'" @click="handleSetLanguage('tw')">繁体中文</el-menu-item>
+            <el-menu-item index="" v-show="language!='en'" @click="handleSetLanguage('en')">English</el-menu-item>
             
         </el-submenu>
         </el-menu>
@@ -189,7 +189,7 @@ export default {
   flex-direction: column;
 }
 .logo.el-menu-item.is-active{
-  border-bottom:0;
+  border-bottom:0 !important;
 }
 .logo.el-menu-item{
   img{

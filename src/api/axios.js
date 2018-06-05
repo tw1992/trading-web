@@ -15,7 +15,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 // 这里可以设置统一请求前缀
-// axios.defaults.baseURL = baseConfig.apiUrl;
+axios.defaults.baseURL = baseConfig.apiUrl;
 
 //请求发出拦截器
 var loading;

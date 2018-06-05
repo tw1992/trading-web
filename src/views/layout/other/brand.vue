@@ -8,7 +8,7 @@
     </div>
     <div class="downTop">
         <p class="downName">下载须知：</p>
-        <p class="downTip">此系列图片为币安品牌形象片，适用于发布在与币加相关的文章中，欢迎下载使用，如果你希望币加logo用于其他途径，请发邮件至 <span class="baseColor">BEJX.IO</span> 联系我们。</p>
+        <p class="downTip">此系列图片为币安品牌形象片，适用于发布在与币加相关的文章中，欢迎下载使用，如果你希望币加logo用于其他途径，请发邮件至 <span class="baseColor">sevice@bjex.io</span> 联系我们。</p>
     </div>
     <div class="logoBg">
         <div class="logoDown">

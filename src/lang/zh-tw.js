@@ -168,6 +168,21 @@ export default {
   },
   autonym: {
       personal: "實名認證",
+      name: "姓名",
+      cardType: "證件類型",
+      idCard: "證件號",
+      passportNum: "護照號碼",
+      country: "國籍",
+      cardPicture: "證件照片",
+      idphotoTip: "請您上傳一張手持身份證正面照和個人簽字的照片，個人簽字的內容包含“幣加”和當前日期。請確保照片和個人簽字的內容清晰可見。",
+      passportphotoTip: "請您上傳一張手持護照資訊頁和個人簽字的照片，個人簽字的內容包含“幣加”和當前日期。請確保照片和個人簽字的內容清晰可見。",
+      example: "實例",
+      IDFrontSide: "上傳身份證正面",
+      IDBackSide: "上傳身份證反面",
+      passportcover: "請上傳護照封面",
+      passportdatapage: "請上傳護照資訊頁",
+      IDcard: "居民二代身份證",
+      passport: "護照"
       
   },
   login: {
@@ -218,6 +233,7 @@ export default {
     search: "蒐索",
     submit: "提交",
     reset: "重置",
+    select: "請選擇"
   },
   terms:{
     title: "服務協定",
