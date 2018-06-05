@@ -623,7 +623,8 @@ export default {
         let that = this
         let c = 0;
         console.log('建立长连接！')
-        const socket = io.connect('http://ws.bjex.io:9006/')
+        var url = process.env.NODE_API;
+        const socket = io.connect(url)
         socket.emit('home', {userId: 'shehui'})
         
         socket.on('pairsData', function (data) {

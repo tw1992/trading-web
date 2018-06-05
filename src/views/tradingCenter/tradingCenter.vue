@@ -775,13 +775,7 @@ export default {
       theme: "dark",
     //   debug: false,
       type: "poll", // poll/stomp
-      url: `http://api.bjex.io/api/market/kline?interval=15`,
-      onRangeChange: function(range) {
-          //console.log(range)
-          var time = range/60000;
-          //console.log(time)
-          this.url = `http://api.bjex.io/api/market/kline?interval=${time}`;
-      }
+      url: `http://api.bjex.io/api/market/kline`,
     });
     kline.draw();
 
