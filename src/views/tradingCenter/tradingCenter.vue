@@ -12,11 +12,11 @@
       <p class="time">{{nowTime}}</p>
       <div class="block"></div>
       <ul class="fz12 marketList">
-        <li>{{$t('home.lastPrice')}}<span style="margin:0 2px;" class="fb16 red">{{[nowPairs.close,2] | toFixed}}</span>≈ 44851.40 CNY</li>
+        <li>{{$t('home.lastPrice')}}<span style="margin:0 2px;" class="fb16 red">{{[nowPairs.close,2] | toFixed}}</span></li>
         <li>{{$t('tradingCenter.change')}}<span class="green"> +0.22%</span></li>
-        <li>{{$t('home.high')}} {{[nowPairs.high,2] | toFixed}}</li>
-        <li>{{$t('home.low')}} {{[nowPairs.low,2] | toFixed}}</li>
-        <li>24H{{$t('home.volume')}} {{[nowPairs.number,2] | toFixed}} {{market}}</li>
+        <li>{{$t('home.high')}} <span style="color:#fff;">{{[nowPairs.high,2] | toFixed}}</span></li>
+        <li>{{$t('home.low')}} <span style="color:#fff;">{{[nowPairs.low,2] | toFixed}}</span></li>
+        <li>24H{{$t('home.volume')}} <span style="color:#fff;">{{[nowPairs.number,2] | toFixed}} {{market}}</span></li>
       </ul>
       <div class="goodsBox fz14 white">
         <div class="showGoods options">{{symbol}}<i class="el-icon-caret-bottom baseColor"></i></div>
@@ -32,9 +32,9 @@
       <div class="langsBox fz14 white" @click="langFlag = !langFlag">
         <div class="showLangs options">{{$t('route.lang')}}<i class="el-icon-arrow-down"></i></div>
         <div v-show="langFlag" class="langList">
-          <div class="langItem" :class="language==='zh'?'active':''" @click="handleSetLanguage('zh')">简体中文</div>
-          <div class="langItem" :class="language==='tw'?'active':''" @click="handleSetLanguage('tw')">繁体中文</div>
-          <div class="langItem" :class="language==='en'?'active':''" @click="handleSetLanguage('en')">English</div>
+          <div class="langItem" v-show="language!='zh'" @click="handleSetLanguage('zh')">简体中文</div>
+          <div class="langItem" v-show="language!='tw'" @click="handleSetLanguage('tw')">繁体中文</div>
+          <div class="langItem" v-show="language!='en'" @click="handleSetLanguage('en')">English</div>
         </div>
       </div>
     </div>
@@ -364,13 +364,13 @@
               <ul class="selectList">
                 <li>
                   <div class="options buysellbtn" href="javascript:;" :class="marketSelect == 1?'tableActive':''"
-                       @click="marketSelect = 1"></div>
+                       @click="marketSelect = 1;aveNum = 18;"></div>
                 </li>
                 <li>
-                  <div class="options sellbtn" :class="marketSelect == 2?'tableActive':''" @click="marketSelect = 2"></div>
+                  <div class="options sellbtn" :class="marketSelect == 2?'tableActive':''" @click="marketSelect = 2;aveNum = 36;"></div>
                 </li>
                 <li>
-                  <div class="options buybtn" :class="marketSelect == 3?'tableActive':''" @click="marketSelect = 3"></div>
+                  <div class="options buybtn" :class="marketSelect == 3?'tableActive':''" @click="marketSelect = 3;aveNum = 36;"></div>
                 </li>
               </ul>
               <div class="flort">
@@ -400,7 +400,7 @@
               <colgroup style="width:30%;"></colgroup>
             </table>
 
-            <div class="markefive">
+            <div class="markefive" ref="markefive">
               <div class="tableBox" :class="marketSelect == 2?'toHeight100':marketSelect == 3?'toHeight0':''">
                 <table class="table">
                   <colgroup style="width:30%;"></colgroup>
@@ -409,9 +409,9 @@
                   <tbody>
                   <tr v-for="(it,idx) in bidsList" :key="idx">
                     <td class="f-left red hoverB"><span>{{it[0]}}</span></td>
-                    <td class="f-center"><span class="hoverSpan">{{it[1]}}</span></td>
+                    <td class="f-center"><span class="hoverSpan">{{it[1] | toNumber}}</span></td>
                     <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{[it[0],it[1],fixed] | mul }}</span>
-                      <div class="zhuzhuang redBg" :style="{width: Math.random()*346+'px'}"></div>
+                      <div class="zhuzhuang redBg" :style="{width: aveLine(bidsList,it[1])+'px'}"></div>
                     </td>
                   </tr>
                   </tbody>
@@ -420,7 +420,7 @@
 
               <div class="depth">
                 <div :class="nowPrice[1] == 'SELL'?'red':'green'" class="depthL fz14">
-                  {{nowPrice[2]}}  <i :class="nowPrice[1] == 'SELL'?'el-icon-sort-down':'el-icon-sort-up'"></i>
+                  {{nowPrice[2]*1}}  <i :class="nowPrice[1] == 'SELL'?'el-icon-sort-down':'el-icon-sort-up'"></i>
                   <!-- <span class="price baseColor">&yen;0.18</span> -->
                 </div>
                 <div class="depthWrong" v-show="!depthFlag">
@@ -440,9 +440,9 @@
                   <tbody>
                   <tr v-for="(it,idx) in asksList" :key="idx">
                     <td class="f-left green hoverB"><span>{{it[0]}}</span></td>
-                    <td class="f-center"><span class="hoverSpan">{{it[1]}}</span></td>
+                    <td class="f-center"><span class="hoverSpan">{{it[1] | toNumber}}</span></td>
                     <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{[it[0],it[1],fixed] | mul }}</span>
-                      <div class="zhuzhuang greenBg" :style="{width: Math.random()*346+'px'}"></div>
+                      <div class="zhuzhuang greenBg" :style="{width: aveLine(asksList,it[1])+'px'}"></div>
                     </td>
                   </tr>
                   </tbody>
@@ -538,7 +538,7 @@
             <div class="dealItem">
               <div class="dealT">
                 <span class="f-fl">{{$t('tradingCenter.sell')}} {{coin}}</span>
-                <span class="f-fr"><i class="el-icon-edit"></i>__{{market}}</span>
+                <span class="f-fr"><i class="el-icon-edit"></i>__{{coin}}</span>
               </div>
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.price')}}：</span>
@@ -610,6 +610,7 @@ export default {
       asksList: [],
       bidsList: [],
       marketSelect: 1, //行情选项
+      aveNum: 18,       //默认18条数据  最多36
       dealSelect: 1, //交易选项
       orderSelect: 1, //订单选项
       hideOrder: false,
@@ -771,6 +772,7 @@ export default {
     var height = this.$refs.kline_container.offsetHeight;
     var width = this.$refs.kline_container.offsetWidth;
     var symbol = this.symbol;
+    var klineUrl = process.env.KLINE;
     var kline = new Kline({
       element: "#kline_container",
       symbol: symbol,
@@ -783,9 +785,9 @@ export default {
       showTrade: false,
       disableFirebase: true,
       theme: "dark",
-    //   debug: false,
+      debug: false,
       type: "poll", // poll/stomp
-      url: process.env.KLINE,
+      url: klineUrl,
     });
     kline.draw();
 
@@ -810,7 +812,7 @@ export default {
       socket.on("tradingData", function(data) {
         let res = JSON.parse(JSON.parse(data).tradingList).data;
         c++;
-        console.log(c);
+        //console.log(c);
         // console.log(res);
         that.newmarket = res;
         
@@ -819,8 +821,8 @@ export default {
         let res = JSON.parse(JSON.parse(data).tradingList).data;
         c++;
         //console.log(c)
-        console.log('tradesData')
-        console.log(res)
+        //console.log('tradesData')
+        //console.log(res)
         that.newmarket = res;
         var length = res.length;
         if(length){
@@ -973,6 +975,17 @@ export default {
         .catch(function(res) {
           console.log(res);
         });
+    },
+    aveLine(arr,num) {             //柱状线
+        var width = this.$refs.markefive.offsetWidth;
+        //console.log(width)
+        let max = arr[0][1];
+        arr = arr.slice(0,this.aveNum);
+        for (let i = 0; i < arr.length - 1; i++) {
+            max = arr[i][1] < arr[i+1][1] ? arr[i+1][1] : arr[i][1]
+        }
+        var percent = num/max;
+        return percent*width;
     },
     createOrder(type) {
       if (this.email) {
@@ -1127,6 +1140,11 @@ export default {
     },
     mul: ([value1, value2, fixed]) => {
       return calc.mul(value1, value2).toFixed(fixed);
+    },
+    toNumber: (value) => {
+        var num = new Number(value);
+        num = String(num)
+        return num;
     }
   },
   components: {
@@ -1279,6 +1297,9 @@ $baseColor: #fc9217;
     z-index: 100;
     background: rgba(0, 0, 0, 0.4);
   }
+  .loginBox{
+      background: #151A1E;
+  }
   .buysellbtn {
     background: url("../../assets/img/buysell_03.jpg") no-repeat center;
   }
@@ -1328,6 +1349,7 @@ $baseColor: #fc9217;
       display: flex;
       li {
         margin-right: 20px;
+        color: #808080;
         .red {
           margin: 0 4px;
         }
@@ -2013,6 +2035,7 @@ $baseColor: #fc9217;
 
 <style lang="scss">
 @import "../../styles/login.scss";
+$baseColor: #fc9217;
 .bgBox {
   .baseDialog .el-dialog__footer {
     .tips {
@@ -2024,6 +2047,12 @@ $baseColor: #fc9217;
   }
 }
 .tradingCenterBox {
+    .bgBox .formbase .el-form-item__content .el-input input{
+      background: #FAFFBD;
+    }
+    .bgBox .linkList a{
+        color: $baseColor;
+    }
   .el-checkbox__inner {
     background: #050505;
   }

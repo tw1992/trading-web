@@ -13,7 +13,7 @@
     <div class="logoBg">
         <div class="logoDown">
             <p class="downTitle">币加Logo</p>
-            <span class="downLogo"><i class="el-icon-download"></i></span>
+            <span class="downLogo"><a href="" download="../../../assets/img/about/logo.zip" class="el-icon-download"></a></span>
             <ul class="logoList">
                 <li>
                     <img src="../../../assets/img/about/logo/logo1.png" alt="">
@@ -181,7 +181,7 @@ export default {
                 right: 10px;
                 top: 0;
                 line-height: 80px;
-                i{
+                a{
                     font-size: 18px;
                     border-radius: 50%;
                     border: 1px solid #333333;

@@ -12,9 +12,7 @@
           <el-menu-item index="/Home" class="logo"><img src="../../assets/img/logo.png" alt="logo"></el-menu-item>
           <el-menu-item index="/tradingCenter/ETH/CCC">{{$t('route.tradingCenter')}}</el-menu-item>
           <el-menu-item index="" class="blank" disabled></el-menu-item>
-          <el-menu-item index=""><a href="https://support.bjex.io/hc/zh-cn" target="_block">{{$t('route.support')}}</a></el-menu-item>
-          <el-menu-item v-if="!email" index="/login">{{$t('route.login')}}</el-menu-item>
-          <el-menu-item v-if="!email" index="/register">{{$t('route.register')}}</el-menu-item>
+          
         <el-submenu index="/fundsManagement" v-if="email">
             <template slot="title">{{$t('route.funds')}}</template>
             <el-menu-item index="/fundsManagement/balances">{{$t('route.balances')}}</el-menu-item>
@@ -28,6 +26,9 @@
             <el-menu-item index="/mandatory/orderHistory">{{$t('route.orderHistory')}}</el-menu-item>
             <el-menu-item index="/mandatory/tradeHistory">{{$t('route.tradeHistory')}}</el-menu-item>
         </el-submenu>
+        <el-menu-item index=""><a href="https://support.bjex.io/hc/zh-cn" target="_block">{{$t('route.support')}}</a></el-menu-item>
+          <el-menu-item v-if="!email" index="/login">{{$t('route.login')}}</el-menu-item>
+          <el-menu-item v-if="!email" index="/register">{{$t('route.register')}}</el-menu-item>
         <el-submenu index="/userCenter" v-if="email">
             <template slot="title">{{$t('route.account')}}</template>
             <el-menu-item index="/userCenter/account">{{email}}</el-menu-item>

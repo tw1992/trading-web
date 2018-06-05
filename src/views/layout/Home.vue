@@ -630,8 +630,8 @@ export default {
         socket.on('pairsData', function (data) {
           let res = JSON.parse(JSON.parse(data).tradingList).data
           c++
-          console.log(c)
-          console.log(res)
+          //console.log(c)
+          //console.log(res)
           that.BTCList = [];
           that.CCCList = [];
           that.ETHList = [];
@@ -643,6 +643,7 @@ export default {
         //   that.collectList = [];
           res.forEach(item => {
             item.star = false;
+            item.number = item.number.toFixed(8);
             if(item.market_name == "BTC"){
               that.BTCList.push(item);
             }else if(item.market_name == "ETH"){
