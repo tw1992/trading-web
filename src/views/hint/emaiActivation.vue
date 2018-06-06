@@ -13,12 +13,13 @@
             <p class="tip">如果长时间未收到邮件,请尝试垃圾邮箱中寻找.</p>
         </div>
     </div>
-    <p class="footer">@  2017-2018   coin plus.com  All  Rights  Reserved</p>
+    <login-footer></login-footer>
   </div>
 </template>
 
 <script>
 import axios from '../../api/axios'
+import loginFooter from '../components/loginFooter'
 export default {
   data() {
       return {
@@ -43,7 +44,8 @@ export default {
           }
         });
       },
-    }
+    },
+    components: { loginFooter }
 }
 </script>
 

@@ -43,10 +43,10 @@
         <!-- K线面板 -->
         <div class="tradMainLT" ref="kline_container">
           <div id="kline_container" v-show="klineFlag"></div>
-          <div id="myChart" style="width:100%;height:100%;" v-show="!klineFlag"></div>
+          <div id="myChart" :style="{width:echartsWidth,height:echartsHeight}" v-show="!klineFlag"></div>
           <div class="typeList">
               <span class="options" @click="klineFlag = true">K线图</span>
-              <span class="options" @click="klineFlag = false">深度图</span>
+              <span class="options" @click="klineFlag = false;">深度图</span>
           </div>
         </div>
         <!-- 订单面板 -->
@@ -641,6 +641,9 @@ export default {
       nowTime: "",
       loginFlag: false,
       klineFlag: true,
+      echartsWidth: "1382px",
+      echartsHeight: "644px",
+      myChart: {},
       echartsOption: {
         title: {
             text: "市场深度图",
@@ -790,14 +793,19 @@ export default {
       type: "poll", // poll/stomp
       url: klineUrl,
     });
-    kline.setSymbol(symbol, symbol);
+    
     kline.draw();
+    kline.setSymbol(symbol, symbol);
+
+    this.myChart = echarts.init(document.getElementById("myChart"));
+    // this.getEchartsSize();
+
 
     window.onresize = () => {
       var height = this.$refs.kline_container.offsetHeight;
       var width = this.$refs.kline_container.offsetWidth;
       kline.resize(width, height);
-      this.drawLine();
+      //   this.drawLine();
       //myChart.resize(width, height);
     };
   },
@@ -861,12 +869,18 @@ export default {
     },
     drawLine() {
         //渲染echarts
-        let myChart = echarts.init(document.getElementById("myChart"));
         this.echartsOption.series[0].data = this.asksList;
         this.echartsOption.series[1].data = this.bidsList;
         // 绘制图表
-        myChart.setOption(this.echartsOption);
+        // console.log(this.myChart)
+        this.myChart.setOption(this.echartsOption);
     },
+    // getEchartsSize() {
+    //     this.echartsHeight = this.$refs.kline_container.offsetHeight;
+    //     this.echartsWidth = this.$refs.kline_container.offsetWidth;
+    //     this.myChart.resize(this.echartsWidth,this.echartsHeight);
+    //     console.log(this.echartsHeight,this.echartsWidth)
+    // },
     getTime(time) {
       //获取当前时间
       var date = new Date();

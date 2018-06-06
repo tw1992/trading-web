@@ -34,7 +34,8 @@
         <a href="javascript:;" class="know baseColor"><i class="iconfont icon-shu"></i><span>{{$t('funds.whats')+coin_name}}？</span></a>
       </div>
 
-      <div class="addBox">
+        <!-- 暂替换为客服框 -->
+      <!-- <div class="addBox">
         <p class="addTitle">{{coin_name+$t('funds.depositAddress')}}</p>
         <p class="add">{{accounts.address}}</p>
         <p class="warning">{{changeTips.tip1}}</p>
@@ -55,6 +56,19 @@
             <p>{{$t('funds.tips2a')}}<router-link class="baseColor" to="/fundsManagement/transactionHistory">{{$t('funds.history')}}</router-link>{{$t('funds.tips2b')}}</p>
           </li>
         </ul>
+      </div> -->
+      <div class="serviceBox">
+          <p class="serverTitle">联系客服</p>
+          <div class="imgbox">
+            <div class="imgItem">
+                <img src="../../assets/recharge/wx.jpg" alt="微信">
+                <p class="serverTips">微信</p>
+            </div>
+            <div class="imgItem">
+                <img src="../../assets/recharge/qq.jpg" alt="QQ">
+                <p class="serverTips">QQ</p>
+            </div>
+          </div>
       </div>
 
     </div>

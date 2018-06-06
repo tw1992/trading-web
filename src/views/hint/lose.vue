@@ -1,14 +1,15 @@
+
 <template>
   <div class="bgBox">
     <div class="sendBox">
         <div class="logoBox">
            <img class="logo" src="../../assets/img/logo.png" alt="logo">
         </div>
-        <div class="line">
+        <!-- <div class="line">
             <span class="title">账号激活成功</span>
-        </div>
+        </div> -->
         <div class="tipBox">
-            <p class="tip">您的账户已激活.请登录开始交易.</p>
+            <p class="tip" style="font-size:14px;line-height:30px;margin-top:40px;color:#333;">该链接已失效，请尝试重新发送!</p>
             <p class="tip"><router-link to="/login">登录币加</router-link></p>
         </div>
     </div>

@@ -201,12 +201,12 @@ export default {
                             type: 'success'
                         });
                         var _this = this;
-                        setTimeout(()=>{
+                        // setTimeout(()=>{
                             let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
                             console.log(redirect)
                             _this.$router.push({ path: redirect })
                             console.log(123)
-                        },2000)
+                        // },2000)
                     }
                     //this.loading = false;  
                     //this.$router.push({path: '/login'});  
@@ -267,11 +267,11 @@ export default {
               type: 'success'
             });
             var _this = this;
-            setTimeout(()=>{
+            // setTimeout(()=>{
               let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
               console.log(redirect)
               _this.$router.push({ path: redirect })
-            },2000)
+            // },2000)
           }).catch((e) => {  
             //this.loading = false  
             // console.log("err")
@@ -294,11 +294,11 @@ export default {
               type: 'success'
             });
             var _this = this;
-            setTimeout(()=>{
+            // setTimeout(()=>{
               let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
               console.log(redirect)
               _this.$router.push({ path: redirect })
-            },2000)
+            // },2000)
           }).catch((e) => {  
             //this.loading = false  
             // console.log("err")

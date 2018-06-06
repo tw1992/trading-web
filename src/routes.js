@@ -54,6 +54,22 @@ let routes = [{
     hidden: true
 },
 {
+    path: '/lose',
+    component: function (resolve) {
+        require(['./views/hint/lose.vue'], resolve)
+    },
+    name: '邮件失效',
+    hidden: true
+},
+{
+    path: '/withTimeout',
+    component: function (resolve) {
+        require(['./views/hint/withTimeout.vue'], resolve)
+    },
+    name: '提现失效',
+    hidden: true
+},
+{
   path: '/404',
   component: function (resolve) {
       require(['./views/404.vue'], resolve)
