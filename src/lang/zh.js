@@ -92,7 +92,7 @@ export default {
     value: "估值"
   },
   funds: {
-    estimatedValue: "总当前估值",
+    estimatedValue: "当前总估值",
     hideSmallBalances: "隐藏小额资产",
     operation: "操作",
     deposit: "充值",

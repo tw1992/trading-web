@@ -1,8 +1,15 @@
 const express = require('express')
 const app = express()
 const http = require('http').Server(app)
+// const fs = require('fs');
 const io = require('socket.io')(http)
 const port = 9006
+
+// //根据项目的路径导入生成的证书文件  
+// var bjexKey  = fs.readFileSync('./bjex.io.key');  
+// var bjexPem = fs.readFileSync('./bjex.io.pem');  
+// var credentials = {key: bjexKey, cert: bjexPem}; 
+// var httpsServer = https.createServer(credentials, app);  
 
 const socket = require('./utils/tradingSocketIo.class')
 

@@ -167,7 +167,8 @@ axios.interceptors.response.use(
                 Message.error(errData.errors[0].errors[0]);
                 break;
             case 500:
-                Message.error("服务器错误:500");
+                // Message.error("服务器错误:500");
+                Message.error("网络异常，请重试");
                 break;
             default:
                 Message.error("服务器异常");

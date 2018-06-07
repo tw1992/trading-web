@@ -4,6 +4,93 @@
       <div class="bgBox toLogin" @click="loginFlag = false" v-show="loginFlag">
           <div @click.stop><login-box></login-box></div>
       </div>
+
+      <!-- 谷歌认证 -->
+    <el-dialog
+        title="谷歌认证"
+        :visible.sync="googleDialog"
+        custom-class="baseDialog"
+        center>
+        <el-form :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm" class="googleForm">
+            <!-- <el-form-item label="登录密码" prop="pwd">
+                <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="googleForm.pwd" auto-complete="off"></el-input>
+            </el-form-item> -->
+            <el-form-item label="谷歌验证码" prop="verCode">
+                <el-input class="inputBase" @input="googleInput(googleForm.verCode)" placeholder="6位动态数字" v-model.number="googleForm.verCode"></el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <!-- <el-button class="btnBase" type="primary" size="mini" @click="googleDialog = false">确认</el-button> -->
+            <p class="tips">
+              如果您遗失了谷歌验证,请 <a href="javascript:;">联系客服</a>
+            </p>
+        </span>
+    </el-dialog>
+
+    <!-- 手机验证 -->
+    <el-dialog
+        title="手机验证"
+        :visible.sync="phoneDialog"
+        width="30%"
+        custom-class="baseDialog changePwd"
+        center>
+        <el-form :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
+            <!-- <el-form-item label="您的手机号" prop="phone">
+                <el-input placeholder="(仅限中国大陆)" v-model="phoneForm.phone" type="tel" auto-complete="off" class="inputBase input-with-select">
+                    <el-select v-model="phoneForm.select" slot="prepend" placeholder="请选择">
+                    <el-option label="+86" value="+86"></el-option>
+                    <el-option label="+88" value="+88"></el-option>
+                    <el-option label="+89" value="+89"></el-option>
+                    </el-select>
+                </el-input>
+            </el-form-item> -->
+            <el-form-item label="验证码" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)" placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+                <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode()">{{$t('Dialog.sendSMS')}}</a>
+                <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <!-- <el-button type="primary" size="mini" @click="phoneDialog = false">确认</el-button> -->
+            <p class="tips">
+              如果您遗失了手机或无法收到验证码,请 <a href="javascript:;">联系客服</a>
+            </p>
+        </span>
+    </el-dialog>
+
+    <!-- 双重验证 -->
+    <el-dialog
+        title="双重验证"
+        :visible.sync="doubleDialog"
+        custom-class="baseDialog"
+        center>
+        <ul class="doubleSelect">
+          <li :class="doubleSelect == 1?'active':''" @click="doubleSelect = 1">谷歌验证</li>
+          <li :class="doubleSelect == 2?'active':''" @click="doubleSelect = 2">手机验证</li>
+        </ul>
+
+        <el-form v-show="doubleSelect == 1" :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm">
+            <el-form-item label="谷歌验证码" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="googleLogin(googleForm.verCode)" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
+                <!-- <a class="verBtn" href="javascript:;">获取</a> -->
+            </el-form-item>
+        </el-form>
+        <el-form v-show="doubleSelect == 2" :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
+            <el-form-item label="验证码" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)"  placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+                <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode()">{{$t('Dialog.sendSMS')}}</a>
+                <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <p v-show="doubleSelect == 1" class="tips">
+            如果您遗失了谷歌验证,请 <a href="javascript:;">联系客服</a>
+          </p>
+          <p v-show="doubleSelect == 2" class="tips">
+            如果您遗失了手机或无法收到验证码,请 <a href="javascript:;">联系客服</a>
+          </p>
+        </span>
+    </el-dialog>
     
     <div class="tradHeader">
       <router-link to="/Home" class="logoBox">
@@ -19,7 +106,179 @@
         <li>24H{{$t('home.volume')}} <span style="color:#fff;">{{[nowPairs.number,2] | toFixed}} {{market}}</span></li>
       </ul>
       <div class="goodsBox fz14 white">
-        <div class="showGoods options">{{symbol}}<i class="el-icon-caret-bottom baseColor"></i></div>
+        <div class="showGoods">
+            <span class="options" @click="coidBoxFlag = !coidBoxFlag;">{{symbol}}<i class="el-icon-caret-bottom baseColor"></i></span>
+            <div class="coidBox" v-show="coidBoxFlag">
+                
+                <el-tabs class="" v-model="activeName" @tab-click="handleClick">
+                    
+                    <el-tab-pane name="star">
+                    <span slot="label"><i class="el-icon-star-on"></i> {{$t('home.favorites')}}</span>
+                    <el-row class="tabContent">
+                        <el-table
+                        :data="collectitems"
+                        stripe
+                        ref="starTable"
+                        @row-click="linkToGoods"
+                        style="width: 100%">
+                        <span slot="empty">{{$t('home.noData')}}</span>
+                        <el-table-column
+                        align="center"
+                        width="50">
+                        <template slot-scope="scope">
+                            <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
+                        prop="symbol"
+                        sortable
+                        :label="$t('home.pair')"
+                        width="100">
+                        </el-table-column>
+                        <el-table-column
+                        :label="$t('home.lastPrice')"
+                        width="140">
+                        <template slot-scope="scope">
+                            <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
+                        align="right"
+                        sortable
+                        width="80"
+                        :label="'24h'+$t('home.change')">
+                        <template slot-scope="scope">
+                            <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
+                        prop="number"
+                        align="right"
+                        sortable
+                        width="126"
+                        class-name="lastList"
+                        :label="'24h'+$t('home.volume')">
+                        </el-table-column>
+                    </el-table>
+                    </el-row>
+                    </el-tab-pane>
+
+                    <el-tab-pane name="CCC">
+                    <span slot="label">CCC {{$t('home.markets')}}</span>
+                    <el-row class="tabContent">
+                        <el-table
+                        :data="CCCitems"
+                        stripe
+                        ref="CCCTable"
+                        @row-click="linkToGoods"
+                        style="width: 100%">
+                        <span slot="empty">{{$t('home.noData')}}</span>
+                        <el-table-column
+                        align="center"
+                        width="50">
+                        <template slot-scope="scope">
+                            <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
+                        prop="symbol"
+                        sortable
+                        :label="$t('home.pair')"
+                        width="100">
+                        </el-table-column>
+                        <el-table-column
+                        :label="$t('home.lastPrice')"
+                        width="140">
+                        <template slot-scope="scope">
+                            <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
+                        align="right"
+                        sortable
+                        width="80"
+                        :label="'24h'+$t('home.change')">
+                        <template slot-scope="scope">
+                            <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
+                        prop="number"
+                        align="right"
+                        sortable
+                        width="126"
+                        class-name="lastList"
+                        :label="'24h'+$t('home.volume')">
+                        </el-table-column>
+                    </el-table>
+                    </el-row>
+                    </el-tab-pane>
+
+                    <el-tab-pane name="ETH">
+                    <span slot="label">ETH {{$t('home.markets')}}</span>
+                    <el-row class="tabContent">
+                        <el-table
+                        :data="ETHitems"
+                        stripe
+                        ref="ETHTable"
+                        @row-click="linkToGoods"
+                        style="width: 1198px">
+                        <span slot="empty">{{$t('home.noData')}}</span>
+                        <el-table-column
+                        align="center"
+                        width="50">
+                        <template slot-scope="scope">
+                            <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
+                        prop="symbol"
+                        sortable
+                        :label="$t('home.pair')"
+                        width="100">
+                        </el-table-column>
+                        <el-table-column
+                        :label="$t('home.lastPrice')"
+                        width="140">
+                        <template slot-scope="scope">
+                            <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
+                        align="right"
+                        sortable
+                        width="80"
+                        :label="'24h'+$t('home.change')">
+                        <template slot-scope="scope">
+                            <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
+                        </template>
+                        </el-table-column>
+                        <el-table-column
+                        prop="number"
+                        align="right"
+                        sortable
+                        width="126"
+                        class-name="lastList"
+                        :label="'24h'+$t('home.volume')">
+                        </el-table-column>
+                    </el-table>
+                    </el-row>
+                    </el-tab-pane>
+
+                    <el-tab-pane name="search" :disabled="true">
+                    <span slot="label">
+                        <el-input
+                        class="search"
+                        placeholder=""
+                        prefix-icon="el-icon-search"
+                        v-model="search"
+                        >
+                        </el-input>
+                    </span>
+                    </el-tab-pane>
+                </el-tabs>
+            </div>
+        </div>
       </div>
       <div class="userBox fz14 white" v-if="!email">
         <router-link to="/login">{{$t('route.login')}}</router-link>
@@ -57,7 +316,7 @@
             <li><div class="options" :class="orderSelect == 3?'active':''" @click="orderSelect=3;hideOrder = false">{{$t('tradingCenter.tradeHistory')}}</div></li>
             <li><div class="options" :class="orderSelect == 4?'active':''" @click="orderSelect=4;hideOrder = false">{{$t('route.funds')}}</div></li>
             <div class="block"></div>
-            <div class="hideOrder"><el-checkbox v-model="hideOrder">{{$t('tradingCenter.hide')}}</el-checkbox></div>
+            <div class="hideOrder" v-show="orderSelect != 4"><el-checkbox v-model="hideOrder">{{$t('tradingCenter.hide')}}</el-checkbox></div>
           </ul>
           <div class="orderTableBox">
             <!-- 当前委托 -->
@@ -85,7 +344,7 @@
 									<th>{{$t('tradingCenter.totalVal')}}</th>
 									<th>{{$t('tradingCenter.trigger')}}</th>
 									<th style="text-align: center;" class="cancels">
-										<span class="btn" @click="delAllOrder()">{{$t('tradingCenter.cancelAll')}}</span>
+										<span class="btn" @click="delAllClick()">{{$t('tradingCenter.cancelAll')}}</span>
                     <!-- 全撤旁边的更多 -->
 										<!-- <div class="btn iconfont-downsjsmall">
                       <i class="el-icon-more"></i>
@@ -407,7 +666,7 @@
                   <colgroup style="width:30%;"></colgroup>
                   <colgroup style="width:30%;"></colgroup>
                   <tbody>
-                  <tr v-for="(it,idx) in bidsList" :key="idx">
+                  <tr v-for="(it,idx) in bidsList" :key="idx" @click="bidsClick(it[0])">
                     <td class="f-left red hoverB"><span>{{it[0]}}</span></td>
                     <td class="f-center"><span class="hoverSpan">{{it[1] | toNumber}}</span></td>
                     <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{[it[0],it[1],fixed] | mul }}</span>
@@ -438,7 +697,7 @@
                   <colgroup style="width:30%;"></colgroup>
                   <colgroup style="width:30%;"></colgroup>
                   <tbody>
-                  <tr v-for="(it,idx) in asksList" :key="idx">
+                  <tr v-for="(it,idx) in asksList" :key="idx" @click="asksClick(it[0])">
                     <td class="f-left green hoverB"><span>{{it[0]}}</span></td>
                     <td class="f-center"><span class="hoverSpan">{{it[1] | toNumber}}</span></td>
                     <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{[it[0],it[1],fixed] | mul }}</span>
@@ -503,7 +762,7 @@
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.price')}}：</span>
                 <label>{{market}}</label>
-                <input type="text" v-model="buyPrice">
+                <input type="text" v-model="buyPrice" @input="inputChange(buyPrice, buyNumber, 'buyCalc')">
                 <!-- <span class="legalMoney">￥0.41</span> -->
                 <div class="jiantou baseColor">
                   <i class="el-icon-caret-top" @click="addOnce(buyPrice,'buyPrice')"></i>
@@ -513,7 +772,7 @@
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.amount')}}：</span>
                 <label>{{coin}}</label>
-                <input type="text" v-model="buyNumber">
+                <input type="text" v-model="buyNumber" @input="inputChange(buyPrice, buyNumber, 'buyCalc')">
                 <span class="most">{{$t('tradingCenter.maxBuy')}}<span>0</span></span>
                 <!-- <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
@@ -530,7 +789,7 @@
               </div>
               <div class="sumBox">
                 <span class="fcB">{{$t('tradingCenter.total')}} ： </span>
-                <span class="sum">0.00000000<span>{{market}}</span></span>
+                <span class="sum">{{buyCalc}}<span>{{market}}</span></span>
               </div>
               <el-button class="buy" @click="createOrder('buy')" type="success">{{$t('tradingCenter.buy')}}</el-button>
             </div>
@@ -543,7 +802,7 @@
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.price')}}：</span>
                 <label>{{market}}</label>
-                <input type="text" v-model="sellPrice">
+                <input type="text" v-model="sellPrice" @input="inputChange(sellPrice, sellNumber, 'sellCalc')">
                 <!-- <span class="legalMoney">￥0.41</span> -->
                 <div class="jiantou baseColor">
                   <i class="el-icon-caret-top" @click="addOnce(sellPrice,'sellPrice')"></i>
@@ -553,7 +812,7 @@
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.amount')}}：</span>
                 <label>{{coin}}</label>
-                <input type="text" v-model="sellNumber">
+                <input type="text" v-model="sellNumber" @input="inputChange(sellPrice, sellNumber, 'sellCalc')">
                 <span class="most">{{$t('tradingCenter.maxBuy')}}<span>0</span></span>
                 <!-- <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
@@ -570,7 +829,7 @@
               </div>
               <div class="sumBox">
                 <span class="fcB">{{$t('tradingCenter.total')}} ： </span>
-                <span class="sum">0.00000000<span>{{market}}</span></span>
+                <span class="sum">{{sellCalc}}<span>{{market}}</span></span>
               </div>
               <el-button  @click="createOrder('sell')" class="sell" type="success">{{$t('tradingCenter.sell')}}</el-button>
             </div>
@@ -584,7 +843,7 @@
 
 <script>
 import calc from "calculatorjs";
-import { add, sub } from "../../utils/common.js"
+import { add, sub, mul } from "../../utils/common.js"
 // import SockJS from 'sockjs';
 // var SockJS = require('sockjs');
 // import StompJS from 'stompjs';
@@ -606,6 +865,20 @@ require("echarts/lib/component/title");
 export default {
   data() {
     return {
+      activeName: 'CCC',
+      localList: [],
+      collectList: [],
+      CCCList: [],
+      BTCList: [],
+      ETHList: [],
+      OMGList: [],
+      DOGEList: [],
+      WWWList: [],
+      RNGList: [],
+      allList: [],
+      noticeList: [],
+      search: '',
+      coidBoxFlag: false,
       newmarket: [],
       asksList: [],
       bidsList: [],
@@ -636,8 +909,10 @@ export default {
       sum: "",
       buyPrice: "",
       buyNumber: "",
+      buyCalc: "0.00000000",
       sellPrice: "",
       sellNumber: "",
+      sellCalc: "0.00000000",
       nowTime: "",
       loginFlag: false,
       klineFlag: true,
@@ -737,7 +1012,30 @@ export default {
             data: []
             }
         ]
-      }
+      },
+      googleDialog: false,
+      googleForm: {      //谷歌认证
+            pwd: "",
+            verCode: "",
+            rules: {
+              pwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
+              verCode:[{ required: true,min: 6, max: 6, message: '请输入6位动态数字', trigger: 'blur' }],
+          }
+      },
+      phoneDialog: false,
+      phoneForm: {      //手机验证
+          phone: "",
+          verCode: "",
+          select: "+86",
+          rules: {
+            phone:[{ required: true, message: '请输入手机号', trigger: 'blur' }],
+            verCode:[{ required: true, message: '请输入验证码', trigger: 'blur' }],
+          }
+      },
+      doubleDialog: false,
+      doubleSelect: 1,
+      VerCodeFlag: true,
+      verCodeTime: 60,
     };
   },
   beforeMount() {
@@ -810,6 +1108,78 @@ export default {
     };
   },
   methods: {
+    handleClick(tab, event) {
+    //console.log(tab.$el.id);
+    },
+    linkToGoods(row, event, column){
+        console.log(row.name);
+        this.$router.push('/tradingCenter/'+row.symbol)
+    },
+    changeStar(name,star){
+        console.log(name,star)
+        if(star){
+            var idx = this.localList.indexOf(name);
+            this.localList.splice(idx, 1);
+        }else{
+            this.localList.push(name);
+        }
+        console.log(this.localList)
+    },
+    getVerificationCode() {     //获取验证码
+        var _this = this;
+        axios.get('/api/sms/to_user').then(function(res){  
+            console.log(res);
+            _this.VerCodeFlag = false;
+            _this.verCodeTime = 60;
+            _this.verCodeTimeStart ();
+            _this.phoneForm.smsId = res.data.smsId;
+        }).catch(function (res){  
+            console.log(res);
+        });  
+    },
+    verCodeTimeStart (){              //验证码计时器
+        var _this = this;
+        var timer = setInterval(()=>{
+            if(_this.verCodeTime>1){
+                _this.verCodeTime--;
+            }else{
+                clearInterval(timer);
+                this.VerCodeFlag = true;
+            }
+        },1000)
+    },
+    phoneInput(verCode) {             //手机验证
+        var _this = this;
+        var smsCode = verCode.trim();
+        if(smsCode.length == 6){
+            var phoneDate = this.submitData;
+            phoneDate.smsId = this.phoneForm.smsId;
+            phoneDate.smsCode = smsCode;
+            axios.post('/api/accounts/exports',phoneDate).then(function(res){  
+                console.log(res)
+                _this.phoneDialog = false;
+                _this.submitFin();
+            }).catch(function (res){  
+                console.log(res);
+            }); 
+        }
+    
+    },
+    googleInput(verCode) {            //谷歌验证
+        var _this = this;
+        var googleCode = verCode.trim();
+        if(googleCode.length == 6){
+            var googleDate = this.submitData;
+            googleDate.googleCode = googleCode;
+            axios.post('/api/accounts/exports',googleDate).then(function(res){  
+                console.log(res)
+                _this.googleDialog = false;
+                _this.submitFin();
+            }).catch(function (res){  
+                console.log(res);
+            }); 
+        }
+    },
     onReady() {
       let that = this;
       let c = 0;
@@ -860,11 +1230,42 @@ export default {
         // console.log(c);
         // console.log(res);
         var symbol = that.symbol;
-        res.forEach(it => {
-          if (it.symbol == symbol) {
-            that.nowPairs = it;
-          }
-        });
+        that.BTCList = [];
+        that.CCCList = [];
+        that.ETHList = [];
+        that.OMGList = [];
+        that.DOGEList = [];
+        that.WWWList = [];
+        that.RNGList = [];
+        that.allList = res;
+    //   that.collectList = [];
+        res.forEach(item => {
+            if (item.symbol == symbol) {
+                that.nowPairs = item;
+            }
+
+
+            item.star = false;
+            item.number = item.number.toFixed(8);
+            if(item.market_name == "BTC"){
+                that.BTCList.push(item);
+            }else if(item.market_name == "ETH"){
+                that.ETHList.push(item);
+            }else if(item.market_name == "CCC"){
+                that.CCCList.push(item);
+            }else if(item.market_name == "OMG"){
+                that.OMGList.push(item);
+            }else if(item.market_name == "DOGE"){
+                that.DOGEList.push(item);
+            }else if(item.market_name == "WWW"){
+                that.WWWList.push(item);
+            }else if(item.market_name == "RNG"){
+                that.RNGList.push(item);
+            }
+            // if(that.localList.indexOf(item.symbol)>-1){
+            //     that.collectList.push(item);
+            // }
+        })
       });
     },
     drawLine() {
@@ -1032,6 +1433,7 @@ export default {
           .post("/api/orders", postData)
           .then(function(res) {
             console.log(res);
+            _this.initDealBox();
             if (res.code == 0) {
               _this.$message({
                 message: "下单成功",
@@ -1080,6 +1482,17 @@ export default {
         .catch(function(res) {
           console.log(res);
         });
+    },
+    delAllClick() {
+        console.log(this.userInfo.two_factor_auth_type)
+        var two_factor = this.userInfo.two_factor_auth_type;
+        if(two_factor == "GOOGLE"){
+            this.googleDialog   = true;
+        }else if(two_factor == "MOBILE"){
+            this.phoneDialog   = true;
+        }else if(two_factor == "BOTH"){
+            this.doubleDialog = true;
+        }
     },
     delAllOrder() {
       var _this = this;
@@ -1152,6 +1565,31 @@ export default {
         if(num>0){
             this[name] = sub(num,0.00000001,8);
         }
+    },
+    initDealBox() {
+        this.buyPrice = "";
+        this.buyNumber = "";
+        this.sellPrice = "";
+        this.sellNumber = "";
+    },
+    bidsClick(price) {
+        this.buyPrice = price;
+    },
+    asksClick(price) {
+        this.sellPrice = price;
+    },
+    calcPrice(value1, value2, name) {
+        var aaa = this[name]
+        this[name] = mul(value1,value2,8);
+    },
+    inputChange(value1, value2, name) {
+        if(!isNaN(value1) && !isNaN(value2)){
+            if(value1 == '' || value2 == ''){
+                this.calcPrice(0, 0, name);
+            }else{
+                this.calcPrice(value1, value2, name);
+            }
+        }
     }
   },
   filters: {
@@ -1213,7 +1651,169 @@ export default {
     newmarketItems: function() {
         var arr = this.newmarket;
         return arr.reverse();
-    }
+    },
+    CCCitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var starList = this.localList;
+        var _this = this;
+        this.CCCList.map((it,idx) => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            _this.$set(_this.$data.CCCList[idx], 'star', true);
+          }else{
+            _this.$set(_this.$data.CCCList[idx], 'star', false);
+          }
+        })
+        if (_search) {
+          return this.CCCList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.CCCList;
+    },
+    BTCitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var starList = this.localList;
+        var _this = this;
+        this.BTCList.map((it,idx) => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            _this.$set(_this.$data.BTCList[idx], 'star', true);
+          }else{
+            _this.$set(_this.$data.BTCList[idx], 'star', false);
+          }
+        })
+        if (_search) {
+          return this.BTCList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.BTCList;
+    },
+    ETHitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.ETHList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+          }else{
+            it.star = false
+          }
+        })
+        if (_search) {
+          return this.ETHList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.ETHList;
+    },
+    OMGitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.OMGList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+          }else{
+            it.star = false
+          }
+        })
+        if (_search) {
+          return this.OMGList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.OMGList;
+    },
+    DOGEitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.DOGEList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+          }else{
+            it.star = false
+          }
+        })
+        if (_search) {
+          return this.DOGEList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.DOGEList;
+    },
+    WWWitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.WWWList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+          }else{
+            it.star = false
+          }
+        })
+        if (_search) {
+          return this.WWWList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.WWWList;
+    },
+    RNGitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        this.RNGList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+          }else{
+            it.star = false
+          }
+        })
+        if (_search) {
+          return this.RNGList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return this.RNGList;
+    },
+    collectitems: function() {
+        var _search = this.search.toLocaleLowerCase();
+        var _this = this;
+        var collectList = [];
+        this.allList.map(it => {
+          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+          if(_this.localList.indexOf(it.symbol) != -1){
+            it.star = true;
+            collectList.push(it)
+          }
+        })
+        if (_search) {
+          return collectList.filter(function(product) {
+            return Object.keys(product).some(function(key) {
+              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+            })
+          })
+        }
+        return collectList;
+    },
   }
 };
 </script>
@@ -1386,8 +1986,20 @@ $baseColor: #fc9217;
         line-height: 40px;
         display: block;
         border-left: 2px solid #333434;
+        position: relative;
         i {
           margin-left: 10px;
+        }
+        .coidBox{
+            position: absolute;
+            top: 40px;
+            right: 64px;
+            z-index: 20;
+            width: 500px;
+            // height: 360px;
+            max-height: 360px;
+            background: #212121;
+            
         }
       }
     }
@@ -1420,9 +2032,9 @@ $baseColor: #fc9217;
         background-color: #383636;
         width: 110px;
         position: absolute;
-        left: -23px;
+        left: 0;
         top: 40px;
-        z-index: 10;
+        z-index: 20;
         cursor: pointer;
         .langItem {
           line-height: 30px;
@@ -1908,7 +2520,7 @@ $baseColor: #fc9217;
               margin-bottom: 6px;
               position: relative;
               input {
-                padding: 0 68px 0 18px;
+                padding: 0 68px 0 8px;
                 box-sizing: border-box;
                 width: 180px;
                 height: 32px;
@@ -2058,6 +2670,9 @@ $baseColor: #fc9217;
 <style lang="scss">
 @import "../../styles/login.scss";
 $baseColor: #fc9217;
+.el-tabs__item{
+    color:#fff;
+}
 .bgBox {
   .baseDialog .el-dialog__footer {
     .tips {
@@ -2069,6 +2684,115 @@ $baseColor: #fc9217;
   }
 }
 .tradingCenterBox {
+    .tradHeader .goodsBox .coidBox{
+        .el-tabs__nav-wrap::after,.el-table--group::after, .el-table--border::after, .el-table::before{
+            background-color: #2F363E;
+        }
+        #tab-search{
+            margin-top:-1px; 
+            margin-right:-1px; 
+            // border-top:1px solid #ffffff; 
+            // border-right:1px solid #ffffff; 
+        }
+        .search{
+            height: 28px;
+            width: 200px;
+            input{
+                border-radius: 0;
+                height: 28px;
+                background: #212121;
+                border-color: #2F363E;
+            }
+            span{
+                height: 28px;
+                i{
+                    line-height: 28px;
+                }
+            }
+        }
+        .tabContent{
+            // .el-table__header,.el-table__body,.el-table__empty-block{
+            //   width: 1198px !important;
+            // }
+            .el-table th.is-leaf,.el-table td,.el-table__body-wrapper{
+                border-color: #2F363E;
+            }
+            .el-table,.el-table tr,.el-table th{
+                background: #212121;
+            }
+            .el-table--enable-row-hover .el-table__body tr:hover > td{
+                background-color: rgba(245,166,35,0.10);
+            }
+            .el-table .cell{
+                padding:0;
+            }
+            .el-table td{
+                cursor:pointer;
+            }
+            .el-table th, .el-table td{
+                padding: 0;
+                font-weight: 500;
+                font-size: 12px;
+                line-height: 30px;
+                height: 30px;
+            }
+            .el-icon-star-on{
+                font-size: 13px;
+            }
+            .star-on{
+                color: #FC9217;
+            }
+            .star-off{
+                color: #cccccc;
+            }
+            .green{
+                color: #3ABC56;
+            }
+            .red{
+                color: #F73946;
+            }
+            .newPriceR{
+                color: #999999
+            }
+            tbody,thead{
+                .lastList{
+                    padding-right: 26px;
+                }
+            }
+            
+        }
+        // .tabClass .el-tabs__header{
+        //     position: fixed;
+        //     top: 0;
+        //     left: 0;
+        //     padding: 0 10px;
+        //     animation:top 0.5s ease;
+        //     z-index: 10;
+        //     background: #fff;
+        //     width: 100%;
+        //     height: 60px;
+        //     line-height: 60px;
+        //     box-shadow: 0 2px 4px 0 #999999;
+        //     .el-tabs__nav-wrap{
+        //     width: 1200px;
+        //     margin: auto;
+        //     }
+        // }
+        
+
+        .el-tabs__nav{
+            border-radius: 0;
+        }
+        .el-tabs--card > .el-tabs__header{
+            border: 0;
+        }
+        .el-tabs__header{
+            margin: 0;
+        }
+        .el-tabs__content{
+            border: 1px solid #2F363E;
+        }
+    }
     .bgBox .formbase .el-form-item__content .el-input input{
       background: #FAFFBD;
     }

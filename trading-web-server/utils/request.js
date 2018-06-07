@@ -1,8 +1,8 @@
-const http = require('http')
+const https = require('https')
 const apiGet = (api) => {
   let resData
   return new Promise((resolve, reject) => {
-    http.get(api, (req, res) => {
+    https.get(api, (req, res) => {
       req.on('data', function (data) {
         // console.log(data, '请求中')
         resData += data

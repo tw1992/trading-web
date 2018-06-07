@@ -14,7 +14,7 @@
         <el-checkbox v-model="hidesmall">{{$t('funds.hideSmallBalances')}}</el-checkbox>
       </div>
       <div class="titem">
-        <p class="sum">{{$t('funds.estimatedValue')}}：{{sum}} BTC / &yen;0.00</p>
+        <p class="sum">{{$t('funds.estimatedValue')}}：{{sum}} ETH / &yen;0.00</p>
       </div>
     </div>
     <div class="orderBox">

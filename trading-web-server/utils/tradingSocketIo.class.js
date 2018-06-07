@@ -1,4 +1,4 @@
-const {tradingSendData,tradingSendTrades,tradingSendDepth,tradingSendPairs} = require('./asyncHttp')
+const {tradingSendTrades,tradingSendDepth,tradingSendPairs} = require('./asyncHttp')
 const dateFormat = require('dateformat')
 const schedule = require("node-schedule")
 const dateLabel = 'yyyy-mm-dd HH:MM:ss' // 时间格式

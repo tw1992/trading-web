@@ -3,6 +3,8 @@
       <el-menu
         :default-active="$route.path"
         router
+        menu-trigger="click"
+        :unique-opened="true"
         class="homeNav"
         mode="horizontal"
         @select="handleSelect"
@@ -83,7 +85,7 @@ export default {
         }
     },
     openSelect() {
-      console.log(123);
+      //console.log(123);
     },
     //退出登录
     logout: function() {

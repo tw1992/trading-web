@@ -1,7 +1,7 @@
 const { tradingService } = require('./service')
-exports.tradingSendData = async (userId, callback) => {
-  callback(await tradingService.getTradingList(userId))
-}
+// exports.tradingSendData = async (userId, callback) => {
+//   callback(await tradingService.getTradingList(userId))
+// }
 exports.tradingSendTrades= async (data, callback) => {
   callback(await tradingService.getTrades(data))
 }
