@@ -882,6 +882,9 @@ export default {
   height: 100%;
   min-width: 1200px;
   color: #333333;
+  .el-tabs__item{
+    color:#303133;
+   }
   .goTop{
     height: 46px;
     width: 46px;
@@ -1104,9 +1107,7 @@ export default {
     background-color: #fff;
   }
 }
-.el-tabs__item{
-    color:#303133;
-}
+
 </style>
 
 <style scoped lang="scss">

@@ -374,11 +374,11 @@
 										<colgroup style="width: 11%"></colgroup>
 										<colgroup style="width: 13%"></colgroup>
 										<tbody>
-                      <tr v-for="(item,idx) in openOrder" :key="idx">
+                      <tr v-for="(item,idx) in openOrderItems" :key="idx">
                         <td><span>{{item.created_at}}</span></td>
                         <td><span>{{item.symbol}}</span></td>
                         <td><span>限价</span></td>
-                        <td><span>{{item.side == "BUY"?"买入":"卖出"}}</span></td>
+                        <td><span :class="item.side == 'BUY'?'green':'red'">{{item.side == "BUY"?"买入":"卖出"}}</span></td>
                         <td><span>{{item.price}}</span></td>
                         <td><span>{{item.number}}</span></td>
                         <td><span>{{toPercent(item.deal_number/item.number,2)}}</span></td>
@@ -469,11 +469,11 @@
                     <colgroup style="width: 9%"></colgroup>
                     <colgroup style="width: 9%"></colgroup>
                     <tbody>
-                    <tr v-for="(item,idx) in historyOrder" :key="idx">
+                    <tr v-for="(item,idx) in historyOrderItems" :key="idx">
                       <td><span>{{item.created_at}}</span></td>
                       <td><span>{{item.symbol}}</span></td>
                       <td><span>限价</span></td>
-                      <td><span>{{item.side == "BUY"?"买入":"卖出"}}</span></td>
+                      <td><span :class="item.side == 'BUY'?'green':'red'">{{item.side == "BUY"?"买入":"卖出"}}</span></td>
                       <td><span>{{item.total/item.deal_number}}</span></td>
                       <td><span>{{item.price}}</span></td>
                       <td><span>{{toPercent(item.deal_number/item.number,2)}}</span></td>
@@ -551,10 +551,10 @@
 										<colgroup style="width: 14%"></colgroup>
 										<colgroup style="width: 14%"></colgroup>
 										<tbody>
-                      <tr v-for="(item,idx) in historytrading" :key="idx">
+                      <tr v-for="(item,idx) in historytradingItems" :key="idx">
                         <td><span>{{item.created_at}}</span></td>
                         <td><span>{{item.symbol}}</span></td>
-                        <td><span>{{item.side == "BUY"?"买入":"卖出"}}</span></td>
+                        <td><span :class="item.side == 'BUY'?'green':'red'">{{item.side == "BUY"?"买入":"卖出"}}</span></td>
                         <td><span>{{item.total/item.deal_number}}</span></td>
                         <td><span>{{item.number}}</span></td>
                         <td><span>{{item.total}}</span></td>
@@ -756,7 +756,7 @@
             <div class="dealItem">
               <div class="dealT">
                 <span class="f-fl">{{$t('tradingCenter.buy')}} {{coin}}</span>
-                <span class="f-fr"><i class="el-icon-edit"></i>__{{market}}</span>
+                <span class="f-fr"><i class="iconfont icon-20"></i>{{buyFunds+'__'+market}}</span>
               </div>
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.price')}}：</span>
@@ -772,7 +772,7 @@
                 <span class="fcB">{{$t('tradingCenter.amount')}}：</span>
                 <label>{{coin}}</label>
                 <input type="text" v-model="buyNumber" @input="inputChange(buyPrice, buyNumber, 'buyCalc')">
-                <span class="most">{{$t('tradingCenter.maxBuy')}}<span>0</span></span>
+                <span class="most">{{$t('tradingCenter.maxBuy')}}<span>{{buyMax}}</span></span>
                 <!-- <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
                   <i class="el-icon-caret-bottom"></i>
@@ -780,10 +780,10 @@
               </div>
               <div class="numBox">
                 <div class="numList">
-                  <div class="options">25%</div>
-                  <div class="options">50%</div>
-                  <div class="options">75%</div>
-                  <div class="options">100%</div>
+                  <div class="options" @click="buyNumClick(0.25,'buy')">25%</div>
+                  <div class="options" @click="buyNumClick(0.5,'buy')">50%</div>
+                  <div class="options" @click="buyNumClick(0.75,'buy')">75%</div>
+                  <div class="options" @click="buyNumClick(1,'buy')">100%</div>
                 </div>
               </div>
               <div class="sumBox">
@@ -796,7 +796,7 @@
             <div class="dealItem">
               <div class="dealT">
                 <span class="f-fl">{{$t('tradingCenter.sell')}} {{coin}}</span>
-                <span class="f-fr"><i class="el-icon-edit"></i>__{{coin}}</span>
+                <span class="f-fr"><i class="iconfont icon-20"></i>{{sellFunds+'__'+coin}}</span>
               </div>
               <div class="inputItem">
                 <span class="fcB">{{$t('tradingCenter.price')}}：</span>
@@ -812,7 +812,7 @@
                 <span class="fcB">{{$t('tradingCenter.amount')}}：</span>
                 <label>{{coin}}</label>
                 <input type="text" v-model="sellNumber" @input="inputChange(sellPrice, sellNumber, 'sellCalc')">
-                <span class="most">{{$t('tradingCenter.maxBuy')}}<span>0</span></span>
+                <span class="most">{{$t('tradingCenter.maxBuy')}}<span>{{sellMax}}</span></span>
                 <!-- <div class="jiantou baseColor">
                   <i class="el-icon-caret-top"></i>
                   <i class="el-icon-caret-bottom"></i>
@@ -820,10 +820,10 @@
               </div>
               <div class="numBox">
                 <div class="numList">
-                  <div class="options">25%</div>
-                  <div class="options">50%</div>
-                  <div class="options">75%</div>
-                  <div class="options">100%</div>
+                  <div class="options" @click="buyNumClick(0.25,'sell')">25%</div>
+                  <div class="options" @click="buyNumClick(0.5,'sell')">50%</div>
+                  <div class="options" @click="buyNumClick(0.75,'sell')">75%</div>
+                  <div class="options" @click="buyNumClick(1,'sell')">100%</div>
                 </div>
               </div>
               <div class="sumBox">
@@ -842,7 +842,7 @@
 
 <script>
 import calc from "calculatorjs";
-import { add, sub, mul } from "../../utils/common.js"
+import { add, sub, mul, divide } from "../../utils/common.js"
 // import SockJS from 'sockjs';
 // var SockJS = require('sockjs');
 // import StompJS from 'stompjs';
@@ -890,6 +890,10 @@ export default {
       historyOrder: [], //历史委托
       historytrading: [], //历史成交
       funds: [], //资产管理
+      buyFunds: '',
+      sellFunds: '',
+      buyMax: 0,
+      sellMax: 0,
       startTime1: "",
       endTime1: "",
       startTime2: "",
@@ -1385,6 +1389,12 @@ export default {
             coinItem.showPairsFlag = false; //交易对列表
             sum += coinItem.appraisement;
             balances.push(coinItem);
+            if(coinItem.goods == _this.market){
+                _this.buyFunds = coinItem.usable;
+            }else if(coinItem.goods == _this.coin){
+                _this.sellFunds = coinItem.usable;
+                _this.sellMax = coinItem.usable;
+            }
           });
           _this.funds = balances;
           _this.sum = sum;
@@ -1586,13 +1596,29 @@ export default {
         var aaa = this[name]
         this[name] = mul(value1,value2,8);
     },
-    inputChange(value1, value2, name) {
+    inputChange(value1, value2, name ) {
         if(!isNaN(value1) && !isNaN(value2)){
             if(value1 == '' || value2 == ''){
                 this.calcPrice(0, 0, name);
             }else{
                 this.calcPrice(value1, value2, name);
             }
+            if(value1 != ''){
+                if(name == 'buyCalc'){
+                    this.buyMax = divide(this.buyFunds,value1,8)*1;
+                }else if(name == 'sellCalc'){
+                    this.sellMax = this.sellFunds;
+                }
+            }
+        }
+    },
+    buyNumClick(num,name) {
+        if(name == 'buy'){
+            var num2 = parseInt(this.buyMax*num*Math.pow(10,8));
+            this.buyNumber = num2/(Math.pow(10,8));
+        }else if(name == 'sell'){
+            var num2 = parseInt(this.sellMax*num*Math.pow(10,8));
+            this.sellNumber = num2/(Math.pow(10,8));
         }
     }
   },
@@ -1608,6 +1634,11 @@ export default {
   },
   components: {
       loginBox
+  },
+  watch: {
+    '$route' (to, from) {
+        this.$router.go(0);
+    }
   },
   computed: {
     ...mapGetters(["email", "token", "userInfo", "coinList"]),
@@ -2511,7 +2542,9 @@ $baseColor: #fc9217;
             .dealT {
               height: 28px;
               line-height: 28px;
+              margin-bottom: 2px;
               i {
+                font-size: 14px;
                 margin-right: 10px;
               }
             }
@@ -2673,9 +2706,7 @@ $baseColor: #fc9217;
 <style lang="scss">
 @import "../../styles/login.scss";
 $baseColor: #fc9217;
-.el-tabs__item{
-    color:#fff;
-}
+
 .bgBox {
   .baseDialog .el-dialog__footer {
     .tips {
@@ -2687,6 +2718,9 @@ $baseColor: #fc9217;
   }
 }
 .tradingCenterBox {
+    .el-tabs__item{
+        color:#fff;
+    }
     .tradHeader .goodsBox .coidBox{
         .el-tabs__nav-wrap::after,.el-table--group::after, .el-table--border::after, .el-table::before{
             background-color: #2F363E;

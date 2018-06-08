@@ -285,7 +285,7 @@ export default {
           })
         }
       },
-      loginSuccess(res) {
+      loginSuccess(res,type) {
           console.log(res)
           this.$message({
               message: '登录成功',
@@ -296,14 +296,22 @@ export default {
                 var url = this.redirectUrl+token+'&return_to='+this.return_to;
                 console.log(url)
                 window.location.href = url;
-                window.open(window.location.origin + '/Home')
+                if(!type){
+                    window.open(window.location.origin + '/Home')
+                }else{
+                    window.open(window.location.origin + '/userCenter/account')
+                }
             }else{
-                var _this = this;
-                // setTimeout(()=>{
-                let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
-                console.log(redirect)
-                _this.$router.push({ path: redirect })
-                // },2000)
+                if(!type){
+                    var _this = this;
+                    // setTimeout(()=>{
+                    let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
+                    console.log(redirect)
+                    _this.$router.push({ path: redirect })
+                    // },2000)
+                }else{
+                    _this.$router.push("/userCenter/account")
+                }
             }
             
       },
