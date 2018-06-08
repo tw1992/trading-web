@@ -1104,7 +1104,9 @@ export default {
     background-color: #fff;
   }
 }
-
+.el-tabs__item{
+    color:#303133;
+}
 </style>
 
 <style scoped lang="scss">

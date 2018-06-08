@@ -184,6 +184,21 @@ export default {
 .el-menu--horizontal{
   border:0;
 }
+.el-submenu__title{
+    -webkit-touch-callout: none; /* iOS Safari */
+
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+
+    -khtml-user-select: none; /* Konqueror */
+
+    -moz-user-select: none; /* Firefox */
+
+    -ms-user-select: none; /* Internet Explorer/Edge */
+
+    user-select: none; /* Non-prefixed version, currently
+
+    not supported by any browser */
+}
 .el-menu-item.sum{
   height: 60px!important;
   line-height: 24px!important;

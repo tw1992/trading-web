@@ -66,6 +66,7 @@
 //import { mapState } from 'vuex'
 import loginFooter from './components/loginFooter'
 import RemoteJs from './components/loginTest'
+import { isPoneAvailable,isPassword } from '../utils/common'
 export default {
   data() {
       var validateEmail = (rule, value, callback) => {
@@ -80,11 +81,11 @@ export default {
         }
       };
       var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'));
+        if (!isPassword(value)) {
+          callback(new Error('请输入正确的密码'));
         } else {
-          if (this.registerForm.pass2 !== '') {
-            this.$refs.registerForm.validateField('pass2');
+          if (this.changePwdForm.newpwd2 !== '') {
+            this.$refs.changePwdForm.validateField('newpwd2');
           }
           callback();
         }
@@ -139,8 +140,9 @@ export default {
                 type: 'success'
               });
               var _this = this;
+              this.$store.dispatch('emailActive', this.registerForm.email);
               setTimeout(()=>{
-                _this.$router.push("/login");
+                _this.$router.push("/emaiActivation");
               },2000)
             }).catch((e) => {  
               //this.loading = false  

@@ -8,10 +8,14 @@ const user = {
     email:'',  
     token:'',
     userInfo: '',
+    emailActive: '',
   },
   mutations: {
     SET_EMAIL: (state, email) => {  
         state.email = email;  
+    },  
+    SET_EMAILACTIVE: (state, email) => {  
+        state.emailActive = email;  
     },  
     SET_TOKEN: (state, token) => {  
         state.token = token;  
@@ -80,6 +84,10 @@ const user = {
                 reject(error) 
             }) 
         }) 
+    },
+    //存下邮箱信息
+    emailActive({ commit }, email) {
+        commit('SET_EMAILACTIVE', email); 
     },
     // 注册   
     Regist({ commit }, userInfo) {   

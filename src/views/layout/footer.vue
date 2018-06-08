@@ -40,7 +40,7 @@
         </div>
         <ul class="priceList">
           <li>
-            <span class="name">24h&nbsp;{{$t('home.volume')}}</span><span class="num">277,050.93</span>
+            <span class="name">24h&nbsp;{{$t('home.volume')}}</span>
           </li>
           <!-- <li>
             <span class="name">BNB&nbsp;/&nbsp;</span><span class="num">277,050.93</span>

@@ -9,7 +9,7 @@
         </div>
         <div class="tipBox">
             <p class="tip">已向您的邮箱发送了一封账户激活的邮件,点击邮件中的链接去激活账户.</p>
-            <p class="tip">如果未收到邮件,请尝试重新发送.</p>
+            <p class="tip">如果未收到邮件,请尝试<span style="color:#FC9217" @click="resetEmail()">重新发送</span>.</p>
             <p class="tip">如果长时间未收到邮件,请尝试垃圾邮箱中寻找.</p>
         </div>
     </div>
@@ -20,6 +20,7 @@
 <script>
 import axios from '../../api/axios'
 import loginFooter from '../components/loginFooter'
+import { mapGetters } from 'vuex'
 export default {
   data() {
       return {
@@ -28,7 +29,6 @@ export default {
     },
     methods: {
       submitForm(formName) {
-          console.log(0)
         var _this = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -44,6 +44,26 @@ export default {
           }
         });
       },
+      resetEmail() {
+          var _this = this;
+          axios.post('/api/auth/send_register_email',{email:this.email}).then(function(res){  
+                console.log(res);
+                _this.$message({
+                    message: '发送成功，请注意查收',
+                    type: 'success'
+                });
+            }).catch(function (res){  
+                console.log(res);
+            }); 
+      }
+    },
+    created() {
+        console.log(this.emailActive);
+    },
+    computed: {
+        ...mapGetters([
+            'emailActive',
+        ]),
     },
     components: { loginFooter }
 }

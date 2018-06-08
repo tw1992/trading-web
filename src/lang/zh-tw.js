@@ -31,7 +31,7 @@ export default {
     change: "漲跌",
     high: "最高價",
     low: "最低價",
-    volume: "成交量",
+    volume: "成交額",
     noData: "暫無數據",
     about: "關於我們",
     terms: "服務協定",

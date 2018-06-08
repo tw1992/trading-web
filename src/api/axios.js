@@ -36,7 +36,7 @@ axios.interceptors.request.use(
             config.headers['Accept-Language'] = "en-us,en;q=0.5"
         }
         if (store.getters.token) {
-            config.headers['Authorization'] = 'Bearer'+getToken() // 让每个请求携带token
+            config.headers['Authorization'] = 'Bearer '+getToken() // 让每个请求携带token
         }
 
         //初始化post参数
@@ -106,7 +106,10 @@ axios.interceptors.response.use(
                         Message.error("Login Token has expired");   //登录令牌过期了
                         break;
                     case 10404:
-                        Message.error("Email is not validated");    //电子邮件是无效的
+                        //Message.error("Email is not validated");    //电子邮件是无效的
+                        router.replace({ //跳转到邮箱验证
+                            path: 'emaiActivation',
+                        });
                         break;
                     case 10405:
                         Message.error("The link not found or has expired"); //链接未找到或已过期。
@@ -131,6 +134,9 @@ axios.interceptors.response.use(
                         break;
                     case 10412:
                         Message.error("Not enough money");          //没有足够的钱
+                        break;
+                    case 10417:
+                        Message.error("没有通过人机验证");          //没有通过人机验证
                         break;
                     case 10500:
                         Message.error("Failed to authenticate because of bad credentials or an invalid authorization header");      //由于糟糕的凭据或无效的授权标题而无法进行身份验证。

@@ -11,10 +11,10 @@
                 <p class="UID">UID: {{userInfo.id}}</p>
             </div>
             <div class="attest">
-                <router-link v-if="userInfo.is_human_validated == 0" class="toattest" to="/autonym">{{$t('user.unverified')}}&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
-                <a v-if="userInfo.is_human_validated == 1" class="toattest" style="color:#3ABC56">已实名认证</a>
+                <router-link class="toattest" to="/autonym">{{$t('user.unverified')}}&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
+                <!-- <a v-if="userInfo.is_human_validated == 1" class="toattest" style="color:#3ABC56">已实名认证</a>
                 <a v-if="userInfo.is_human_validated == 2" class="toattest">实名认证审核中</a>
-                <router-link v-if="userInfo.is_human_validated == 3" class="toattest" to="/autonym">实名认证失败，请重新实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
+                <router-link v-if="userInfo.is_human_validated == 3" class="toattest" to="/autonym">实名认证失败，请重新实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link> -->
             </div>
         </div>
         <div class="otherBox">
@@ -48,8 +48,8 @@
                         <div class="switchBtn" @click="switchClick('phoneFlag')"></div>
                         <el-switch
                         v-model="phoneFlag"
-                        active-color="#F73946"
-                        inactive-color="#3ABC56">
+                        active-color="#3ABC56"
+                        inactive-color="#CCCCCC">
                         </el-switch>
                         <!-- <el-button type="primary" @click="switchClick('phoneFlag')">{{phoneFlag?$t('user.close'):$t('user.enable')}}</el-button> -->
                     </div>
@@ -85,8 +85,8 @@
                             <el-switch
                             @change="googleClick"
                             v-model="googleFlag"
-                            active-color="#F73946"
-                            inactive-color="#3ABC56">
+                            active-color="#3ABC56"
+                            inactive-color="#CCCCCC">
                             </el-switch>
                             <!-- <el-button type="primary" @click="switchClick('googleFlag')">{{googleFlag?$t('user.close'):$t('user.enable')}}</el-button> -->
                         </div>
@@ -182,18 +182,19 @@
                 <el-form-item :label="$t('Dialog.loginPassword')" prop="pwd">
                     <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="phoneForm.pwd" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item :label="$t('Dialog.phoneNumber')" prop="phone">
+                <el-form-item v-if="!phoneFlag" :label="$t('Dialog.phoneNumber')" prop="phone">
                     <el-input placeholder="(仅限中国大陆)" v-model="phoneForm.phone" type="tel" auto-complete="off" class="inputBase input-with-select">
-                        <el-select v-model="phoneForm.select" slot="prepend" placeholder="请选择">
+                        <el-select :disabled="true" v-model="phoneForm.select" slot="prepend" placeholder="请选择">
                         <el-option label="+86" value="+86"></el-option>
-                        <el-option label="+88" value="+88"></el-option>
-                        <el-option label="+89" value="+89"></el-option>
+                        <!-- <el-option label="+88" value="+88"></el-option>
+                        <el-option label="+89" value="+89"></el-option> -->
                         </el-select>
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="$t('Dialog.SMSAuthenticationCode')" class="verCode" prop="verCode">
                     <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
-                    <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
+                    <a class="verBtn" v-show="VerCodeFlag&&!phoneFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
+                    <a class="verBtn" v-show="VerCodeFlag&&phoneFlag" href="javascript:;" @click="getTheVerificationCode()">{{$t('Dialog.sendSMS')}}</a>
                     <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
                 </el-form-item>
             </el-form>
@@ -395,6 +396,18 @@ export default {
                     });
             }
       },
+      getTheVerificationCode() {     //获取指定手机验证码
+            var _this = this;
+            axios.get(`/api/sms/to_user`).then(function(res){  
+                console.log(res);
+                _this.VerCodeFlag = false;
+                _this.verCodeTime = 60;
+                _this.verCodeTimeStart ();
+                _this.phoneForm.smsId = res.data.smsId;
+            }).catch(function (res){  
+                console.log(res);
+            });  
+      },
       verCodeTimeStart (){              //验证码计时器
           var _this = this;
           var timer = setInterval(()=>{
@@ -416,10 +429,12 @@ export default {
                 smsCode: this.phoneForm.verCode
             }).then(function(res){  
                 console.log(res)
+                _this.initInput();
                 _this.$store.dispatch('getUserInfo');
                 _this.phoneDialog = false;
                 _this.phoneFlag = true;
             }).catch(function (res){  
+                _this.initInput();
                 console.log(res);
             }); 
           } else {
@@ -437,11 +452,13 @@ export default {
                 smsId: this.phoneForm.smsId,
                 smsCode: this.phoneForm.verCode
             }).then(function(res){  
+                _this.initInput();
                 console.log(res)
                 _this.$store.dispatch('getUserInfo');
                 _this.phoneDialog = false;
                 _this.phoneFlag = false;
             }).catch(function (res){  
+                _this.initInput();
                 console.log(res);
             }); 
           } else {
@@ -459,10 +476,12 @@ export default {
                 googleCode: this.googleDelForm.verCode
             }).then(function(res){  
                 console.log(res)
+                _this.initInput();
                 _this.$store.dispatch('getUserInfo');
                 _this.googleDelDialog = false;
                 _this.googleFlag = false;
             }).catch(function (res){  
+                _this.initInput();
                 console.log(res);
             }); 
           } else {
@@ -479,10 +498,16 @@ export default {
                 password: this.changePwdForm.pwd1,
                 newPassword: this.changePwdForm.newpwd1,
             }).then(function(res){  
+                _this.initInput();
                 console.log(res)
                 _this.changePwdDialog = false;
                 _this.$store.dispatch('changeLogOut');
+                this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                    });
             }).catch(function (res){  
+                _this.initInput();
                 console.log(res);
             }); 
           } else {
@@ -490,6 +515,16 @@ export default {
             return false;
           }
         });
+      },
+      initInput() {             //重置input
+        this.googleDelForm.pwd = '';
+        this.googleDelForm.verCode = '';
+        this.changePwdForm.pwd1 = '';
+        this.changePwdForm.newpwd1 = '';
+        this.changePwdForm.newpwd2 = '';
+        this.phoneForm.pwd = '';
+        this.phoneForm.phone = '';
+        this.phoneForm.verCode = '';
       }
     },
     computed: {

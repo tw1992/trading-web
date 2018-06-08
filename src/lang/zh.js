@@ -31,7 +31,7 @@ export default {
     change: "涨跌",
     high: "最高价",
     low: "最低价",
-    volume: "成交量",
+    volume: "成交额",
     noData: "暂无数据",
     about: "关于我们",
     terms: "服务协议",

@@ -141,6 +141,10 @@ export default {
       };
       return {
         btnFlag: false,
+        redirectUrl: 'https://bjex.zendesk.com/access/jwt?jwt=',
+        return_to: "",
+        redirectFlag: false,
+        nc: {},
         loginForm:{
           email:"", //466865383@qq.com
           password:"",
@@ -196,17 +200,8 @@ export default {
                             this.doubleDialog = true;
                         }
                     }else{
-                        this.$message({
-                            message: '登录成功',
-                            type: 'success'
-                        });
-                        var _this = this;
-                        // setTimeout(()=>{
-                            let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
-                            console.log(redirect)
-                            _this.$router.push({ path: redirect })
-                            console.log(123)
-                        // },2000)
+                        console.log('loginSuccess')
+                        this.loginSuccess(res);
                     }
                     //this.loading = false;  
                     //this.$router.push({path: '/login'});  
@@ -215,7 +210,7 @@ export default {
                     //this.loading = false  
                     // console.log("err")
                     // console.log(e)
-                    _this.loadRongJs()
+                        this.loginErr();
                     })
                 } else {
                     console.log('error submit!!');
@@ -262,20 +257,12 @@ export default {
             smsCode: smsCode
           };
           this.$store.dispatch('phoneLogin', phoneLoginDate).then((res) => {
-            this.$message({
-              message: '登录成功',
-              type: 'success'
-            });
-            var _this = this;
-            // setTimeout(()=>{
-              let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
-              console.log(redirect)
-              _this.$router.push({ path: redirect })
-            // },2000)
+            this.loginSuccess(res);
           }).catch((e) => {  
             //this.loading = false  
             // console.log("err")
             // console.log(e)
+            this.loginErr();
           })
         }
         
@@ -289,22 +276,41 @@ export default {
             googleCode: googleCode
           };
           this.$store.dispatch('googleLogin', googleLoginDate).then((res) => {
-            this.$message({
-              message: '登录成功',
-              type: 'success'
-            });
-            var _this = this;
-            // setTimeout(()=>{
-              let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
-              console.log(redirect)
-              _this.$router.push({ path: redirect })
-            // },2000)
+            this.loginSuccess(res);
           }).catch((e) => {  
             //this.loading = false  
             // console.log("err")
             // console.log(e)
+            this.loginErr();
           })
         }
+      },
+      loginSuccess(res) {
+          console.log(res)
+          this.$message({
+              message: '登录成功',
+              type: 'success'
+            });
+            if(this.redirectFlag){
+                var token = res.data.token;
+                var url = this.redirectUrl+token+'&return_to='+this.return_to;
+                console.log(url)
+                window.location.href = url;
+                window.open(window.location.origin + '/Home')
+            }else{
+                var _this = this;
+                // setTimeout(()=>{
+                let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
+                console.log(redirect)
+                _this.$router.push({ path: redirect })
+                // },2000)
+            }
+            
+      },
+      loginErr() {
+          this.btnFlag = false;
+          this.nc.reload();
+          this.$store.dispatch('emailActive', this.loginForm.email);
       },
       loadRongJs() {
         var _this = this;
@@ -345,14 +351,14 @@ export default {
                     _this.loginForm.scene = "nc_login";
                 }
             }
-        var nc = new noCaptcha(NC_Opt)
-        nc.upLang('cn', {
+        this.nc = new noCaptcha(NC_Opt)
+        this.nc.upLang('cn', {
             _startTEXT: "请按住滑块，拖动到最右边",
             _yesTEXT: "验证通过",
             _error300: "哎呀，出错了，点击<a href=\"javascript:__nc.reset()\">刷新</a>再来一次",
             _errorNetwork: "网络不给力，请<a href=\"javascript:__nc.reset()\">点击刷新</a>",
         })
-        nc.reload();
+        this.nc.reload();
       }
     },
     computed: {
@@ -369,6 +375,11 @@ export default {
     beforeMount() {
       console.log(this.email)
       console.log(this.token)
+      console.log(this.$route.query)
+      if(this.$route.query.return_to){
+          this.redirectFlag = true;
+          this.return_to = this.$route.query.return_to;
+      }
     }
 }
 </script>

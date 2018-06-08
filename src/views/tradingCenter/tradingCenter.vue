@@ -106,9 +106,9 @@
         <li>24H{{$t('home.volume')}} <span style="color:#fff;">{{[nowPairs.number,2] | toFixed}} {{market}}</span></li>
       </ul>
       <div class="goodsBox fz14 white">
-        <div class="showGoods">
-            <span class="options" @click="coidBoxFlag = !coidBoxFlag;">{{symbol}}<i class="el-icon-caret-bottom baseColor"></i></span>
-            <div class="coidBox" v-show="coidBoxFlag">
+        <div class="showGoods" @click="coidBoxFlag = !coidBoxFlag;">
+            <span class="options">{{symbol}}<i class="el-icon-caret-bottom baseColor"></i></span>
+            <div class="coidBox" v-show="coidBoxFlag" @click.stop>
                 
                 <el-tabs class="" v-model="activeName" @tab-click="handleClick">
                     
@@ -117,7 +117,6 @@
                     <el-row class="tabContent">
                         <el-table
                         :data="collectitems"
-                        stripe
                         ref="starTable"
                         @row-click="linkToGoods"
                         style="width: 100%">
@@ -139,7 +138,7 @@
                         :label="$t('home.lastPrice')"
                         width="140">
                         <template slot-scope="scope">
-                            <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
+                            <span class="newPriceL">{{scope.row.close*1}}</span>
                         </template>
                         </el-table-column>
                         <el-table-column
@@ -168,7 +167,6 @@
                     <el-row class="tabContent">
                         <el-table
                         :data="CCCitems"
-                        stripe
                         ref="CCCTable"
                         @row-click="linkToGoods"
                         style="width: 100%">
@@ -188,9 +186,10 @@
                         </el-table-column>
                         <el-table-column
                         :label="$t('home.lastPrice')"
+                        sortable
                         width="140">
                         <template slot-scope="scope">
-                            <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
+                            <span class="newPriceL">{{scope.row.close*1}}</span>
                         </template>
                         </el-table-column>
                         <el-table-column
@@ -219,7 +218,6 @@
                     <el-row class="tabContent">
                         <el-table
                         :data="ETHitems"
-                        stripe
                         ref="ETHTable"
                         @row-click="linkToGoods"
                         style="width: 1198px">
@@ -238,10 +236,11 @@
                         width="100">
                         </el-table-column>
                         <el-table-column
+                        sortable
                         :label="$t('home.lastPrice')"
                         width="140">
                         <template slot-scope="scope">
-                            <span class="newPriceL">{{scope.row.close}}</span><span class="newPriceR">&nbsp;/&nbsp;&yen;&nbsp;0.67</span>
+                            <span class="newPriceL">{{scope.row.close*1}}</span>
                         </template>
                         </el-table-column>
                         <el-table-column
@@ -667,8 +666,8 @@
                   <colgroup style="width:30%;"></colgroup>
                   <tbody>
                   <tr v-for="(it,idx) in bidsList" :key="idx" @click="bidsClick(it[0])">
-                    <td class="f-left red hoverB"><span>{{it[0]}}</span></td>
-                    <td class="f-center"><span class="hoverSpan">{{it[1] | toNumber}}</span></td>
+                    <td class="f-left red hoverB"><span>{{it[0]*1}}</span></td>
+                    <td class="f-center"><span class="hoverSpan">{{it[1]}}</span></td>
                     <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{[it[0],it[1],fixed] | mul }}</span>
                       <div class="zhuzhuang redBg" :style="{width: aveLine(bidsList,it[1])+'px'}"></div>
                     </td>
@@ -698,8 +697,8 @@
                   <colgroup style="width:30%;"></colgroup>
                   <tbody>
                   <tr v-for="(it,idx) in asksList" :key="idx" @click="asksClick(it[0])">
-                    <td class="f-left green hoverB"><span>{{it[0]}}</span></td>
-                    <td class="f-center"><span class="hoverSpan">{{it[1] | toNumber}}</span></td>
+                    <td class="f-left green hoverB"><span>{{it[0]*1}}</span></td>
+                    <td class="f-center"><span class="hoverSpan">{{it[1]}}</span></td>
                     <td class="f-right" style="color: #898989;"><span class="hoverSpan">{{[it[0],it[1],fixed] | mul }}</span>
                       <div class="zhuzhuang greenBg" :style="{width: aveLine(asksList,it[1])+'px'}"></div>
                     </td>
@@ -917,27 +916,26 @@ export default {
       loginFlag: false,
       klineFlag: true,
       echartsWidth: "1382px",
-      echartsHeight: "644px",
+      echartsHeight: "640px",
       myChart: {},
       echartsOption: {
-        title: {
-            text: "市场深度图",
-            textStyle: {
-                color: "#cdcdcd"
-            }
-        },
+        // title: {
+        //     text: "市场深度图",
+        //     textStyle: {
+        //         color: "#cdcdcd"
+        //     }
+        // },
         tooltip: {
             trigger: "axis"
         },
         grid: {
-            left: "3%",
+            left: "0%",
             right: "4%",
-            bottom: "3%",
+            top: "4%",
+            bottom: "0%",
             containLabel: true,
-            show: false,
-            borderColor: {
-                color: "#000"
-            }
+            show: true,
+            // borderColor: "#000"
         },
         toolbox: {
             feature: {
@@ -954,9 +952,11 @@ export default {
         },
         xAxis: {
             type: "value",
+            nameLocation: "start",
         },
         yAxis: {
             type: "value",
+            nameLocation: "start",
         },
         series: [
             {
@@ -1213,13 +1213,7 @@ export default {
         let res = JSON.parse(JSON.parse(data).tradingList).data;
         c++;
         //console.log(c)
-        // console.log(res)
-        res.asks.map(it => {
-            it[1] = String(it[1]);
-        })
-        res.bids.map(it => {
-            it[1] = String(it[1]);
-        })
+        console.log(res)
         that.asksList = res.asks;
         that.bidsList = res.bids;
         that.drawLine();
@@ -1553,6 +1547,16 @@ export default {
         }
       });
     },
+    sub(value1,value2,fixed) {
+        return calc.sub(value1, value2).toFixed(fixed)
+      },
+    div(value1,value2,fixed) {
+        if(value2 == 0){
+            var val = 0;
+            return val.toFixed(fixed)
+        }
+        return calc.div(value1, value2).toFixed(fixed)
+    },
     handleSetLanguage(lang) {
       //语言切换
       this.$i18n.locale = lang;
@@ -1601,11 +1605,6 @@ export default {
     mul: ([value1, value2, fixed]) => {
       return calc.mul(value1, value2).toFixed(fixed);
     },
-    toNumber: (value) => {
-        var num = new Number(value);
-        num = String(num)
-        return num;
-    }
   },
   components: {
       loginBox
@@ -1938,12 +1937,13 @@ $baseColor: #fc9217;
   width: 100%;
   height: 100%;
   color: #cdcdcd;
-  background: #212121;
+  background: #000000;
   font-size: 12px;
   box-sizing: border-box;
-  padding-top: 40px;
+  padding-top: 46px;
   position: relative;
   .tradHeader {
+    background: #192731;
     position: absolute;
     min-width: 1350px;
     top: 0;
@@ -1980,12 +1980,14 @@ $baseColor: #fc9217;
     .goodsBox {
       height: 100%;
       .showGoods {
+        box-sizing: border-box;
         padding: 0 24px;
         width: 100%;
         height: 100%;
         line-height: 40px;
         display: block;
         border-left: 2px solid #333434;
+        border-right: 2px solid #333434;
         position: relative;
         i {
           margin-left: 10px;
@@ -1993,13 +1995,14 @@ $baseColor: #fc9217;
         .coidBox{
             position: absolute;
             top: 40px;
-            right: 64px;
+            right: 0;
             z-index: 20;
             width: 500px;
             // height: 360px;
             max-height: 360px;
-            background: #212121;
-            
+            background: #141F2A;
+            border:1px solid #000;
+            box-shadow: 0 0 8px #000;
         }
       }
     }
@@ -2025,11 +2028,11 @@ $baseColor: #fc9217;
           margin-left: 10px;
         }
         &:hover {
-          background-color: #383636;
+          background-color: rgb(51, 64, 75);
         }
       }
       .langList {
-        background-color: #383636;
+        background-color: rgb(51, 64, 75);
         width: 110px;
         position: absolute;
         left: 0;
@@ -2103,7 +2106,7 @@ $baseColor: #fc9217;
     .marketL,
     .marketR,
     .tradMainRB {
-      background: #000000;
+      background: #192731;
     }
     .tradMainL {
       flex: 1;
@@ -2129,7 +2132,7 @@ $baseColor: #fc9217;
       }
       .tradMainLB {
         height: 254px;
-        margin-top: 10px;
+        margin-top: 6px;
         display: flex;
         flex-direction: column;
         .orderTableBox {
@@ -2240,11 +2243,11 @@ $baseColor: #fc9217;
           th {
             font-weight: 500;
           }
-          tr {
-            &:hover {
-              background: #050505;
-            }
-          }
+        //   tr {
+        //     &:hover {
+        //       background: rgb(51, 64, 75);
+        //     }
+        //   }
           th.cancels .btn {
             border: 1px solid #465461;
             background-color: #3b4752;
@@ -2494,7 +2497,7 @@ $baseColor: #fc9217;
       }
       .tradMainRB {
         height: 254px;
-        margin-top: 10px;
+        margin-top: 6px;
         display: flex;
         flex-direction: column;
 
@@ -2700,7 +2703,7 @@ $baseColor: #fc9217;
             input{
                 border-radius: 0;
                 height: 28px;
-                background: #212121;
+                background: #192731;
                 border-color: #2F363E;
             }
             span{
@@ -2718,7 +2721,7 @@ $baseColor: #fc9217;
                 border-color: #2F363E;
             }
             .el-table,.el-table tr,.el-table th{
-                background: #212121;
+                background: #141F2A;
             }
             .el-table--enable-row-hover .el-table__body tr:hover > td{
                 background-color: rgba(245,166,35,0.10);
@@ -2800,7 +2803,7 @@ $baseColor: #fc9217;
         color: $baseColor;
     }
   .el-checkbox__inner {
-    background: #050505;
+    background: #192731;
   }
 
   .timeBox .el-date-editor.el-input {
