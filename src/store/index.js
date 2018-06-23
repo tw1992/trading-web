@@ -4,6 +4,7 @@ import vuexAlong from 'vuex-along'
 import app from './modules/app'
 import user from './modules/user'
 import getters from './getters'
+import home from './modules/home'
 
 Vue.use(Vuex)
 
@@ -12,7 +13,8 @@ vuexAlong.watchSession(['user','app'],true);
 const store = new Vuex.Store({
   modules: {
     app,
-    user
+    user,
+    home
   },
   getters,
   plugins: [vuexAlong]
