@@ -20,7 +20,7 @@
               <i slot="prefix" class="iconfont icon-youjian1"></i>
             </el-input>
           </el-form-item>
-          <el-form-item prop="pass">
+          <el-form-item prop="password">
             <el-input
               :placeholder="$t('login.password')"
               type="password"
@@ -28,7 +28,7 @@
               <i slot="prefix" class="iconfont icon-suozi"></i>
             </el-input>
           </el-form-item>
-          <el-form-item prop="pass2">
+          <el-form-item prop="password2">
             <el-input
               :placeholder="$t('login.confirmPassword')"
               type="password"
@@ -82,18 +82,18 @@ export default {
       };
       var validatePass = (rule, value, callback) => {
         if (!isPassword(value)) {
-          callback(new Error('请输入正确的密码'));
+          callback(new Error('请输入8位包含大小写字母'));
         } else {
-          if (this.changePwdForm.newpwd2 !== '') {
-            this.$refs.changePwdForm.validateField('newpwd2');
-          }
+          // if (this.changePwdForm.newpwd2 !== '') {
+          //   this.$refs.changePwdForm.validateField('newpwd2');
+          // }
           callback();
         }
       };
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.registerForm.pass) {
+        } else if (value !== this.registerForm.password) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
@@ -102,8 +102,8 @@ export default {
       return {
         btnFlag: false,
         registerForm:{
-          email:"", //466865383@qq.com
           password:"",  //123456
+          email:"", //466865383@qq.com
           password2:"",
           recommend:"",
           consent:[],
@@ -113,10 +113,10 @@ export default {
           scene: "",
         },
         rules:{
+          password:[{ validator: validatePass, trigger: 'blur' }],
+          password2:[{ validator: validatePass2, trigger: 'blur'}],
+          consent:[{ type: 'array',required: true, message: '未同意服务条款', trigger: 'change' }],
           email:[{ validator: validateEmail, trigger: 'blur' }],
-          pass:[{ validator: validatePass, trigger: 'blur' },],
-          pass2:[{ validator: validatePass2, trigger: 'blur' },],
-          consent:[{ type: 'array',required: true, message: '未同意服务条款', trigger: 'change' },],
         },
       };
     },
@@ -125,16 +125,16 @@ export default {
     //       'email',
     //       'token'
     //   ]),
-    // }, 
+    // },
     methods: {
       submitForm(formName) {
           var _this = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.$store.dispatch('Regist', this.registerForm).then((res) => {  
+            this.$store.dispatch('Regist', this.registerForm).then((res) => {
               console.log(res)
-              //this.loading = false;  
-              //this.$router.push({path: '/login'});  
+              //this.loading = false;
+              //this.$router.push({path: '/login'});
               this.$message({
                 message: '注册成功',
                 type: 'success'
@@ -144,12 +144,12 @@ export default {
               setTimeout(()=>{
                 _this.$router.push("/emaiActivation");
               },2000)
-            }).catch((e) => {  
-              //this.loading = false  
+            }).catch((e) => {
+              //this.loading = false
               // console.log("err")
               // console.log(e)
               _this.loadRongJs()
-            }) 
+            })
           } else {
             console.log('error submit!!');
             return false;
