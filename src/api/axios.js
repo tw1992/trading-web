@@ -24,14 +24,17 @@ if(baseConfig.apiUrl != 'local'){
 var loading;
 axios.interceptors.request.use(
     config => {
-        //添加loading
-        loading = Loading.service({
+        //添加loading  对于轮询的接口不需要加Loading
+        if((config.url.indexOf('api/orders') > -1 && config.method==="get" && config.params.status === 0) || (config.url.indexOf('/api/accounts') > -1 && config.method==="get" && config.params === undefined) ){
+        }else{
+          loading = Loading.service({
             fullscreen: true
-        });
+          });
+        }
         // console.log(store.getters.language)
         //语言切换
         if(store.getters.language == "zh"){
-            
+
         }else if(store.getters.language == "en"){
             config.headers['Accept-Language'] = "en-us,en;q=0.5"
         }
@@ -55,7 +58,13 @@ axios.interceptors.request.use(
 //请求响应拦截器
 axios.interceptors.response.use(
     res => {
+      if((res.config.url.indexOf('api/orders') > -1 && res.config.method==="get" && res.config.params.status === 0) || (res.config.url.indexOf('/api/accounts') > -1 && res.config.method==="get" && res.config.params === undefined)){
+      }else{
         loading.close();
+      }
+      // if(config.url.indexOf('api/orders') != -1 && config.method==="get" && config.params.status !== 0){
+      //   loading.close();
+      // }
         return {
             status: 0,
             data: res.data
@@ -151,10 +160,10 @@ axios.interceptors.response.use(
                     case -1:
                         Message.error("Unknown exception"); //未知的异常
                         break;
-                    
+
                     case 9:
                         errorObj.msg = res.data.subErrors[0].message;
-    
+
                         console.log(errorObj);
                         return errorObj;
                         break;
@@ -197,7 +206,7 @@ var fetch = {
               .catch((error) => {
                 reject(error)
               })
-          })  
+          })
     },
     get: (url, params)=>{
         return new Promise((resolve, reject) => {
@@ -212,7 +221,7 @@ var fetch = {
               .catch((error) => {
                 reject(error)
               })
-          }) 
+          })
     },
     del: (url, params)=>{
         console.log(params)
@@ -226,7 +235,7 @@ var fetch = {
               .catch((error) => {
                 reject(error)
               })
-          }) 
+          })
     },
 }
 export default fetch;
