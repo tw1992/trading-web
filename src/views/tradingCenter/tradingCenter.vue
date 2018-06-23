@@ -71,7 +71,7 @@
 
         <el-form v-show="doubleSelect == 1" :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm">
             <el-form-item label="谷歌验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" @input="googleLogin(googleForm.verCode)" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
+                <el-input class="inputBase" @input="googleInput(googleForm.verCode)" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
                 <!-- <a class="verBtn" href="javascript:;">获取</a> -->
             </el-form-item>
         </el-form>
@@ -91,7 +91,28 @@
           </p>
         </span>
     </el-dialog>
-    
+
+
+    <!-- 风险提示 -->
+    <el-dialog
+      :title="$t('Dialog.riskwarning')"
+      :show-close = "false"
+      :visible.sync="riskDialog"
+      width="30%"
+      :close-on-click-modal="false"
+      custom-class="baseDialog riskwarning"
+      class="right"
+      center>
+      <div class="flexBox">
+        <p class="tips">为了您的账号安全,我们建议您在个人中心开启双重验证.</p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+                <!--<span class="tips">{{$t('Dialog.understand')}}</span>-->
+                <el-button :style="{fontSize:'12px'}" type="primary" size="mini" @click="riskDialog = false;$router.push({path:'/userCenter/account'})">前去验证</el-button>
+            </span>
+    </el-dialog>
+
+
     <div class="tradHeader">
       <router-link to="/Home" class="logoBox">
         <img src="../../assets/img/logo.png" alt="logo">
@@ -109,9 +130,9 @@
         <div class="showGoods" @click="coidBoxFlag = !coidBoxFlag;">
             <span class="options">{{symbol}}<i class="el-icon-caret-bottom baseColor"></i></span>
             <div class="coidBox" v-show="coidBoxFlag" @click.stop>
-                
+
                 <el-tabs class="" v-model="activeName" @tab-click="handleClick">
-                    
+
                     <el-tab-pane name="star">
                     <span slot="label"><i class="el-icon-star-on"></i> {{$t('home.favorites')}}</span>
                     <el-row class="tabContent">
@@ -310,10 +331,10 @@
         <!-- 订单面板 -->
         <div class="tradMainLB">
           <ul class="orderSelect fz14">
-            <li><div class="options" :class="orderSelect == 1?'active':''" @click="orderSelect=1;hideOrder = false">{{$t('route.openOrders')}}</div></li>
-            <li><div class="options" :class="orderSelect == 2?'active':''" @click="orderSelect=2;hideOrder = false">{{$t('route.orderHistory')}}</div></li>
-            <li><div class="options" :class="orderSelect == 3?'active':''" @click="orderSelect=3;hideOrder = false">{{$t('tradingCenter.tradeHistory')}}</div></li>
-            <li><div class="options" :class="orderSelect == 4?'active':''" @click="orderSelect=4;hideOrder = false">{{$t('route.funds')}}</div></li>
+            <li><div class="options" :class="orderSelect == 1?'active':''" @click="orderSelectClick(1)">{{$t('route.openOrders')}}</div></li>
+            <li><div class="options" :class="orderSelect == 2?'active':''" @click="orderSelectClick(2)">{{$t('route.orderHistory')}}</div></li>
+            <li><div class="options" :class="orderSelect == 3?'active':''" @click="orderSelectClick(3)">{{$t('tradingCenter.tradeHistory')}}</div></li>
+            <li><div class="options" :class="orderSelect == 4?'active':''" @click="orderSelectClick(4)">{{$t('route.funds')}}</div></li>
             <div class="block"></div>
             <div class="hideOrder" v-show="orderSelect != 4"><el-checkbox v-model="hideOrder">{{$t('tradingCenter.hide')}}</el-checkbox></div>
           </ul>
@@ -343,9 +364,9 @@
 									<th>{{$t('tradingCenter.totalVal')}}</th>
 									<th>{{$t('tradingCenter.trigger')}}</th>
 									<th style="text-align: center;" class="cancels">
-										<span class="btn" @click="delAllClick()">{{$t('tradingCenter.cancelAll')}}</span>
+										<span class="btn" @click="delAllOrder()">{{$t('tradingCenter.cancelAll')}}</span>
                     <!-- 全撤旁边的更多 -->
-										<!-- <div class="btn iconfont-downsjsmall">
+										<!--<div class="btn iconfont-downsjsmall">
                       <i class="el-icon-more"></i>
                       <div class="cancelType">
                         <ul>
@@ -354,7 +375,7 @@
                           <li>{{$t('tradingCenter.stopLimitOrder')}}</li>
                         </ul>
                       </div>
-                    </div> -->
+                    </div>-->
                   </th>
 
                 </tr>
@@ -473,7 +494,7 @@
                       <td><span>{{item.created_at}}</span></td>
                       <td><span>{{item.symbol}}</span></td>
                       <td><span>限价</span></td>
-                      <td><span :class="item.side == 'BUY'?'green':'red'">{{item.side == "BUY"?"买入":"卖出"}}</span></td>
+                      <td><span :class="item.side == 'BUY'?'green':'red'">{{item.side == "BUY"?$t('tradingCenter.buy'):$t('tradingCenter.sell')}}</span></td>
                       <td><span>{{item.total/item.deal_number}}</span></td>
                       <td><span>{{item.price}}</span></td>
                       <td><span>{{toPercent(item.deal_number/item.number,2)}}</span></td>
@@ -864,6 +885,7 @@ require("echarts/lib/component/title");
 export default {
   data() {
     return {
+      kline:'',
       activeName: 'CCC',
       localList: [],
       collectList: [],
@@ -885,6 +907,8 @@ export default {
       aveNum: 18,       //默认18条数据  最多36
       dealSelect: 1, //交易选项
       orderSelect: 1, //订单选项
+      getOpenOrderTimer:'',//订单选项为1的时候轮询
+      getAccountsTimer:'',//订单选项为4的时候轮询(获取个人资产，根据market和coin找出相对应的可用余额)
       hideOrder: false,
       openOrder: [], //当前委托
       historyOrder: [], //历史委托
@@ -1037,24 +1061,31 @@ export default {
           }
       },
       doubleDialog: false,
+      riskDialog:false,
       doubleSelect: 1,
       VerCodeFlag: true,
       verCodeTime: 60,
     };
   },
+  beforeRouteLeave (to,from,next){
+    clearInterval(this.getOpenOrderTimer);
+    clearInterval(this.getAccountsTimer);
+    this.kline.pause();
+    next()
+  },
   beforeMount() {
     if (this.email) {
-      this.getOpenOrder();
-      this.getHistoryOrder();
-      this.getHistorytrading();
-      this.getAccounts();
+      this.getOpenOrderPoll()
+      // this.getOpenOrder();
+      // this.getHistoryOrder();
+      // this.getHistorytrading();
+      this.getAccountsPoll();
     }
     this.coin = this.$route.params.coin;
     this.market = this.$route.params.market;
     this.symbol = `${this.coin}/${this.market}`;
-    this.onReady();
+    // this.onReady();
 
-    console.log(this.symbol);
     //获取时间
     var that = this;
       axios
@@ -1073,13 +1104,12 @@ export default {
   },
   mounted() {
     const that = this;
-    console.log(this.$refs.kline_container.offsetHeight);
     var height = this.$refs.kline_container.offsetHeight;
+    console.log(height)
     var width = this.$refs.kline_container.offsetWidth;
     var symbol = this.symbol;
-    console.log(symbol)
     var klineUrl = process.env.KLINE;
-    var kline = new Kline({
+    this.kline = new Kline({
       element: "#kline_container",
       symbol: symbol,
       symbolName: "比特币",
@@ -1095,28 +1125,52 @@ export default {
       type: "poll", // poll/stomp
       url: klineUrl,
     });
-    
-    kline.draw();
-    kline.setSymbol(symbol, symbol);
+    this.kline.draw();
+    this.kline.setSymbol(symbol, symbol);
 
     this.myChart = echarts.init(document.getElementById("myChart"));
     // this.getEchartsSize();
-
+    this.onReady();
 
     window.onresize = () => {
       var height = this.$refs.kline_container.offsetHeight;
       var width = this.$refs.kline_container.offsetWidth;
-      kline.resize(width, height);
+      this.kline.resize(width, height);
       //   this.drawLine();
       //myChart.resize(width, height);
     };
   },
   methods: {
+    getOpenOrderPoll(){
+      this.getOpenOrderTimer = setInterval(()=>{
+        this.getOpenOrder();
+      },2000)
+    },
+    getAccountsPoll(){
+      this.getAccountsTimer = setInterval(()=>{
+        this.getAccounts();
+      },2000)
+    },
+    orderSelectClick(index){
+      if(this.orderSelect == index){
+        return;
+      }
+      this.orderSelect=index;
+      clearInterval(this.getOpenOrderTimer)
+      this.hideOrder = false;
+      switch (index){
+        case 1:this.getOpenOrderPoll();
+          break;
+        case 2: this.getHistoryOrder();
+          break;
+        case 3:this.getHistorytrading();
+          break;
+      }
+    },
     handleClick(tab, event) {
     //console.log(tab.$el.id);
     },
     linkToGoods(row, event, column){
-        console.log(row.name);
         this.$router.push('/tradingCenter/'+row.symbol)
     },
     changeStar(name,star){
@@ -1131,15 +1185,15 @@ export default {
     },
     getVerificationCode() {     //获取验证码
         var _this = this;
-        axios.get('/api/sms/to_user').then(function(res){  
+        axios.get('/api/sms/to_user').then(function(res){
             console.log(res);
             _this.VerCodeFlag = false;
             _this.verCodeTime = 60;
             _this.verCodeTimeStart ();
             _this.phoneForm.smsId = res.data.smsId;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
-        });  
+        });
     },
     verCodeTimeStart (){              //验证码计时器
         var _this = this;
@@ -1153,35 +1207,27 @@ export default {
         },1000)
     },
     phoneInput(verCode) {             //手机验证
+      console.log(verCode)
         var _this = this;
         var smsCode = verCode.trim();
         if(smsCode.length == 6){
-            var phoneDate = this.submitData;
-            phoneDate.smsId = this.phoneForm.smsId;
-            phoneDate.smsCode = smsCode;
-            axios.post('/api/accounts/exports',phoneDate).then(function(res){  
-                console.log(res)
-                _this.phoneDialog = false;
-                _this.submitFin();
-            }).catch(function (res){  
-                console.log(res);
-            }); 
+          this.delAllOrder();
         }
-    
     },
     googleInput(verCode) {            //谷歌验证
         var _this = this;
         var googleCode = verCode.trim();
         if(googleCode.length == 6){
-            var googleDate = this.submitData;
-            googleDate.googleCode = googleCode;
-            axios.post('/api/accounts/exports',googleDate).then(function(res){  
-                console.log(res)
-                _this.googleDialog = false;
-                _this.submitFin();
-            }).catch(function (res){  
-                console.log(res);
-            }); 
+          this.delAllOrder();
+            // var googleDate = this.submitData;
+            // googleDate.googleCode = googleCode;
+            // axios.post('/api/accounts/exports',googleDate).then(function(res){
+            //     console.log(res)
+            //     _this.googleDialog = false;
+            //     _this.submitFin();
+            // }).catch(function (res){
+            //     console.log(res);
+            // });
         }
     },
     onReady() {
@@ -1194,77 +1240,153 @@ export default {
     //   const socket = io.connect("http://192.168.133.190:9006/");
       socket.emit("join", { userId: "linxi", symbol: this.symbol });
       socket.on("tradingData", function(data) {
+        console.log(data)
         let res = JSON.parse(JSON.parse(data).tradingList).data;
         c++;
         //console.log(c);
         // console.log(res);
         that.newmarket = res;
-        
+
       });
-      socket.on("tradesData", function(data) {
-        let res = JSON.parse(JSON.parse(data).tradingList).data;
-        c++;
-        //console.log(c)
-        //console.log('tradesData')
-        //console.log(res)
-        that.newmarket = res;
-        var length = res.length;
-        if(length){
-            that.nowPrice = res[length-1];
+      // socket.on("tradesData", function(data) {
+      //   console.log(data)
+      //   let res = JSON.parse(JSON.parse(data).tradingList).data;
+      //   c++;
+      //   //console.log(c)
+      //   //console.log('tradesData')
+      //   //console.log(res)
+      //   that.newmarket = res;
+      //   var length = res.length;
+      //   if(length){
+      //       that.nowPrice = res[length-1];
+      //   }
+      // });
+
+
+      //模拟数据  tradesData
+      var tradesData = '{"tradingList":"{\\"code\\":0,\\"data\\":[[1,\\"BUY\\",\\"47339.00000000\\",\\"0.10000000\\",1528166227],[2,\\"BUY\\",\\"47339.00000000\\",\\"0.10000000\\",1528166749],[3,\\"SELL\\",\\"47339.00000000\\",\\"0.10000000\\",1528166827],[4,\\"SELL\\",\\"47339.00000000\\",\\"0.10000000\\",1528166839],[5,\\"SELL\\",\\"47389.00000000\\",\\"0.10000000\\",1528166902],[6,\\"SELL\\",\\"47389.00000000\\",\\"0.20000000\\",1528166947],[7,\\"BUY\\",\\"47396.00000000\\",\\"0.10000000\\",1528167226],[8,\\"BUY\\",\\"47396.00000000\\",\\"0.10000000\\",1528167238],[9,\\"BUY\\",\\"47389.00000000\\",\\"0.00000000\\",1528167334],[10,\\"SELL\\",\\"47340.00000000\\",\\"0.10000000\\",1528167334],[11,\\"BUY\\",\\"47342.00000000\\",\\"0.00000000\\",1528167337],[12,\\"SELL\\",\\"47342.00000000\\",\\"0.10000000\\",1528167343],[13,\\"BUY\\",\\"47343.00000000\\",\\"0.00000000\\",1528167343],[14,\\"BUY\\",\\"47340.00000000\\",\\"0.10000000\\",1528167373],[15,\\"SELL\\",\\"47343.00000000\\",\\"0.10000000\\",1528167385],[16,\\"BUY\\",\\"47343.00000000\\",\\"0.00000000\\",1528167647],[17,\\"BUY\\",\\"47343.00000000\\",\\"0.10000000\\",1528167647],[18,\\"SELL\\",\\"47344.00000000\\",\\"0.10000000\\",1528167671],[19,\\"BUY\\",\\"47345.00000000\\",\\"0.10000000\\",1528167674],[20,\\"BUY\\",\\"47346.00000000\\",\\"0.10000000\\",1528167680],[21,\\"BUY\\",\\"47343.00000000\\",\\"0.00000000\\",1528167689],[22,\\"BUY\\",\\"47339.00000000\\",\\"0.00000000\\",1528167689],[23,\\"BUY\\",\\"47337.00000000\\",\\"0.10000000\\",1528167689],[24,\\"BUY\\",\\"47340.00000000\\",\\"0.10000000\\",1528167695],[25,\\"BUY\\",\\"47349.00000000\\",\\"0.10000000\\",1528167701],[26,\\"BUY\\",\\"47351.00000000\\",\\"0.10000000\\",1528167710],[27,\\"BUY\\",\\"47355.00000000\\",\\"0.10000000\\",1528167716],[28,\\"SELL\\",\\"47352.00000000\\",\\"0.10000000\\",1528167725],[29,\\"BUY\\",\\"47347.00000000\\",\\"0.10000000\\",1528167731],[30,\\"SELL\\",\\"47338.00000000\\",\\"0.01000000\\",1528168748],[31,\\"BUY\\",\\"47337.00000000\\",\\"0.00000000\\",1528168760],[32,\\"BUY\\",\\"47337.00000000\\",\\"0.10000000\\",1528168760],[33,\\"BUY\\",\\"47338.00000000\\",\\"0.10000000\\",1528168815],[34,\\"BUY\\",\\"47338.00000000\\",\\"0.10000000\\",1528168827],[35,\\"BUY\\",\\"47348.00000000\\",\\"0.20000000\\",1528168845],[36,\\"SELL\\",\\"47353.00000000\\",\\"0.10000000\\",1528168947],[37,\\"SELL\\",\\"47353.00000000\\",\\"0.10000000\\",1528168947],[38,\\"SELL\\",\\"47353.00000000\\",\\"0.10000000\\",1528168968],[39,\\"SELL\\",\\"47355.00000000\\",\\"0.20000000\\",1528168986],[40,\\"BUY\\",\\"47337.00000000\\",\\"0.00000000\\",1528169010],[41,\\"BUY\\",\\"47335.00000000\\",\\"0.10000000\\",1528169010],[42,\\"SELL\\",\\"47350.00000000\\",\\"0.10000000\\",1528169031],[43,\\"SELL\\",\\"47350.00000000\\",\\"0.10000000\\",1528169046],[44,\\"SELL\\",\\"47357.00000000\\",\\"0.10000000\\",1528169305],[45,\\"SELL\\",\\"47357.00000000\\",\\"0.10000000\\",1528169308],[46,\\"BUY\\",\\"47357.00000000\\",\\"0.10000000\\",1528169332],[47,\\"BUY\\",\\"47358.00000000\\",\\"0.10000000\\",1528169338],[48,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528169344],[49,\\"BUY\\",\\"47343.00000000\\",\\"0.10000000\\",1528169350],[50,\\"BUY\\",\\"47360.00000000\\",\\"0.20000000\\",1528169374],[51,\\"SELL\\",\\"47360.00000000\\",\\"0.10000000\\",1528169377],[52,\\"BUY\\",\\"47360.00000000\\",\\"0.00000000\\",1528169386],[53,\\"BUY\\",\\"47357.00000000\\",\\"0.10000000\\",1528169386],[54,\\"SELL\\",\\"47357.00000000\\",\\"0.20000000\\",1528169389],[55,\\"SELL\\",\\"47358.00000000\\",\\"0.10000000\\",1528170350],[56,\\"SELL\\",\\"47358.00000000\\",\\"0.10000000\\",1528170350],[57,\\"SELL\\",\\"47358.00000000\\",\\"0.10000000\\",1528170365],[58,\\"BUY\\",\\"47364.00000000\\",\\"0.10000000\\",1528170389],[59,\\"SELL\\",\\"47364.00000000\\",\\"0.10000000\\",1528170392],[60,\\"SELL\\",\\"47364.00000000\\",\\"0.10000000\\",1528170395],[61,\\"SELL\\",\\"47365.00000000\\",\\"0.10000000\\",1528170644],[62,\\"SELL\\",\\"47365.00000000\\",\\"0.10000000\\",1528170644],[63,\\"SELL\\",\\"47365.00000000\\",\\"0.10000000\\",1528170659],[64,\\"SELL\\",\\"47366.00000000\\",\\"0.10000000\\",1528170698],[65,\\"SELL\\",\\"47366.00000000\\",\\"0.10000000\\",1528170698],[66,\\"SELL\\",\\"47366.00000000\\",\\"0.10000000\\",1528170701],[67,\\"BUY\\",\\"47364.00000000\\",\\"0.00000000\\",1528170728],[68,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170731],[69,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170734],[70,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170734],[71,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170746],[72,\\"BUY\\",\\"47357.00000000\\",\\"0.00000000\\",1528184622],[73,\\"BUY\\",\\"47353.00000000\\",\\"0.10000000\\",1528184622],[74,\\"BUY\\",\\"47360.00000000\\",\\"0.10000000\\",1528184655],[75,\\"BUY\\",\\"47361.00000000\\",\\"0.10000000\\",1528185636],[76,\\"BUY\\",\\"47360.00000000\\",\\"0.10000000\\",1528185660],[77,\\"SELL\\",\\"47361.00000000\\",\\"0.10000000\\",1528185666],[78,\\"BUY\\",\\"47359.00000000\\",\\"0.01000000\\",1528185966],[79,\\"BUY\\",\\"47359.00000000\\",\\"0.01000000\\",1528185987],[80,\\"SELL\\",\\"47358.00000000\\",\\"0.01000000\\",1528185999],[81,\\"BUY\\",\\"47364.00000000\\",\\"0.01000000\\",1528187134],[82,\\"BUY\\",\\"47363.00000000\\",\\"0.01000000\\",1528187134],[83,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[84,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[85,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[86,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[87,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[88,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[89,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[90,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[91,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[92,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[93,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[94,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[95,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[96,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[97,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[98,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[99,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[100,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154]]}"}'
+      var tradesDatares = JSON.parse(JSON.parse(tradesData).tradingList).data;
+      c++;
+      //console.log(c)
+      //console.log('tradesData')
+      //console.log(res)
+      that.newmarket = tradesDatares;
+      var length = tradesDatares.length;
+      if(length){
+        that.nowPrice = tradesDatares[length-1];
+      }
+
+
+      // socket.on("depthData", function(data) {
+      //   console.log(data)
+      //   let res = JSON.parse(JSON.parse(data).tradingList).data;
+      //   console.log(res)
+      //   c++;
+      //   //console.log(c)
+      //   console.log(res)
+      //   that.asksList = res.asks;
+      //   that.bidsList = res.bids;
+      //   that.drawLine();
+      // });
+
+
+      //模拟数据depthData
+      var depthData = '{\"tradingList\":\"{\\\"code\\\":0,\\\"data\\\":{\\\"asks\\\":[[\\\"47327.00000000\\\",\\\"0.00099000\\\"],[\\\"47323.00000000\\\",\\\"0.12312300\\\"],[\\\"47165.00000000\\\",\\\"0.00100000\\\"],[\\\"0.00000000\\\",\\\"0.00000000\\\"]],\\\"bids\\\":[]}}\"}'
+      console.log(JSON.parse(depthData))
+      var depthDatares = JSON.parse(JSON.parse(depthData).tradingList).data;
+      console.log(depthDatares)
+      // c++;
+      that.asksList = depthDatares.asks;
+      that.bidsList = depthDatares.bids;
+      that.drawLine();
+
+
+
+    //   socket.on("pairsData", function(data) {
+    //     let res = JSON.parse(JSON.parse(data).tradingList).data;
+    //     console.log(res)
+    //     c++;
+    //     // console.log(c);
+    //     // console.log(res);
+    //     var symbol = that.symbol;
+    //     that.BTCList = [];
+    //     that.CCCList = [];
+    //     that.ETHList = [];
+    //     that.OMGList = [];
+    //     that.DOGEList = [];
+    //     that.WWWList = [];
+    //     that.RNGList = [];
+    //     that.allList = res;
+    // //   that.collectList = [];
+    //     res.forEach(item => {
+    //         if (item.symbol == symbol) {
+    //             that.nowPairs = item;
+    //         }
+    //         item.star = false;
+    //         item.number = item.number.toFixed(8);
+    //         if(item.market_name == "BTC"){
+    //             that.BTCList.push(item);
+    //         }else if(item.market_name == "ETH"){
+    //             that.ETHList.push(item);
+    //         }else if(item.market_name == "CCC"){
+    //             that.CCCList.push(item);
+    //         }else if(item.market_name == "OMG"){
+    //             that.OMGList.push(item);
+    //         }else if(item.market_name == "DOGE"){
+    //             that.DOGEList.push(item);
+    //         }else if(item.market_name == "WWW"){
+    //             that.WWWList.push(item);
+    //         }else if(item.market_name == "RNG"){
+    //             that.RNGList.push(item);
+    //         }
+    //         // if(that.localList.indexOf(item.symbol)>-1){
+    //         //     that.collectList.push(item);
+    //         // }
+    //     })
+    //   });
+
+
+//模拟数据
+      var data = "{\"tradingList\":\"{\\\"code\\\":0,\\\"data\\\":[{\\\"symbol\\\":\\\"ETH\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"ETH\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"47324.00000000\\\",\\\"close\\\":\\\"47324.00000000\\\",\\\"high\\\":\\\"47324.00000000\\\",\\\"low\\\":\\\"47324.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"QTUM\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"QTUM\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"COC\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"COC\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"CPT\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"CPT\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"EOS\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"EOS\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TBL\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TBL\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"FTV\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"FTV\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TCO\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TCO\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"CCC\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"CCC\\\",\\\"coin_decimals\\\":0,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"QTUM\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"QTUM\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"COC\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"COC\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"CPT\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"CPT\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"EOS\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"EOS\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TBL\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TBL\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"FTV\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"FTV\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TCO\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TCO\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0}]}\"}"
+      let res = JSON.parse(JSON.parse(data).tradingList).data;
+      c++;
+      // console.log(c);
+      // console.log(res);
+      var symbol = that.symbol;
+      that.BTCList = [];
+      that.CCCList = [];
+      that.ETHList = [];
+      that.OMGList = [];
+      that.DOGEList = [];
+      that.WWWList = [];
+      that.RNGList = [];
+      that.allList = res;
+      //   that.collectList = [];
+      res.forEach(item => {
+        if (item.symbol == symbol) {
+          that.nowPairs = item;
         }
-      });
-      socket.on("depthData", function(data) {
-        let res = JSON.parse(JSON.parse(data).tradingList).data;
-        c++;
-        //console.log(c)
-        console.log(res)
-        that.asksList = res.asks;
-        that.bidsList = res.bids;
-        that.drawLine();
-      });
-      socket.on("pairsData", function(data) {
-        let res = JSON.parse(JSON.parse(data).tradingList).data;
-        c++;
-        // console.log(c);
-        // console.log(res);
-        var symbol = that.symbol;
-        that.BTCList = [];
-        that.CCCList = [];
-        that.ETHList = [];
-        that.OMGList = [];
-        that.DOGEList = [];
-        that.WWWList = [];
-        that.RNGList = [];
-        that.allList = res;
-    //   that.collectList = [];
-        res.forEach(item => {
-            if (item.symbol == symbol) {
-                that.nowPairs = item;
-            }
-
-
-            item.star = false;
-            item.number = item.number.toFixed(8);
-            if(item.market_name == "BTC"){
-                that.BTCList.push(item);
-            }else if(item.market_name == "ETH"){
-                that.ETHList.push(item);
-            }else if(item.market_name == "CCC"){
-                that.CCCList.push(item);
-            }else if(item.market_name == "OMG"){
-                that.OMGList.push(item);
-            }else if(item.market_name == "DOGE"){
-                that.DOGEList.push(item);
-            }else if(item.market_name == "WWW"){
-                that.WWWList.push(item);
-            }else if(item.market_name == "RNG"){
-                that.RNGList.push(item);
-            }
-            // if(that.localList.indexOf(item.symbol)>-1){
-            //     that.collectList.push(item);
-            // }
-        })
-      });
+        item.star = false;
+        item.number = item.number.toFixed(8);
+        if(item.market_name == "BTC"){
+          that.BTCList.push(item);
+        }else if(item.market_name == "ETH"){
+          that.ETHList.push(item);
+        }else if(item.market_name == "CCC"){
+          that.CCCList.push(item);
+        }else if(item.market_name == "OMG"){
+          that.OMGList.push(item);
+        }else if(item.market_name == "DOGE"){
+          that.DOGEList.push(item);
+        }else if(item.market_name == "WWW"){
+          that.WWWList.push(item);
+        }else if(item.market_name == "RNG"){
+          that.RNGList.push(item);
+        }
+        // if(that.localList.indexOf(item.symbol)>-1){
+        //     that.collectList.push(item);
+        // }
+      })
     },
     drawLine() {
         //渲染echarts
@@ -1280,7 +1402,7 @@ export default {
     //     this.myChart.resize(this.echartsWidth,this.echartsHeight);
     //     console.log(this.echartsHeight,this.echartsWidth)
     // },
-    getTime(time) {
+    getTime(time,type) {
       //获取当前时间
       var date = new Date();
       if (time == 1) {
@@ -1291,21 +1413,34 @@ export default {
       var year = date.getFullYear();
       var mon = date.getMonth() + 1;
       var day = date.getDate();
+      var hour = date.getHours();
+      var min = date.getMinutes();
+      var sec = date.getSeconds();
       var currentdate =
         year +
         "-" +
         (mon < 10 ? "0" + mon : mon) +
         "-" +
         (day < 10 ? "0" + day : day);
-      return currentdate;
+      var currentTime =
+        (hour < 10 ? "0" + hour : hour) +
+        ':'+
+        (min < 10 ? "0" + min : min) +
+        ':' +
+        (sec < 10 ? "0" + sec : sec);
+      if(type){
+        return currentdate;
+      }else{
+        return currentdate + ' ' + currentTime;
+      }
+
     },
     getTimeClick(time, type) {
-      var searchTime = this.getTime(time);
+      var searchTime = this.getTime(time,time === 1?true:false);
       var postData = {
         from: searchTime,
         to: this.getTime(1)
       };
-      //   console.log(postData)
       if (type == "historyOrder") {
         this.getHistoryOrder(postData);
       } else if (type == "historytrading") {
@@ -1391,6 +1526,7 @@ export default {
             balances.push(coinItem);
             if(coinItem.goods == _this.market){
                 _this.buyFunds = coinItem.usable;
+              _this.buyMax = coinItem.usable;
             }else if(coinItem.goods == _this.coin){
                 _this.sellFunds = coinItem.usable;
                 _this.sellMax = coinItem.usable;
@@ -1404,15 +1540,17 @@ export default {
         });
     },
     aveLine(arr,num) {             //柱状线
+      this.$nextTick(()=>{
         var width = this.$refs.markefive.offsetWidth;
         //console.log(width)
         let max = arr[0][1];
         arr = arr.slice(0,this.aveNum);
         for (let i = 0; i < arr.length - 1; i++) {
-            max = arr[i][1] < arr[i+1][1] ? arr[i+1][1] : arr[i][1]
+          max = arr[i][1] < arr[i+1][1] ? arr[i+1][1] : arr[i][1]
         }
         var percent = num/max;
         return percent*width;
+      })
     },
     createOrder(type) {
       if (this.email) {
@@ -1443,10 +1581,15 @@ export default {
                 message: "下单成功",
                 type: "success"
               });
-                _this.getOpenOrder();
+              if(this.orderSelect === 2){
                 _this.getHistoryOrder();
+              }else if(this.orderSelect === 3){
                 _this.getHistorytrading();
-                _this.getAccounts();
+              }
+                // _this.getOpenOrder();
+                // _this.getHistoryOrder();
+                // _this.getHistorytrading();
+                // _this.getAccounts();
             } else {
               _this.$message({
                 message: res,
@@ -1462,6 +1605,7 @@ export default {
       }
     },
     toPercent(point, num) {
+      if(isNaN(point)) return 0;
       var str = Number(point * 100).toFixed(num);
       str += "%";
       return str;
@@ -1476,6 +1620,7 @@ export default {
               message: "撤销成功",
               type: "success"
             });
+            _this.getOpenOrder();
           } else {
             _this.$message({
               message: res,
@@ -1487,24 +1632,31 @@ export default {
           console.log(res);
         });
     },
-    delAllClick() {
+    delAllClick(type) {
         console.log(this.userInfo.two_factor_auth_type)
         var two_factor = this.userInfo.two_factor_auth_type;
+      // this.doubleDialog   = true;
         if(two_factor == "GOOGLE"){
-            this.googleDialog   = true;
+            this.googleDialog   = type?false:true;
         }else if(two_factor == "MOBILE"){
-            this.phoneDialog   = true;
+            this.phoneDialog   = type?false:true;
         }else if(two_factor == "BOTH"){
-            this.doubleDialog = true;
+            this.doubleDialog = type?false:true;
+        }else{
+          this.riskDialog = type?false:true;
         }
     },
     delAllOrder() {
       var _this = this;
       //撤销全部订单
+      if(this.openOrderItems.length == 0){
+          return;
+      }
       axios
         .del("/api/orders")
         .then(function(res) {
           if (res.code == 0) {
+            // _this.delAllClick(true);
             _this.$message({
               message: "撤销成功",
               type: "success"
@@ -1521,7 +1673,7 @@ export default {
         });
     },
     //退出登录
-    logout: function() {
+    logout() {
       this.$store.dispatch("tcLogOut");
       this.openOrder = []; //清空订单数据
       this.historyOrder = [];
@@ -1571,6 +1723,13 @@ export default {
       //语言切换
       this.$i18n.locale = lang;
       this.$store.dispatch("setLanguage", lang);
+      switch (lang){
+        case 'en':var langKline = 'en-us';break;
+        case 'zh':var langKline = 'zh-cn';break;
+        case 'tw':var langKline = 'zh-tw';break;
+      }
+      console.log(langKline)
+      this.kline.setLanguage(langKline);
     },
     addOnce(num,name) {
         this[name] = add(num,0.00000001,8);
@@ -1615,6 +1774,7 @@ export default {
     buyNumClick(num,name) {
         if(name == 'buy'){
             var num2 = parseInt(this.buyMax*num*Math.pow(10,8));
+            console.log(num2)
             this.buyNumber = num2/(Math.pow(10,8));
         }else if(name == 'sell'){
             var num2 = parseInt(this.sellMax*num*Math.pow(10,8));
@@ -1937,7 +2097,6 @@ $baseColor: #fc9217;
     float: right;
   }
 }
-
 .tradingCenterBox {
   position: relative;
   .toLogin {
@@ -2726,10 +2885,10 @@ $baseColor: #fc9217;
             background-color: #2F363E;
         }
         #tab-search{
-            margin-top:-1px; 
-            margin-right:-1px; 
-            // border-top:1px solid #ffffff; 
-            // border-right:1px solid #ffffff; 
+            margin-top:-1px;
+            margin-right:-1px;
+            // border-top:1px solid #ffffff;
+            // border-right:1px solid #ffffff;
         }
         .search{
             height: 28px;
@@ -2796,7 +2955,7 @@ $baseColor: #fc9217;
                     padding-right: 26px;
                 }
             }
-            
+
         }
         // .tabClass .el-tabs__header{
         //     position: fixed;
@@ -2815,7 +2974,7 @@ $baseColor: #fc9217;
         //     margin: auto;
         //     }
         // }
-        
+
 
         .el-tabs__nav{
             border-radius: 0;
@@ -2869,4 +3028,3 @@ $baseColor: #fc9217;
   }
 }
 </style>
-
