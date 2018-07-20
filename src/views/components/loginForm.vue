@@ -109,7 +109,7 @@
           </p>
         </span>
     </el-dialog>
-    
+
     <!-- 国内使用 -->
     <remote-js :js-url="'https://g.alicdn.com/sd/ncpc/nc.js?t=201802012'" :js-load-call-back="loadRongJs"></remote-js>
     <!-- 若您的主要用户来源于海外，请替换使用下面的js资源 -->
@@ -123,6 +123,11 @@ import VueRouter from 'vue-router'
 import axios from '../../api/axios'
 import RemoteJs from './loginTest'
 export default {
+  props:{
+    link:{
+      default:true
+    }
+  },
   data() {
       var validateEmail = (rule, value, callback) => {
         if (value === '') {
@@ -170,6 +175,7 @@ export default {
         doubleSelect: 1,
         loginToken: "",
         twoFactorAuthType: "",
+        nc:'',
       };
     },
     methods: {
@@ -178,8 +184,7 @@ export default {
           if(this.btnFlag){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.$store.dispatch('Login', this.loginForm).then((res) => {  
-                    console.log(res)
+                    this.$store.dispatch('Login', this.loginForm).then((res) => {
                     if(res.code == 100){    //双重验证
                         this.loginToken = res.data.loginToken;
                         this.twoFactorAuthType = res.data.twoFactorAuthType;
@@ -197,24 +202,26 @@ export default {
                             type: 'success'
                         });
                         var _this = this;
+                      this.nc.reload();
+                      this.loginForm.email = '';
+                      this.loginForm.password = '';
+                      this.loginForm.sessionId = '';
+                      this.loginForm.token = '';
+                      this.loginForm.emsceneail = '';
+                      this.loginForm.sig = '';
+                      if(this.link){
                         setTimeout(()=>{
-                            let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
-                            console.log(redirect)
+                          let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
                             _this.$router.push({ path: redirect })
-                            console.log(123)
                         },2000)
+                      }else{
+                        this.$emit('login','success')
+                      }
                     }
-                    //this.loading = false;  
-                    //this.$router.push({path: '/login'});  
-                    
-                    }).catch((e) => {  
-                    //this.loading = false  
-                    // console.log("err")
-                    // console.log(e)
+                    }).catch((e) => {
                     _this.loadRongJs()
                     })
                 } else {
-                    console.log('error submit!!');
                     return false;
                 }
             });
@@ -227,15 +234,15 @@ export default {
       },
       getVerificationCode(mobile) {     //获取验证码
         var _this = this;
-        axios.get(`/api/sms/to_mobile/${mobile}`).then(function(res){  
+        axios.get(`/api/sms/to_mobile/${mobile}`).then(function(res){
             console.log(res);
             _this.VerCodeFlag = false;
             _this.verCodeTime = 60;
             _this.verCodeTimeStart ();
             _this.phoneForm.smsId = res.data.smsId;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
-        });  
+        });
       },
       verCodeTimeStart (){              //验证码计时器
         var _this = this;
@@ -268,13 +275,13 @@ export default {
               console.log(redirect)
               _this.$router.push({ path: redirect })
             },2000)
-          }).catch((e) => {  
-            //this.loading = false  
+          }).catch((e) => {
+            //this.loading = false
             // console.log("err")
             // console.log(e)
           })
         }
-        
+
       },
       googleLogin(verCode) {            //谷歌验证
         var googleCode = verCode.trim();
@@ -295,8 +302,8 @@ export default {
               console.log(redirect)
               _this.$router.push({ path: redirect })
             },2000)
-          }).catch((e) => {  
-            //this.loading = false  
+          }).catch((e) => {
+            //this.loading = false
             // console.log("err")
             // console.log(e)
           })
@@ -331,9 +338,6 @@ export default {
                     // 'umid_serUrl': 'https://g.com/service/um.json'
                 },
                 callback: function (data) {
-                    // window.console && console.log(nc_token)
-                    // window.console && console.log(data.csessionid)
-                    // window.console && console.log(data.sig)
                     _this.btnFlag = true;
                     _this.loginForm.sessionId = data.csessionid;
                     _this.loginForm.token = nc_token;
@@ -341,14 +345,14 @@ export default {
                     _this.loginForm.scene = "nc_login";
                 }
             }
-        var nc = new noCaptcha(NC_Opt)
-        nc.upLang('cn', {
+        this.nc = new noCaptcha(NC_Opt)
+        this.nc.upLang('cn', {
             _startTEXT: "请按住滑块，拖动到最右边",
             _yesTEXT: "验证通过",
             _error300: "哎呀，出错了，点击<a href=\"javascript:__nc.reset()\">刷新</a>再来一次",
             _errorNetwork: "网络不给力，请<a href=\"javascript:__nc.reset()\">点击刷新</a>",
         })
-        nc.reload();
+        this.nc.reload();
       }
     },
     computed: {
@@ -363,7 +367,6 @@ export default {
     },
     beforeMount() {
       console.log(this.email)
-      console.log(this.token)
     }
 }
 </script>

@@ -1,9 +1,9 @@
 <template>
   <div class="bgBox">
     <!-- 国内使用 -->
-    <remote-js :js-url="'https://g.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs"></remote-js>
+    <remote-js :js-url="'https://g.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs" @loadRongJs="loadRongJs" :lang="$store.state.app.language"></remote-js>
     <!-- 若您的主要用户来源于海外，请替换使用下面的js资源 -->
-    <!-- <remote-js :js-url="'//aeis.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs"></remote-js> -->
+    <!-- <remote-js :js-url="'//aeis.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs"  @loadRongJs="loadRongJs" :lang="$store.state.app.language"></remote-js>-->
     <div class="loginBox" v-if="!sendFlag">
       <div class="logoBox">
         <img class="logo" src="../assets/img/logo.png" alt="logo">
@@ -15,21 +15,20 @@
             </div>
             <el-form-item prop="email">
                 <el-input
-                placeholder="邮箱地址"
+                :placeholder="$t('login.emailAddress')"
                 v-model="retrieveForm.email">
                 <i slot="prefix" class="iconfont icon-youjian1"></i>
                 </el-input>
             </el-form-item>
-            
+
             </div>
             <div class="formB">
                 <el-form-item>
                     <div id="your-dom-id" class="nc-container"></div>
                     <el-button type="primary" :disabled="!btnFlag" class="submitBtn" @click="submitForm('retrieveForm')">{{$t('login.submit')}}</el-button>
                 </el-form-item>
-                
+
             </div>
-            
             </el-form>
         <div class="linkList">
             <div class="toLogin"><router-link to="/login">{{$t('login.login2')}}</router-link></div>
@@ -45,7 +44,7 @@
         </div>
         <div class="tipBox">
             <p class="tip">{{$t('login.wesent')}}</p>
-            <p class="tip">如果长时间未收到邮件,请尝试垃圾邮箱中寻找.</p>
+            <p class="tip">{{$t('login.wesent1')}}</p>
         </div>
     </div>
     <login-footer></login-footer>
@@ -57,20 +56,37 @@ import axios from '../api/axios'
 import loginFooter from './components/loginFooter'
 import RemoteJs from './components/loginTest'
 export default {
-  data() {
-      var validateEmail = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入邮箱'));
-        } else {
-          var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
-          if (!reg.test(value)) {
-            callback(new Error('请输入正确的邮箱'));
-          }else{
+  computed: {
+    rules: function () {
+        var validateEmail = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error(this.$t('login.retrieveTip')));
+          } else {
+            var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
+            if (!reg.test(value)) {
+              callback(new Error($t('login.retrieveTip1')));
+            }else{
               callback();
+            }
           }
-        }
-        
-      };
+        return {email:[{ validator: validateEmail, trigger: 'blur' }]}
+      }
+    }
+  },
+    data() {
+      // var validateEmail = (rule, value, callback) => {
+      //   if (value === '') {
+      //     callback(new Error(this.$t('login.retrieveTip')));
+      //   } else {
+      //     var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
+      //     if (!reg.test(value)) {
+      //       callback(new Error(this.$t('login.retrieveTip1')));
+      //     }else{
+      //         callback();
+      //     }
+      //   }
+      //
+      // };
       return {
         btnFlag: false,
         retrieveForm:{
@@ -80,40 +96,38 @@ export default {
           sig: "",
           scene: "",
         },
-        rules:{
-          email:[{ validator: validateEmail, trigger: 'blur' }]
-        },
+        // rules:{
+        //   email:[{ validator: validateEmail, trigger: 'blur' }]
+        // },
         sendFlag:false,
       };
     },
     methods: {
       submitForm(formName) {
-          console.log(0)
         var _this = this;
-        this.$refs[formName].validate((valid) => {
+        this.$refs[formName].validate(function (valid) {
           if (valid) {
             var data = {
-                email:this.retrieveForm.email,
-                sessionId:this.retrieveForm.sessionId,
-                token:this.retrieveForm.token,
-                sig:this.retrieveForm.sig,
-                scene:this.retrieveForm.scene
+                email:_this.retrieveForm.email,
+                sessionId:_this.retrieveForm.sessionId,
+                token:_this.retrieveForm.token,
+                sig:_this.retrieveForm.sig,
+                scene:_this.retrieveForm.scene
             }
-            axios.post('/api/auth/password_reset',data).then(function(res){  
-                console.log(res);
+            axios.post('/api/auth/password_reset',data).then(function(res){
                 _this.sendFlag = true;
-            }).catch(function (res){  
-                console.log(res);
+            }).catch(function (res){
                 _this.loadRongJs()
-            }); 
+            });
           } else {
             console.log('error submit!!');
             return false;
           }
-        });
+        })
       },
       loadRongJs() {
         var _this = this;
+        _this.btnFlag = false;
         var nc_token = ["FFFF0N00000000005F77", (new Date()).getTime(), Math.random()].join(':');
         var NC_Opt =
             {
@@ -126,7 +140,7 @@ export default {
                 trans: { "key1": "code0" },
                 elementID: ["usernameID"],
                 is_Opt: 0,
-                language: "cn",
+                language: _this.$store.state.app.language ,
                 isEnabled: true,
                 timeout: 3000,
                 times: 5,
@@ -164,7 +178,7 @@ export default {
     components: {
       loginFooter,
       RemoteJs
-    },
+    }
 }
 </script>
 
@@ -211,14 +225,14 @@ export default {
             font-size:16px;
             padding:0 20px;
             background: #ffffff;
-        }  
+        }
     }
     .tipBox{
         text-align:center;
         font-size:12px;
         .tip{
             color:#999999;
-            
+
             .link{
                 color: #151515;
             }

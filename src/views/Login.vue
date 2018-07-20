@@ -42,81 +42,81 @@
 
     <!-- 手机验证 -->
     <el-dialog
-        title="手机验证"
+        :title="$t('Dialog.SMSAuthentication')"
         :visible.sync="phoneDialog"
         custom-class="baseDialog"
         center>
         <el-form :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
-            <el-form-item label="验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" @input="phoneLogin(phoneForm.verCode)" placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+            <el-form-item :label="$t('Dialog.SMSAuthenticationCode')" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="phoneLogin(phoneForm.verCode)" :placeholder="$t('Dialog.SMSCode')" v-model="phoneForm.verCode" auto-complete="off"></el-input>
                 <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
                 <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <p class="tips">
-            如果您遗失了手机或无法收到验证码,请 <a href="javascript:;">联系客服</a>
+            {{$t('Dialog.contract1')}}<a href="javascript:;">{{$t('Dialog.contract2')}}</a>
           </p>
         </span>
     </el-dialog>
 
     <!-- 谷歌验证 -->
     <el-dialog
-        title="谷歌验证"
+        :title="$t('user.GoogleAuthentication')"
         :visible.sync="googleDialog"
         custom-class="baseDialog"
         center>
         <el-form :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm">
-            <el-form-item label="谷歌验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" @input="googleLogin(googleForm.verCode)" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
+            <el-form-item :label="$t('Dialog.googleAuthenticationCode')" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="googleLogin(googleForm.verCode)" :placeholder="$t('login.goolCode')" v-model="googleForm.verCode" auto-complete="off"></el-input>
                 <!-- <a class="verBtn" href="javascript:;">获取</a> -->
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <p class="tips">
-            如果您遗失了谷歌验证,请 <a href="javascript:;">联系客服</a>
+            {{$t('Dialog.contractGool')}} <a href="javascript:;">{{$t('Dialog.contract2')}}</a>
           </p>
         </span>
     </el-dialog>
 
     <!-- 双重验证 -->
     <el-dialog
-        title="双重验证"
+        :title="$t('user.DualAuthentication')"
         :visible.sync="doubleDialog"
         custom-class="baseDialog"
         center>
         <ul class="doubleSelect">
-          <li :class="doubleSelect == 1?'active':''" @click="doubleSelect = 1">谷歌验证</li>
-          <li :class="doubleSelect == 2?'active':''" @click="doubleSelect = 2">手机验证</li>
+          <li :class="doubleSelect == 1?'active':''" @click="doubleSelect = 1">{{$t('user.GoogleAuthentication')}}</li>
+          <li :class="doubleSelect == 2?'active':''" @click="doubleSelect = 2">{{$t('user.SMSAuthentication')}}</li>
         </ul>
 
-        <el-form v-show="doubleSelect == 1" :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm">
-            <el-form-item label="谷歌验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" @change="googleLogin(googleForm.verCode)" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
+        <el-form v-show="doubleSelect == 1" :model="googleForm" status-icon :rules="googleFormRules" ref="googleForm">
+            <el-form-item :label="$t('Dialog.googleAuthenticationCode')" class="verCode" prop="verCode">
+                <el-input class="inputBase" @change="googleLogin(googleForm.verCode)" :placeholder="$t('login.goolCode')" v-model="googleForm.verCode" auto-complete="off"></el-input>
                 <!-- <a class="verBtn" href="javascript:;">获取</a> -->
             </el-form-item>
         </el-form>
-        <el-form v-show="doubleSelect == 2" :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
-            <el-form-item label="验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" @input="phoneLogin(phoneForm.verCode)"  placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+        <el-form v-show="doubleSelect == 2" :model="phoneForm" status-icon :rules="phoneFormRules" ref="phoneForm">
+            <el-form-item :label="$t('Dialog.SMSAuthenticationCode')" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="phoneLogin(phoneForm.verCode)"  :placeholder="$t('Dialog.SMSCode')" v-model="phoneForm.verCode" auto-complete="off"></el-input>
                 <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
                 <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <p v-show="doubleSelect == 1" class="tips">
-            如果您遗失了谷歌验证,请 <a href="javascript:;">联系客服</a>
+            {{$t('Dialog.contractGool')}} <a href="javascript:;">{{$t('Dialog.contract2')}}</a>
           </p>
           <p v-show="doubleSelect == 2" class="tips">
-            如果您遗失了手机或无法收到验证码,请 <a href="javascript:;">联系客服</a>
+            {{$t('Dialog.contract1')}} <a href="javascript:;">{{$t('Dialog.contract2')}}</a>
           </p>
         </span>
     </el-dialog>
-    
+
     <!-- 国内使用 -->
-    <remote-js :js-url="'https://g.alicdn.com/sd/ncpc/nc.js?t=201802012'" :js-load-call-back="loadRongJs"></remote-js>
+    <remote-js :js-url="'https://g.alicdn.com/sd/ncpc/nc.js?t=201802012'" :js-load-call-back="loadRongJs" :lang="$store.state.app.language" @loadRongJs="loadRongJs"></remote-js>
     <!-- 若您的主要用户来源于海外，请替换使用下面的js资源 -->
-    <!-- <remote-js :js-url="'//aeis.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs"></remote-js> -->
+    <!-- <remote-js :js-url="'//aeis.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs" :lang="$store.state.app.language" @loadRongJs="loadRongJs"></remote-js>-->
   </div>
 </template>
 
@@ -128,17 +128,6 @@ import loginFooter from './components/loginFooter'
 import RemoteJs from './components/loginTest'
 export default {
   data() {
-      var validateEmail = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入邮箱'));
-        } else {
-          var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
-          if (!reg.test(value)) {
-            callback(new Error('请输入正确的邮箱'));
-          }
-        }
-        callback();
-      };
       return {
         btnFlag: false,
         redirectUrl: 'https://bjex.zendesk.com/access/jwt?jwt=',
@@ -153,26 +142,22 @@ export default {
           sig: "",
           scene: "",
         },
-        rules:{
-          email:[{ validator: validateEmail, trigger: 'blur' }],
-          password:[{ required: true, message: '请输入密码', trigger: 'blur' },],
-        },
         VerCodeFlag: true,
         verCodeTime: 60,
         phoneDialog: false,  //手机验证
         phoneForm: {
           verCode: '',
           phone: '',
-          rules: {
-            verCode: { required: true, message: '请输入验证码', trigger: 'blur' }
-          }
+          // rules: {
+          //   verCode: { required: true, message: '请输入验证码', trigger: 'blur' }
+          // }
         },
         googleDialog: false,
         googleForm: {
           verCode: '',
-          rules: {
-            verCode: { required: true, message: '请输入验证码', trigger: 'blur' }
-          }
+          // rules: {
+          //   verCode: { required: true, message: '请输入验证码', trigger: 'blur' }
+          // }
         },
         doubleDialog: false,
         doubleSelect: 1,
@@ -186,7 +171,7 @@ export default {
           if(this.btnFlag){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.$store.dispatch('Login', this.loginForm).then((res) => {  
+                    this.$store.dispatch('Login', this.loginForm).then((res) => {
                     console.log(res)
                     if(res.code == 100){    //双重验证
                         this.loginToken = res.data.loginToken;
@@ -203,11 +188,11 @@ export default {
                         console.log('loginSuccess')
                         this.loginSuccess(res);
                     }
-                    //this.loading = false;  
-                    //this.$router.push({path: '/login'});  
-                    
-                    }).catch((e) => {  
-                    //this.loading = false  
+                    //this.loading = false;
+                    //this.$router.push({path: '/login'});
+
+                    }).catch((e) => {
+                    //this.loading = false
                     // console.log("err")
                     // console.log(e)
                         this.loginErr();
@@ -226,15 +211,15 @@ export default {
       },
       getVerificationCode(mobile) {     //获取验证码
         var _this = this;
-        axios.get(`/api/sms/to_mobile/${mobile}`).then(function(res){  
+        axios.get(`/api/sms/to_mobile/${mobile}`).then(function(res){
             console.log(res);
             _this.VerCodeFlag = false;
             _this.verCodeTime = 60;
             _this.verCodeTimeStart ();
             _this.phoneForm.smsId = res.data.smsId;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
-        });  
+        });
       },
       verCodeTimeStart (){              //验证码计时器
         var _this = this;
@@ -258,14 +243,14 @@ export default {
           };
           this.$store.dispatch('phoneLogin', phoneLoginDate).then((res) => {
             this.loginSuccess(res);
-          }).catch((e) => {  
-            //this.loading = false  
+          }).catch((e) => {
+            //this.loading = false
             // console.log("err")
             // console.log(e)
             this.loginErr();
           })
         }
-        
+
       },
       googleLogin(verCode) {            //谷歌验证
         var googleCode = verCode.trim();
@@ -277,8 +262,8 @@ export default {
           };
           this.$store.dispatch('googleLogin', googleLoginDate).then((res) => {
             this.loginSuccess(res);
-          }).catch((e) => {  
-            //this.loading = false  
+          }).catch((e) => {
+            //this.loading = false
             // console.log("err")
             // console.log(e)
             this.loginErr();
@@ -286,7 +271,6 @@ export default {
         }
       },
       loginSuccess(res,type) {
-          console.log(res)
           this.$message({
               message: '登录成功',
               type: 'success'
@@ -294,7 +278,6 @@ export default {
             if(this.redirectFlag){
                 var token = res.data.token;
                 var url = this.redirectUrl+token+'&return_to='+this.return_to;
-                console.log(url)
                 window.location.href = url;
                 if(!type){
                     window.open(window.location.origin + '/Home')
@@ -306,14 +289,13 @@ export default {
                     var _this = this;
                     // setTimeout(()=>{
                     let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
-                    console.log(redirect)
                     _this.$router.push({ path: redirect })
                     // },2000)
                 }else{
                     _this.$router.push("/userCenter/account")
                 }
             }
-            
+
       },
       loginErr() {
           this.btnFlag = false;
@@ -322,6 +304,7 @@ export default {
       },
       loadRongJs() {
         var _this = this;
+        _this.btnFlag = true;
         var nc_token = ["FFFF0N00000000005F77", (new Date()).getTime(), Math.random()].join(':');
         var NC_Opt =
             {
@@ -334,7 +317,7 @@ export default {
                 trans: { "key1": "code0" },
                 elementID: ["usernameID"],
                 is_Opt: 0,
-                language: "cn",
+                language:_this.$store.state.app.language ,
                 isEnabled: true,
                 timeout: 3000,
                 times: 5,
@@ -375,15 +358,39 @@ export default {
         'token',
         'userInfo',
       ]),
+      rules(){
+        var validateEmail = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error(this.$t('login.retrieveTip')));
+          } else {
+            var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
+            if (!reg.test(value)) {
+              callback(new Error(this.$t('login.retrieveTip1')));
+            }
+          }
+          callback();
+        };
+        return {
+          email:[{ validator: validateEmail, trigger: 'blur' }],
+            password:[{ required: true, message: this.$t('login.pwd'), trigger: 'blur' },],
+        }
+      },
+      phoneFormRules(){
+        return {
+          verCode: { required: true, message: this.$t('login.code'), trigger: 'blur' }
+        }
+      },
+      googleFormRules() {
+        return {
+          verCode: { required: true, message: this.$t('login.code'), trigger: 'blur' }
+        }
+      }
     },
     components: {
       loginFooter,
       RemoteJs
     },
     beforeMount() {
-      console.log(this.email)
-      console.log(this.token)
-      console.log(this.$route.query)
       if(this.$route.query.return_to){
           this.redirectFlag = true;
           this.return_to = this.$route.query.return_to;

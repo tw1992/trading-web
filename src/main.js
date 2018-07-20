@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import App from './App'
 import store from './store'
+import Kline from "kline";
 import ElementUI from 'element-ui';
+import 'babel-polyfill';
 import './styles/element-variables.scss';
 // import 'element-ui/lib/theme-chalk/index.css';
 import './styles/vars.scss'

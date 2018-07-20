@@ -6,7 +6,7 @@
     <div class="balT">
       <div class="titem">
         <el-input
-          placeholder="请输入内容"
+          :placeholder="$t('route.balances')"
           class="inputBase search"
           v-model="search">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
@@ -14,7 +14,7 @@
         <el-checkbox v-model="hidesmall">{{$t('funds.hideSmallBalances')}}</el-checkbox>
       </div>
       <div class="titem">
-        <p class="sum">{{$t('funds.estimatedValue')}}：{{sum}} ETH / &yen;0.00</p>
+        <p class="sum">{{$t('funds.estimatedValue')}}：&yen;{{sum}}</p>
       </div>
     </div>
     <div class="orderBox">
@@ -71,7 +71,7 @@
             <th>{{'BTC'+$t('tradingCenter.value')}}</th>
             <th>{{$t('funds.operation')}}</th>
           </tr>
-          
+
           <tr v-for="(item,idx) in balancesitems" :key="idx">
             <td class="firstCol">{{item.goods}}</td>
             <td>{{item.sum}}</td>
@@ -81,7 +81,7 @@
             <td class="operation">
               <router-link :to="'/fundsManagement/deposits/'+item.id">{{$t('funds.deposit')}}</router-link>
               <router-link :to="'/fundsManagement/withdrawals/'+item.id">{{$t('funds.withdrawal')}}</router-link>
-              
+
               <el-popover
                 placement="right-start"
                 width="80"
@@ -91,13 +91,13 @@
                 </div>
                 <p v-show="!item.showPairsList||item.showPairsList.length==0">暂无交易</p>
                 <a class="linkPairs" slot="reference">{{$t('funds.trade')}}
-                
+
               </a>
               </el-popover>
             </td>
-            
+
           </tr>
-          
+
           <tr v-if="balances.length ==0">
             <td colspan="10"><div class="nodate"><span class="empty-text">暂无数据</span></div></td>
           </tr>
@@ -106,7 +106,7 @@
       </table>
     </div>
   </div>
-  
+
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -117,26 +117,14 @@ export default {
       search: '',
       hidesmall: false,
       sum:'0.00000000',
-      showPairsList: ['ETH/BTC','ETH/BTC'],
-      balances: [{
-        goods: 'BTC',
-        sum: '3,454.72846',
-        usable: '0.00000051',
-        freeze: '0.00000067',
-        appraisement: '23455.34847598',
-      },{
-        goods: 'BTC',
-        sum: '3,454.72846',
-        usable: '0.00000051',
-        freeze: '0.00000067',
-        appraisement: '23455.34847598',
-      }]
+      showPairsList: [],
+      balances: []
     };
   },
   methods: {
     getAccounts() {
       var _this = this;
-      axios.get('/api/accounts').then(function(res){  
+      axios.get('/api/accounts').then(function(res){
           console.log(res);
           var dataList = res.data;
           var balances = [];
@@ -156,9 +144,9 @@ export default {
           });
           _this.balances = balances;
           _this.sum = sum;
-      }).catch(function (res){  
+      }).catch(function (res){
           console.log(res);
-      }); 
+      });
     },
     findName(coin_id) {
       var name;
@@ -195,7 +183,7 @@ export default {
               if(key == 'goods'||key == 'sum'||key == 'usable'||key == 'freeze'||key == 'appraisement'){
                 return String(product[key]).toLowerCase().indexOf(_search) > -1
               }
-              
+
             })
           })
         }
@@ -243,7 +231,7 @@ export default {
     display: inline-block;
     position: relative;
     // overflow: auto;
-    
+
   }
 }
 

@@ -12,14 +12,14 @@
         text-color="#333333"
         active-text-color="#FC9217">
           <el-menu-item index="/Home" class="logo"><img src="../../assets/img/logo.png" alt="logo"></el-menu-item>
-          <el-menu-item index="/tradingCenter/ETH/CCC">{{$t('route.tradingCenter')}}</el-menu-item>
+          <el-menu-item :index="'/tradingCenter/'+ $store.state.home['firstSymbol']">{{$t('route.tradingCenter')}}</el-menu-item>
           <el-menu-item index="" class="blank" disabled></el-menu-item>
-          
+
         <el-submenu index="/fundsManagement" v-if="email">
             <template slot="title">{{$t('route.funds')}}</template>
             <el-menu-item index="/fundsManagement/balances">{{$t('route.balances')}}</el-menu-item>
-            <el-menu-item index="/fundsManagement/deposits/1">{{$t('route.deposits')}}</el-menu-item>
-            <el-menu-item index="/fundsManagement/withdrawals/1">{{$t('route.withdrawals')}}</el-menu-item>
+            <el-menu-item index="/fundsManagement/deposits/16">{{$t('route.deposits')}}</el-menu-item>
+            <el-menu-item index="/fundsManagement/withdrawals/16">{{$t('route.withdrawals')}}</el-menu-item>
             <el-menu-item index="/fundsManagement/transactionHistory">{{$t('route.transactionHistory')}}</el-menu-item>
         </el-submenu>
         <el-submenu index="/mandatory" v-if="email">
@@ -59,7 +59,7 @@
             <el-menu-item index="" v-show="language!='zh'" @click="handleSetLanguage('zh')">简体中文</el-menu-item>
             <el-menu-item index="" v-show="language!='tw'" @click="handleSetLanguage('tw')">繁体中文</el-menu-item>
             <el-menu-item index="" v-show="language!='en'" @click="handleSetLanguage('en')">English</el-menu-item>
-            
+
         </el-submenu>
         </el-menu>
         </el-col>
@@ -81,7 +81,7 @@ export default {
     handleSelect(key, keyPath) {
         console.log(key, keyPath);
         if(!key){
-          
+
         }
     },
     openSelect() {
@@ -92,7 +92,7 @@ export default {
       this.$store.dispatch('LogOut');
     },
     handleSetLanguage(lang) {
-      
+
       this.$i18n.locale = lang
       this.$store.dispatch('setLanguage', lang)
       //console.log(this.$i18n.locale)
@@ -103,8 +103,7 @@ export default {
     },
     getAccounts() {
       var _this = this;
-      axios.get('/api/accounts').then(function(res){  
-          console.log(res);
+      axios.get('/api/accounts').then(function(res){
           var dataList = res.data;
           var sum = 0;
           dataList.forEach(it => {
@@ -113,9 +112,9 @@ export default {
             sum += appraisement;
           });
           _this.sum = sum;
-      }).catch(function (res){  
+      }).catch(function (res){
           console.log(res);
-      }); 
+      });
     }
   },
   computed: {
@@ -133,12 +132,12 @@ export default {
     console.log(this.email)
     console.log(this.token)
     if(this.email){
-      this.$store.dispatch('getUserInfo');    //获取用户信息  
+      this.$store.dispatch('getUserInfo');    //获取用户信息
       this.$store.dispatch('getMarket');       //获取市场列表
       this.$store.dispatch('getCoin');        //获取币种列表
       this.$store.dispatch('getPairs');        //获取交易对列表
       this.getAccounts();
-      
+
     }
   }
 };
@@ -151,7 +150,7 @@ export default {
 @import "~scss_vars";
 .header{
   box-shadow: 0 2px 4px 0 #CCCCCC;
-  
+
 }
 .homeNav{
   padding: 0 60px;

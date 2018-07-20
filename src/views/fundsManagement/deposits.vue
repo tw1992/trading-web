@@ -35,7 +35,7 @@
       </div>
 
         <!-- 暂替换为客服框 -->
-      <!-- <div class="addBox">
+      <div class="addBox">
         <p class="addTitle">{{coin_name+$t('funds.depositAddress')}}</p>
         <p class="add">{{accounts.address}}</p>
         <p class="warning">{{changeTips.tip1}}</p>
@@ -56,20 +56,20 @@
             <p>{{$t('funds.tips2a')}}<router-link class="baseColor" to="/fundsManagement/transactionHistory">{{$t('funds.history')}}</router-link>{{$t('funds.tips2b')}}</p>
           </li>
         </ul>
-      </div> -->
-      <div class="serviceBox">
-          <p class="serverTitle">联系客服</p>
-          <div class="imgbox">
-            <div class="imgItem">
-                <img src="../../assets/recharge/wx.jpg" alt="微信">
-                <p class="serverTips">微信</p>
-            </div>
-            <div class="imgItem">
-                <img src="../../assets/recharge/qq.jpg" alt="QQ">
-                <p class="serverTips">QQ</p>
-            </div>
-          </div>
       </div>
+      <!--<div class="serviceBox">-->
+          <!--<p class="serverTitle">{{$t('Dialog.contract2')}}</p>-->
+          <!--<div class="imgbox">-->
+            <!--<div class="imgItem">-->
+                <!--<img src="../../assets/recharge/wx.jpg" alt="微信">-->
+                <!--<p class="serverTips">{{$t('fundsManagement.weixin')}}</p>-->
+            <!--</div>-->
+            <!--<div class="imgItem">-->
+                <!--<img src="../../assets/recharge/qq.jpg" alt="QQ">-->
+                <!--<p class="serverTips">QQ</p>-->
+            <!--</div>-->
+          <!--</div>-->
+      <!--</div>-->
 
     </div>
     <div class="depRbox">
@@ -92,13 +92,13 @@
           <div class="itemL">
             <div class="itemT">
               <div class="nodes">
-                <p class="nodeTitle">{{it.status == 0?'确认中':'成功'}}</p>
+                <p class="nodeTitle">{{it.status == 0?$t('fundsManagement.fail'):$t('fundsManagement.success')}}</p>
                 <p class="nodeMain">{{it.created_at}}</p>
               </div>
             </div>
             <div class="itemB">
               <div class="nodes">
-                <p class="nodeTitle">地址</p>
+                <p class="nodeTitle">{{$t('fundsManagement.address')}}</p>
                 <p class="nodeMain">{{it.address | tooLong}}</p>
               </div>
             </div>
@@ -106,11 +106,11 @@
           <div class="itemR">
             <div class="itemT">
               <div class="nodes">
-                <p class="nodeTitle">币种</p>
+                <p class="nodeTitle">{{$t('tradingCenter.coin')}}</p>
                 <p class="nodeMain">{{coin_name}}</p>
               </div>
               <div class="nodes">
-                <p class="nodeTitle">数量</p>
+                <p class="nodeTitle">{{$t('tradingCenter.amount')}}</p>
                 <p class="nodeMain">{{it.number}}</p>
               </div>
             </div>
@@ -176,23 +176,23 @@ export default {
     methods: {
       getRechargeHistory(coin_id) {
         var _this = this;
-        axios.get(`/api/accounts/imports/${coin_id}`).then(function(res){  
+        axios.get(`/api/accounts/imports/${coin_id}`).then(function(res){
             console.log(res);
             _this.historyList = res.data;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
-        }); 
+        });
       },
       getAccounts(coin_id) {
         var _this = this;
-        axios.get(`/api/accounts/${coin_id}`).then(function(res){  
+        axios.get(`/api/accounts/${coin_id}`).then(function(res){
             console.log(res);
             _this.accounts.available = res.data.available;
             _this.accounts.disabled = res.data.disabled;
             _this.accounts.address = res.data.address;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
-        }); 
+        });
       },
       changeSelect(value){
         this.changeFlag = true;   //改变过币
@@ -200,30 +200,28 @@ export default {
         var name = this.findName(value)
         this.coin_name = name;
         this.changeTip(name);        //替换change
-        console.log(name)
         this.getRechargeHistory(value);
         this.getAccounts(value);
       },
       tipshow(flag) {
-          //console.log(flag)
           this.tipFlag = flag;
       },
       copy(){
-        var clipboard = new Clipboard('.copy')  
-        clipboard.on('success', e => {  
+        var clipboard = new Clipboard('.copy')
+        clipboard.on('success', e => {
           this.$message({
             message: '复制成功',
             type: 'success'
-          }); 
-          // 释放内存  
-          clipboard.destroy()  
-        })  
-        clipboard.on('error', e => {  
-          // 不支持复制  
-          this.$message.error('该浏览器不支持自动复制'); 
-          // 释放内存  
-          clipboard.destroy()  
-        }) 
+          });
+          // 释放内存
+          clipboard.destroy()
+        })
+        clipboard.on('error', e => {
+          // 不支持复制
+          this.$message.error('该浏览器不支持自动复制');
+          // 释放内存
+          clipboard.destroy()
+        })
       },
       changeTip(name) {
         this.changeTips.tip1 = this.$t('funds.importantTip').replace(/change/g,name);
@@ -280,8 +278,8 @@ export default {
     .el-dialog__footer{
       .add{
         font-size: 12px;
-        word-wrap:break-word; 
-        word-break:break-all; 
+        word-wrap:break-word;
+        word-break:break-all;
         text-align: left;
         width: 310px;
         margin: auto;

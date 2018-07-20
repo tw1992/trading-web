@@ -1,9 +1,9 @@
 <template>
   <div class="bgBox">
     <!-- 国内使用 -->
-    <remote-js :js-url="'https://g.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs"></remote-js>
+    <remote-js :js-url="'https://g.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs" :lang="$store.state.app.language" @loadRongJs="loadRongJs"></remote-js>
     <!-- 若您的主要用户来源于海外，请替换使用下面的js资源 -->
-    <!-- <remote-js :js-url="'//aeis.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs"></remote-js> -->
+    <!-- <remote-js :js-url="'//aeis.alicdn.com/sd/ncpc/nc.js?t=2015052012'" :js-load-call-back="loadRongJs" :lang="$store.state.app.language" @loadRongJs="loadRongJs"></remote-js> -->
     <div class="loginBox">
       <div class="logoBox">
         <img class="logo" src="../assets/img/logo.png" alt="logo">
@@ -22,7 +22,7 @@
           </el-form-item>
           <el-form-item prop="password">
             <el-input
-              :placeholder="$t('login.password')"
+              :placeholder="$t('login.registerPassword')"
               type="password"
               v-model="registerForm.password">
               <i slot="prefix" class="iconfont icon-suozi"></i>
@@ -69,36 +69,6 @@ import RemoteJs from './components/loginTest'
 import { isPoneAvailable,isPassword } from '../utils/common'
 export default {
   data() {
-      var validateEmail = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入邮箱'));
-        } else {
-          var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
-          if (!reg.test(value)) {
-            callback(new Error('请输入正确的邮箱'));
-          }
-          callback();
-        }
-      };
-      var validatePass = (rule, value, callback) => {
-        if (!isPassword(value)) {
-          callback(new Error('请输入8位包含大小写字母'));
-        } else {
-          // if (this.changePwdForm.newpwd2 !== '') {
-          //   this.$refs.changePwdForm.validateField('newpwd2');
-          // }
-          callback();
-        }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.registerForm.password) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };
       return {
         btnFlag: false,
         registerForm:{
@@ -112,20 +82,48 @@ export default {
           sig: "",
           scene: "",
         },
-        rules:{
-          password:[{ validator: validatePass, trigger: 'blur' }],
-          password2:[{ validator: validatePass2, trigger: 'blur'}],
-          consent:[{ type: 'array',required: true, message: '未同意服务条款', trigger: 'change' }],
-          email:[{ validator: validateEmail, trigger: 'blur' }],
-        },
       };
     },
-    // computed: {
-    //   ...mapState([
-    //       'email',
-    //       'token'
-    //   ]),
-    // },
+    computed: {
+      rules(){
+        var validateEmail = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error(this.$t('login.retrieveTip')));
+          } else {
+            var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
+            if (!reg.test(value)) {
+              callback(new Error(this.$t('login.retrieveTip1')));
+            }
+            callback();
+          }
+        };
+        var validatePass = (rule, value, callback) => {
+          if (!isPassword(value)) {
+            callback(new Error(this.$t('login.registerPassword')));
+          } else {
+            // if (this.changePwdForm.newpwd2 !== '') {
+            //   this.$refs.changePwdForm.validateField('newpwd2');
+            // }
+            callback();
+          }
+        };
+        var validatePass2 = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error(this.$t('login.inputPwd')));
+          } else if (value !== this.registerForm.password) {
+            callback(new Error(this.$t('login.marchPwd')));
+          } else {
+            callback();
+          }
+        };
+        return {
+          password:[{ validator: validatePass, trigger: 'blur' }],
+          password2:[{ validator: validatePass2, trigger: 'blur'}],
+          consent:[{ type: 'array',required: true, message: this.$t('login.agreeService'), trigger: 'change' }],
+          email:[{ validator: validateEmail, trigger: 'blur' }],
+        }
+      },
+    },
     methods: {
       submitForm(formName) {
           var _this = this;
@@ -147,7 +145,6 @@ export default {
             }).catch((e) => {
               //this.loading = false
               // console.log("err")
-              // console.log(e)
               _this.loadRongJs()
             })
           } else {
@@ -158,6 +155,7 @@ export default {
       },
       loadRongJs() {
         var _this = this;
+        _this.btnFlag = false;
         var nc_token = ["FFFF0N00000000005F77", (new Date()).getTime(), Math.random()].join(':');
         var NC_Opt =
             {
@@ -170,7 +168,7 @@ export default {
                 trans: { "key1": "code0" },
                 elementID: ["usernameID"],
                 is_Opt: 0,
-                language: "cn",
+                language: this.$store.state.app.language,
                 isEnabled: true,
                 timeout: 3000,
                 times: 5,

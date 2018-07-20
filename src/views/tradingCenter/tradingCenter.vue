@@ -2,12 +2,12 @@
   <div class="tradingCenterBox">
       <!-- 登录框 -->
       <div class="bgBox toLogin" @click="loginFlag = false" v-show="loginFlag">
-          <div @click.stop><login-box></login-box></div>
+          <div @click.stop><login-box :link="false" @login="loginFlag = false"></login-box></div>
       </div>
 
       <!-- 谷歌认证 -->
     <el-dialog
-        title="谷歌认证"
+        :title="$t('user.GoogleAuthentication')"
         :visible.sync="googleDialog"
         custom-class="baseDialog"
         center>
@@ -15,21 +15,21 @@
             <!-- <el-form-item label="登录密码" prop="pwd">
                 <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="googleForm.pwd" auto-complete="off"></el-input>
             </el-form-item> -->
-            <el-form-item label="谷歌验证码" prop="verCode">
-                <el-input class="inputBase" @input="googleInput(googleForm.verCode)" placeholder="6位动态数字" v-model.number="googleForm.verCode"></el-input>
+            <el-form-item :label="$t('Dialog.googleAuthenticationCode')" prop="verCode">
+                <el-input class="inputBase" @input="googleInput(googleForm.verCode)" :placeholder="$t('Dialog.dynamicPwd')" v-model.number="googleForm.verCode"></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <!-- <el-button class="btnBase" type="primary" size="mini" @click="googleDialog = false">确认</el-button> -->
             <p class="tips">
-              如果您遗失了谷歌验证,请 <a href="javascript:;">联系客服</a>
+              {{$t('Dialog.contractGool')}} <a href="javascript:;">{{$t('Dialog.contract2')}} </a>
             </p>
         </span>
     </el-dialog>
 
     <!-- 手机验证 -->
     <el-dialog
-        title="手机验证"
+        :title="$t('user.SMSAuthentication')"
         :visible.sync="phoneDialog"
         width="30%"
         custom-class="baseDialog changePwd"
@@ -44,8 +44,8 @@
                     </el-select>
                 </el-input>
             </el-form-item> -->
-            <el-form-item label="验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)" placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+            <el-form-item :label="$t('Dialog.SMSAuthenticationCode')" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)" :placeholder="$t('Dialog.SMSCode')" v-model="phoneForm.verCode" auto-complete="off"></el-input>
                 <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode()">{{$t('Dialog.sendSMS')}}</a>
                 <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
             </el-form-item>
@@ -53,41 +53,41 @@
         <span slot="footer" class="dialog-footer">
             <!-- <el-button type="primary" size="mini" @click="phoneDialog = false">确认</el-button> -->
             <p class="tips">
-              如果您遗失了手机或无法收到验证码,请 <a href="javascript:;">联系客服</a>
+              {{$t('Dialog.contract1')}} <a href="javascript:;">{{$t('Dialog.contract2')}}</a>
             </p>
         </span>
     </el-dialog>
 
     <!-- 双重验证 -->
     <el-dialog
-        title="双重验证"
+        :title="$t('user.DualAuthentication')"
         :visible.sync="doubleDialog"
         custom-class="baseDialog"
         center>
         <ul class="doubleSelect">
-          <li :class="doubleSelect == 1?'active':''" @click="doubleSelect = 1">谷歌验证</li>
-          <li :class="doubleSelect == 2?'active':''" @click="doubleSelect = 2">手机验证</li>
+          <li :class="doubleSelect == 1?'active':''" @click="doubleSelect = 1">{{$t('user.GoogleAuthentication')}}</li>
+          <li :class="doubleSelect == 2?'active':''" @click="doubleSelect = 2">{{$t('user.SMSAuthentication')}}</li>
         </ul>
 
         <el-form v-show="doubleSelect == 1" :model="googleForm" status-icon :rules="googleForm.rules" ref="googleForm">
-            <el-form-item label="谷歌验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" @input="googleInput(googleForm.verCode)" placeholder="请输入谷歌验证码" v-model="googleForm.verCode" auto-complete="off"></el-input>
+            <el-form-item :label="$t('Dialog.googleAuthenticationCode')" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="googleInput(googleForm.verCode)" :placeholder="$t('login.goolCode')" v-model="googleForm.verCode" auto-complete="off"></el-input>
                 <!-- <a class="verBtn" href="javascript:;">获取</a> -->
             </el-form-item>
         </el-form>
         <el-form v-show="doubleSelect == 2" :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
-            <el-form-item label="验证码" class="verCode" prop="verCode">
-                <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)"  placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+            <el-form-item :label="$t('Dialog.SMSAuthenticationCode')" class="verCode" prop="verCode">
+                <el-input class="inputBase" @input="phoneInput(phoneForm.verCode)"  :placeholder="$t('Dialog.SMSCode')" v-model="phoneForm.verCode" auto-complete="off"></el-input>
                 <a class="verBtn" v-show="VerCodeFlag" href="javascript:;" @click="getVerificationCode()">{{$t('Dialog.sendSMS')}}</a>
                 <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <p v-show="doubleSelect == 1" class="tips">
-            如果您遗失了谷歌验证,请 <a href="javascript:;">联系客服</a>
+            {{$t('Dialog.contractGool')}} <a href="javascript:;">{{$t('Dialog.contract2')}}</a>
           </p>
           <p v-show="doubleSelect == 2" class="tips">
-            如果您遗失了手机或无法收到验证码,请 <a href="javascript:;">联系客服</a>
+            {{$t('Dialog.contract1')}} <a href="javascript:;">{{$t('Dialog.contract2')}}</a>
           </p>
         </span>
     </el-dialog>
@@ -104,11 +104,11 @@
       class="right"
       center>
       <div class="flexBox">
-        <p class="tips">为了您的账号安全,我们建议您在个人中心开启双重验证.</p>
+        <p class="tips">{{$t('Dialog.riskTip1')}}</p>
       </div>
       <span slot="footer" class="dialog-footer">
                 <!--<span class="tips">{{$t('Dialog.understand')}}</span>-->
-                <el-button :style="{fontSize:'12px'}" type="primary" size="mini" @click="riskDialog = false;$router.push({path:'/userCenter/account'})">前去验证</el-button>
+                <el-button :style="{fontSize:'12px'}" type="primary" size="mini" @click="riskDialog = false;$router.push({path:'/userCenter/account'})">{{$t('Dialog.goToReg')}}</el-button>
             </span>
     </el-dialog>
 
@@ -120,14 +120,14 @@
       <p class="time">{{nowTime}}</p>
       <div class="block"></div>
       <ul class="fz12 marketList">
+        <li>{{$t('tradingCenter.change')}}<span class="green"> {{nowPairs.change | toFix}}</span></li>
         <li>{{$t('home.lastPrice')}}<span style="margin:0 2px;" class="fb16 red">{{[nowPairs.close,2] | toFixed}}</span></li>
-        <li>{{$t('tradingCenter.change')}}<span class="green"> +0.22%</span></li>
         <li>{{$t('home.high')}} <span style="color:#fff;">{{[nowPairs.high,2] | toFixed}}</span></li>
         <li>{{$t('home.low')}} <span style="color:#fff;">{{[nowPairs.low,2] | toFixed}}</span></li>
         <li>24H{{$t('home.volume')}} <span style="color:#fff;">{{[nowPairs.number,2] | toFixed}} {{market}}</span></li>
       </ul>
       <div class="goodsBox fz14 white">
-        <div class="showGoods" @click="coidBoxFlag = !coidBoxFlag;">
+        <div class="showGoods"   @mouseover="coidBoxFlag = true;" @mouseout = "coidBoxFlag = false;">
             <span class="options">{{symbol}}<i class="el-icon-caret-bottom baseColor"></i></span>
             <div class="coidBox" v-show="coidBoxFlag" @click.stop>
 
@@ -183,115 +183,64 @@
                     </el-row>
                     </el-tab-pane>
 
-                    <el-tab-pane name="CCC">
-                    <span slot="label">CCC {{$t('home.markets')}}</span>
+                  <el-tab-pane :name="allMarkets[index][0].market_name" v-for="item,index in allMarketShow" :key="index">
+                    <span slot="label">{{allMarkets[index][0].market_name}} {{$t('home.markets')}}</span>
                     <el-row class="tabContent">
-                        <el-table
-                        :data="CCCitems"
-                        ref="CCCTable"
-                        @row-click="linkToGoods"
-                        style="width: 100%">
-                        <span slot="empty">{{$t('home.noData')}}</span>
-                        <el-table-column
-                        align="center"
-                        width="50">
-                        <template slot-scope="scope">
-                            <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
-                        </template>
-                        </el-table-column>
-                        <el-table-column
-                        prop="symbol"
-                        sortable
-                        :label="$t('home.pair')"
-                        width="100">
-                        </el-table-column>
-                        <el-table-column
-                        :label="$t('home.lastPrice')"
-                        sortable
-                        width="140">
-                        <template slot-scope="scope">
-                            <span class="newPriceL">{{scope.row.close*1}}</span>
-                        </template>
-                        </el-table-column>
-                        <el-table-column
-                        align="right"
-                        sortable
-                        width="80"
-                        :label="'24h'+$t('home.change')">
-                        <template slot-scope="scope">
-                            <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
-                        </template>
-                        </el-table-column>
-                        <el-table-column
-                        prop="number"
-                        align="right"
-                        sortable
-                        width="126"
-                        class-name="lastList"
-                        :label="'24h'+$t('home.volume')">
-                        </el-table-column>
-                    </el-table>
-                    </el-row>
-                    </el-tab-pane>
-
-                    <el-tab-pane name="ETH">
-                    <span slot="label">ETH {{$t('home.markets')}}</span>
-                    <el-row class="tabContent">
-                        <el-table
-                        :data="ETHitems"
-                        ref="ETHTable"
+                      <el-table
+                        :data="item"
+                        :ref="allMarkets[index][0].market_name + 'Table'"
                         @row-click="linkToGoods"
                         style="width: 1198px">
                         <span slot="empty">{{$t('home.noData')}}</span>
                         <el-table-column
-                        align="center"
-                        width="50">
-                        <template slot-scope="scope">
+                          align="center"
+                          width="50">
+                          <template slot-scope="scope">
                             <i @click.stop="changeStar(scope.row.symbol,scope.row.star)" class="el-icon-star-on" :class="scope.row.star == false?'star-off':'star-on'"></i>
-                        </template>
+                          </template>
                         </el-table-column>
                         <el-table-column
-                        prop="symbol"
-                        sortable
-                        :label="$t('home.pair')"
-                        width="100">
+                          prop="symbol"
+                          sortable
+                          :label="$t('home.pair')"
+                          width="100">
                         </el-table-column>
                         <el-table-column
-                        sortable
-                        :label="$t('home.lastPrice')"
-                        width="140">
-                        <template slot-scope="scope">
+                          sortable
+                          :label="$t('home.lastPrice')"
+                          width="140">
+                          <template slot-scope="scope">
                             <span class="newPriceL">{{scope.row.close*1}}</span>
-                        </template>
+                          </template>
                         </el-table-column>
                         <el-table-column
-                        align="right"
-                        sortable
-                        width="80"
-                        :label="'24h'+$t('home.change')">
-                        <template slot-scope="scope">
+                          align="right"
+                          sortable
+                          width="80"
+                          :label="'24h'+$t('home.change')">
+                          <template slot-scope="scope">
                             <span :class="scope.row.change>=0?'green':'red'">{{toPercent(scope.row.change,2)}}</span>
-                        </template>
+                          </template>
                         </el-table-column>
                         <el-table-column
-                        prop="number"
-                        align="right"
-                        sortable
-                        width="126"
-                        class-name="lastList"
-                        :label="'24h'+$t('home.volume')">
+                          prop="number"
+                          align="right"
+                          sortable
+                          width="126"
+                          class-name="lastList"
+                          :label="'24h'+$t('home.volume')">
                         </el-table-column>
-                    </el-table>
+                      </el-table>
                     </el-row>
-                    </el-tab-pane>
-
+                  </el-tab-pane>
                     <el-tab-pane name="search" :disabled="true">
-                    <span slot="label">
+                      <span slot="label">
                         <el-input
                         class="search"
                         placeholder=""
                         prefix-icon="el-icon-search"
                         v-model="search"
+                        @input="searchItem"
                         >
                         </el-input>
                     </span>
@@ -324,8 +273,8 @@
           <div id="kline_container" v-show="klineFlag"></div>
           <div id="myChart" :style="{width:echartsWidth,height:echartsHeight}" v-show="!klineFlag"></div>
           <div class="typeList">
-              <span class="options" @click="klineFlag = true">K线图</span>
-              <span class="options" @click="klineFlag = false;">深度图</span>
+              <span class="options" @click="klineFlag = true">{{$t('tradingCenter.kLine')}}</span>
+              <span class="options" @click="klineFlag = false;">{{$t('tradingCenter.Depth')}}</span>
           </div>
         </div>
         <!-- 订单面板 -->
@@ -377,7 +326,6 @@
                       </div>
                     </div>-->
                   </th>
-
                 </tr>
                 </tbody>
               </table>
@@ -501,7 +449,7 @@
                       <td><span>{{item.number}}</span></td>
                       <td><span>{{item.total}}</span></td>
                       <td><span>条件</span></td>
-                      <td><span>{{item.status == 0?"未成交":item.status == 1?"已成交":"已撤销"}}</span></td>
+                      <td><span>{{item.status == 0?$t('tradingCenter.deal1'):item.status == 1?$t('tradingCenter.deal2'):$t('tradingCenter.deal3')}}</span></td>
                     </tr>
                     </tbody>
                   </table>
@@ -734,9 +682,9 @@
             <table class="table">
 							<tbody>
                 <tr>
-                <th class="f-left fz13">{{$t('tradingCenter.price')}}({{market}})</th>
-                <th class="f-center fz13">XVG</th>
-                <th class="f-right fz13">{{$t('tradingCenter.time')}}</th>
+                  <th class="f-left fz13">{{$t('tradingCenter.price')}}({{market}})</th>
+                  <th class="f-center fz13">XVG</th>
+                  <th class="f-right fz13">{{$t('tradingCenter.time')}}</th>
               </tr>
               </tbody>
               <colgroup style="width:33%;"></colgroup>
@@ -867,12 +815,11 @@ import { add, sub, mul, divide } from "../../utils/common.js"
 // import SockJS from 'sockjs';
 // var SockJS = require('sockjs');
 // import StompJS from 'stompjs';
-import io from "socket.io-client";
+//import io from "socket.io-client";
 import axios from "../../api/axios";
 import { mapGetters } from "vuex";
-import Kline from "kline";
+//import Kline from "kline";
 import  loginBox  from "../components/loginForm";
-
 //引入echarts
 // 引入基本模板
 let echarts = require("echarts/lib/echarts");
@@ -881,10 +828,11 @@ require("echarts/lib/chart/line");
 // 引入提示框和title组件
 require("echarts/lib/component/tooltip");
 require("echarts/lib/component/title");
-
 export default {
   data() {
     return {
+      allMarkets:[],
+      allMarketShow:[],
       kline:'',
       activeName: 'CCC',
       localList: [],
@@ -947,20 +895,14 @@ export default {
       echartsHeight: "640px",
       myChart: {},
       echartsOption: {
-        // title: {
-        //     text: "市场深度图",
-        //     textStyle: {
-        //         color: "#cdcdcd"
-        //     }
-        // },
         tooltip: {
             trigger: "axis"
         },
         grid: {
-            left: "0%",
-            right: "4%",
-            top: "4%",
-            bottom: "0%",
+            left: "1%",
+            right: "5%",
+            top: "7%",
+            bottom: "2%",
             containLabel: true,
             show: true,
             // borderColor: "#000"
@@ -1071,6 +1013,7 @@ export default {
     clearInterval(this.getOpenOrderTimer);
     clearInterval(this.getAccountsTimer);
     this.kline.pause();
+    this.websock.onclose();
     next()
   },
   beforeMount() {
@@ -1084,8 +1027,9 @@ export default {
     this.coin = this.$route.params.coin;
     this.market = this.$route.params.market;
     this.symbol = `${this.coin}/${this.market}`;
-    // this.onReady();
-
+    this.activeName = this.$route.params.market;
+//     this.onReady();
+    this.initWebSocket();
     //获取时间
     var that = this;
       axios
@@ -1104,20 +1048,31 @@ export default {
   },
   mounted() {
     const that = this;
+    if(localStorage.localList){
+      this.localList = JSON.parse(localStorage.localList);
+    }
+    sessionStorage.setItem('depths','')
     var height = this.$refs.kline_container.offsetHeight;
-    console.log(height)
     var width = this.$refs.kline_container.offsetWidth;
+    this.echartsWidth = width + 'px';
+    this.echartsHeight = height + 'px';
     var symbol = this.symbol;
     var klineUrl = process.env.KLINE;
+    switch (this.$i18n.locale){
+      case 'en':var langKline = 'en-us';break;
+      case 'zh':var langKline = 'zh-cn';break;
+      case 'tw':var langKline = 'zh-tw';break;
+    }
     this.kline = new Kline({
       element: "#kline_container",
       symbol: symbol,
       symbolName: "比特币",
       height: height,
       width: width,
+      limit:500,
       intervalTime: "3000",
       ranges: ["1w", "1d", "1h", "30m", "15m", "5m", "1m", "line"],
-      language: "zh-cn",
+      language: langKline,
       showTrade: false,
       disableFirebase: true,
       theme: "dark",
@@ -1125,22 +1080,39 @@ export default {
       type: "poll", // poll/stomp
       url: klineUrl,
     });
+    this.kline.resend();
     this.kline.draw();
     this.kline.setSymbol(symbol, symbol);
-
-    this.myChart = echarts.init(document.getElementById("myChart"));
-    // this.getEchartsSize();
-    this.onReady();
-
-    window.onresize = () => {
+    this.$nextTick(()=>{
+      this.myChart = echarts.init(document.getElementById("myChart"));
+    })
+    window.onresize = ()=> {
       var height = this.$refs.kline_container.offsetHeight;
       var width = this.$refs.kline_container.offsetWidth;
       this.kline.resize(width, height);
-      //   this.drawLine();
-      //myChart.resize(width, height);
+      this.myChart.resize(width, height);
     };
   },
   methods: {
+    handSearchDate(){
+      var that = this;
+      that.allMarketShow = JSON.parse(JSON.stringify(that.allMarkets));
+      for(var i = 0; i<that.allMarkets.length; i++){
+        that.allMarketShow[i] = [];
+        if(that.allMarkets[i][0].market_name === that.activeName){
+          that.allMarketShow[i] = that.allMarkets[i].filter(function(item){
+            return item.symbol.toLowerCase().indexOf(that.search)>-1;
+          })
+        }
+      }
+    },
+    searchItem(){
+      var that = this;
+      that.searchTimer = setTimeout(function(){
+        clearTimeout(that.searchTimer);
+        that.handSearchDate()
+      },100)
+    },
     getOpenOrderPoll(){
       this.getOpenOrderTimer = setInterval(()=>{
         this.getOpenOrder();
@@ -1168,31 +1140,31 @@ export default {
       }
     },
     handleClick(tab, event) {
-    //console.log(tab.$el.id);
+      this.search = '';
+      if(tab.name != 'star'){
+        this.activeName = tab.name;
+        this.handSearchDate()
+      }
     },
     linkToGoods(row, event, column){
         this.$router.push('/tradingCenter/'+row.symbol)
     },
     changeStar(name,star){
-        console.log(name,star)
         if(star){
             var idx = this.localList.indexOf(name);
             this.localList.splice(idx, 1);
         }else{
             this.localList.push(name);
         }
-        console.log(this.localList)
     },
     getVerificationCode() {     //获取验证码
         var _this = this;
         axios.get('/api/sms/to_user').then(function(res){
-            console.log(res);
             _this.VerCodeFlag = false;
             _this.verCodeTime = 60;
             _this.verCodeTimeStart ();
             _this.phoneForm.smsId = res.data.smsId;
         }).catch(function (res){
-            console.log(res);
         });
     },
     verCodeTimeStart (){              //验证码计时器
@@ -1207,7 +1179,6 @@ export default {
         },1000)
     },
     phoneInput(verCode) {             //手机验证
-      console.log(verCode)
         var _this = this;
         var smsCode = verCode.trim();
         if(smsCode.length == 6){
@@ -1230,164 +1201,223 @@ export default {
             // });
         }
     },
-    onReady() {
-      let that = this;
-      let c = 0;
-      console.log("建立长连接！");
-      var url = process.env.NODE_API;
-      const socket = io.connect(url);
-    //   const socket = io.connect("http://ws.bjex.io:9006/");
-    //   const socket = io.connect("http://192.168.133.190:9006/");
-      socket.emit("join", { userId: "linxi", symbol: this.symbol });
-      socket.on("tradingData", function(data) {
-        console.log(data)
-        let res = JSON.parse(JSON.parse(data).tradingList).data;
-        c++;
-        //console.log(c);
-        // console.log(res);
-        that.newmarket = res;
-
-      });
-      // socket.on("tradesData", function(data) {
-      //   console.log(data)
-      //   let res = JSON.parse(JSON.parse(data).tradingList).data;
-      //   c++;
-      //   //console.log(c)
-      //   //console.log('tradesData')
-      //   //console.log(res)
-      //   that.newmarket = res;
-      //   var length = res.length;
-      //   if(length){
-      //       that.nowPrice = res[length-1];
-      //   }
-      // });
-
-
-      //模拟数据  tradesData
-      var tradesData = '{"tradingList":"{\\"code\\":0,\\"data\\":[[1,\\"BUY\\",\\"47339.00000000\\",\\"0.10000000\\",1528166227],[2,\\"BUY\\",\\"47339.00000000\\",\\"0.10000000\\",1528166749],[3,\\"SELL\\",\\"47339.00000000\\",\\"0.10000000\\",1528166827],[4,\\"SELL\\",\\"47339.00000000\\",\\"0.10000000\\",1528166839],[5,\\"SELL\\",\\"47389.00000000\\",\\"0.10000000\\",1528166902],[6,\\"SELL\\",\\"47389.00000000\\",\\"0.20000000\\",1528166947],[7,\\"BUY\\",\\"47396.00000000\\",\\"0.10000000\\",1528167226],[8,\\"BUY\\",\\"47396.00000000\\",\\"0.10000000\\",1528167238],[9,\\"BUY\\",\\"47389.00000000\\",\\"0.00000000\\",1528167334],[10,\\"SELL\\",\\"47340.00000000\\",\\"0.10000000\\",1528167334],[11,\\"BUY\\",\\"47342.00000000\\",\\"0.00000000\\",1528167337],[12,\\"SELL\\",\\"47342.00000000\\",\\"0.10000000\\",1528167343],[13,\\"BUY\\",\\"47343.00000000\\",\\"0.00000000\\",1528167343],[14,\\"BUY\\",\\"47340.00000000\\",\\"0.10000000\\",1528167373],[15,\\"SELL\\",\\"47343.00000000\\",\\"0.10000000\\",1528167385],[16,\\"BUY\\",\\"47343.00000000\\",\\"0.00000000\\",1528167647],[17,\\"BUY\\",\\"47343.00000000\\",\\"0.10000000\\",1528167647],[18,\\"SELL\\",\\"47344.00000000\\",\\"0.10000000\\",1528167671],[19,\\"BUY\\",\\"47345.00000000\\",\\"0.10000000\\",1528167674],[20,\\"BUY\\",\\"47346.00000000\\",\\"0.10000000\\",1528167680],[21,\\"BUY\\",\\"47343.00000000\\",\\"0.00000000\\",1528167689],[22,\\"BUY\\",\\"47339.00000000\\",\\"0.00000000\\",1528167689],[23,\\"BUY\\",\\"47337.00000000\\",\\"0.10000000\\",1528167689],[24,\\"BUY\\",\\"47340.00000000\\",\\"0.10000000\\",1528167695],[25,\\"BUY\\",\\"47349.00000000\\",\\"0.10000000\\",1528167701],[26,\\"BUY\\",\\"47351.00000000\\",\\"0.10000000\\",1528167710],[27,\\"BUY\\",\\"47355.00000000\\",\\"0.10000000\\",1528167716],[28,\\"SELL\\",\\"47352.00000000\\",\\"0.10000000\\",1528167725],[29,\\"BUY\\",\\"47347.00000000\\",\\"0.10000000\\",1528167731],[30,\\"SELL\\",\\"47338.00000000\\",\\"0.01000000\\",1528168748],[31,\\"BUY\\",\\"47337.00000000\\",\\"0.00000000\\",1528168760],[32,\\"BUY\\",\\"47337.00000000\\",\\"0.10000000\\",1528168760],[33,\\"BUY\\",\\"47338.00000000\\",\\"0.10000000\\",1528168815],[34,\\"BUY\\",\\"47338.00000000\\",\\"0.10000000\\",1528168827],[35,\\"BUY\\",\\"47348.00000000\\",\\"0.20000000\\",1528168845],[36,\\"SELL\\",\\"47353.00000000\\",\\"0.10000000\\",1528168947],[37,\\"SELL\\",\\"47353.00000000\\",\\"0.10000000\\",1528168947],[38,\\"SELL\\",\\"47353.00000000\\",\\"0.10000000\\",1528168968],[39,\\"SELL\\",\\"47355.00000000\\",\\"0.20000000\\",1528168986],[40,\\"BUY\\",\\"47337.00000000\\",\\"0.00000000\\",1528169010],[41,\\"BUY\\",\\"47335.00000000\\",\\"0.10000000\\",1528169010],[42,\\"SELL\\",\\"47350.00000000\\",\\"0.10000000\\",1528169031],[43,\\"SELL\\",\\"47350.00000000\\",\\"0.10000000\\",1528169046],[44,\\"SELL\\",\\"47357.00000000\\",\\"0.10000000\\",1528169305],[45,\\"SELL\\",\\"47357.00000000\\",\\"0.10000000\\",1528169308],[46,\\"BUY\\",\\"47357.00000000\\",\\"0.10000000\\",1528169332],[47,\\"BUY\\",\\"47358.00000000\\",\\"0.10000000\\",1528169338],[48,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528169344],[49,\\"BUY\\",\\"47343.00000000\\",\\"0.10000000\\",1528169350],[50,\\"BUY\\",\\"47360.00000000\\",\\"0.20000000\\",1528169374],[51,\\"SELL\\",\\"47360.00000000\\",\\"0.10000000\\",1528169377],[52,\\"BUY\\",\\"47360.00000000\\",\\"0.00000000\\",1528169386],[53,\\"BUY\\",\\"47357.00000000\\",\\"0.10000000\\",1528169386],[54,\\"SELL\\",\\"47357.00000000\\",\\"0.20000000\\",1528169389],[55,\\"SELL\\",\\"47358.00000000\\",\\"0.10000000\\",1528170350],[56,\\"SELL\\",\\"47358.00000000\\",\\"0.10000000\\",1528170350],[57,\\"SELL\\",\\"47358.00000000\\",\\"0.10000000\\",1528170365],[58,\\"BUY\\",\\"47364.00000000\\",\\"0.10000000\\",1528170389],[59,\\"SELL\\",\\"47364.00000000\\",\\"0.10000000\\",1528170392],[60,\\"SELL\\",\\"47364.00000000\\",\\"0.10000000\\",1528170395],[61,\\"SELL\\",\\"47365.00000000\\",\\"0.10000000\\",1528170644],[62,\\"SELL\\",\\"47365.00000000\\",\\"0.10000000\\",1528170644],[63,\\"SELL\\",\\"47365.00000000\\",\\"0.10000000\\",1528170659],[64,\\"SELL\\",\\"47366.00000000\\",\\"0.10000000\\",1528170698],[65,\\"SELL\\",\\"47366.00000000\\",\\"0.10000000\\",1528170698],[66,\\"SELL\\",\\"47366.00000000\\",\\"0.10000000\\",1528170701],[67,\\"BUY\\",\\"47364.00000000\\",\\"0.00000000\\",1528170728],[68,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170731],[69,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170734],[70,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170734],[71,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170746],[72,\\"BUY\\",\\"47357.00000000\\",\\"0.00000000\\",1528184622],[73,\\"BUY\\",\\"47353.00000000\\",\\"0.10000000\\",1528184622],[74,\\"BUY\\",\\"47360.00000000\\",\\"0.10000000\\",1528184655],[75,\\"BUY\\",\\"47361.00000000\\",\\"0.10000000\\",1528185636],[76,\\"BUY\\",\\"47360.00000000\\",\\"0.10000000\\",1528185660],[77,\\"SELL\\",\\"47361.00000000\\",\\"0.10000000\\",1528185666],[78,\\"BUY\\",\\"47359.00000000\\",\\"0.01000000\\",1528185966],[79,\\"BUY\\",\\"47359.00000000\\",\\"0.01000000\\",1528185987],[80,\\"SELL\\",\\"47358.00000000\\",\\"0.01000000\\",1528185999],[81,\\"BUY\\",\\"47364.00000000\\",\\"0.01000000\\",1528187134],[82,\\"BUY\\",\\"47363.00000000\\",\\"0.01000000\\",1528187134],[83,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[84,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[85,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[86,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[87,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[88,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[89,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[90,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[91,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[92,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[93,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[94,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[95,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[96,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[97,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[98,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[99,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[100,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154]]}"}'
-      var tradesDatares = JSON.parse(JSON.parse(tradesData).tradingList).data;
-      c++;
-      //console.log(c)
-      //console.log('tradesData')
-      //console.log(res)
-      that.newmarket = tradesDatares;
-      var length = tradesDatares.length;
-      if(length){
-        that.nowPrice = tradesDatares[length-1];
-      }
-
-
-      // socket.on("depthData", function(data) {
-      //   console.log(data)
-      //   let res = JSON.parse(JSON.parse(data).tradingList).data;
-      //   console.log(res)
-      //   c++;
-      //   //console.log(c)
-      //   console.log(res)
-      //   that.asksList = res.asks;
-      //   that.bidsList = res.bids;
-      //   that.drawLine();
-      // });
-
-
-      //模拟数据depthData
-      var depthData = '{\"tradingList\":\"{\\\"code\\\":0,\\\"data\\\":{\\\"asks\\\":[[\\\"47327.00000000\\\",\\\"0.00099000\\\"],[\\\"47323.00000000\\\",\\\"0.12312300\\\"],[\\\"47165.00000000\\\",\\\"0.00100000\\\"],[\\\"0.00000000\\\",\\\"0.00000000\\\"]],\\\"bids\\\":[]}}\"}'
-      console.log(JSON.parse(depthData))
-      var depthDatares = JSON.parse(JSON.parse(depthData).tradingList).data;
-      console.log(depthDatares)
-      // c++;
-      that.asksList = depthDatares.asks;
-      that.bidsList = depthDatares.bids;
-      that.drawLine();
-
-
-
-    //   socket.on("pairsData", function(data) {
-    //     let res = JSON.parse(JSON.parse(data).tradingList).data;
-    //     console.log(res)
-    //     c++;
-    //     // console.log(c);
-    //     // console.log(res);
-    //     var symbol = that.symbol;
-    //     that.BTCList = [];
-    //     that.CCCList = [];
-    //     that.ETHList = [];
-    //     that.OMGList = [];
-    //     that.DOGEList = [];
-    //     that.WWWList = [];
-    //     that.RNGList = [];
-    //     that.allList = res;
-    // //   that.collectList = [];
-    //     res.forEach(item => {
-    //         if (item.symbol == symbol) {
-    //             that.nowPairs = item;
-    //         }
-    //         item.star = false;
-    //         item.number = item.number.toFixed(8);
-    //         if(item.market_name == "BTC"){
-    //             that.BTCList.push(item);
-    //         }else if(item.market_name == "ETH"){
-    //             that.ETHList.push(item);
-    //         }else if(item.market_name == "CCC"){
-    //             that.CCCList.push(item);
-    //         }else if(item.market_name == "OMG"){
-    //             that.OMGList.push(item);
-    //         }else if(item.market_name == "DOGE"){
-    //             that.DOGEList.push(item);
-    //         }else if(item.market_name == "WWW"){
-    //             that.WWWList.push(item);
-    //         }else if(item.market_name == "RNG"){
-    //             that.RNGList.push(item);
-    //         }
-    //         // if(that.localList.indexOf(item.symbol)>-1){
-    //         //     that.collectList.push(item);
-    //         // }
-    //     })
-    //   });
-
-
-//模拟数据
-      var data = "{\"tradingList\":\"{\\\"code\\\":0,\\\"data\\\":[{\\\"symbol\\\":\\\"ETH\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"ETH\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"47324.00000000\\\",\\\"close\\\":\\\"47324.00000000\\\",\\\"high\\\":\\\"47324.00000000\\\",\\\"low\\\":\\\"47324.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"QTUM\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"QTUM\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"COC\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"COC\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"CPT\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"CPT\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"EOS\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"EOS\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TBL\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TBL\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"FTV\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"FTV\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TCO\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TCO\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"CCC\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"CCC\\\",\\\"coin_decimals\\\":0,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"QTUM\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"QTUM\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"COC\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"COC\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"CPT\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"CPT\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"EOS\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"EOS\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TBL\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TBL\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"FTV\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"FTV\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TCO\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TCO\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0}]}\"}"
-      let res = JSON.parse(JSON.parse(data).tradingList).data;
-      c++;
-      // console.log(c);
-      // console.log(res);
-      var symbol = that.symbol;
-      that.BTCList = [];
-      that.CCCList = [];
-      that.ETHList = [];
-      that.OMGList = [];
-      that.DOGEList = [];
-      that.WWWList = [];
-      that.RNGList = [];
-      that.allList = res;
-      //   that.collectList = [];
-      res.forEach(item => {
-        if (item.symbol == symbol) {
-          that.nowPairs = item;
-        }
-        item.star = false;
-        item.number = item.number.toFixed(8);
-        if(item.market_name == "BTC"){
-          that.BTCList.push(item);
-        }else if(item.market_name == "ETH"){
-          that.ETHList.push(item);
-        }else if(item.market_name == "CCC"){
-          that.CCCList.push(item);
-        }else if(item.market_name == "OMG"){
-          that.OMGList.push(item);
-        }else if(item.market_name == "DOGE"){
-          that.DOGEList.push(item);
-        }else if(item.market_name == "WWW"){
-          that.WWWList.push(item);
-        }else if(item.market_name == "RNG"){
-          that.RNGList.push(item);
-        }
-        // if(that.localList.indexOf(item.symbol)>-1){
-        //     that.collectList.push(item);
-        // }
-      })
+    initWebSocket(){
+      this.websock = new WebSocket("wss://ws.pacex.io");
+      this.websock.onmessage = this.websocketonmessage;
+      this.websock.onclose = this.websocketclose;
+      this.websock.onopen = this.websocketopen;
     },
+    websocketonmessage(event){
+      var that = this;
+      if(event.data == 'success'){
+        var myBlob = new Blob([JSON.stringify({type:'login',name:that.symbol})]);
+        this.websock.send(myBlob);
+        return;
+      };
+      if(event.type && event.type == "ping"){
+        this.websock.send(JSON.stringify({type:'pong'}));
+        return;
+      }
+      if (event.data instanceof Blob) {
+        var newblob = event.data;
+        var reader = new FileReader();
+        reader.readAsText(newblob,'UTF-8');
+        reader.onload = function () {
+          if(reader.result.indexOf('code') === -1){
+            return;
+          }
+          let pairsData = JSON.parse(reader.result)[2].data;
+          let depthDatares = JSON.parse(reader.result)[1].data;
+          let tradesData = JSON.parse(reader.result)[0].data;
+          that.allMarkets = [[]];
+//          交易对
+          that.allList = pairsData;
+          pairsData.forEach(item => {
+            item.change = that.div(that.sub(item.close,item.open,8),item.open,8);//涨跌幅
+            if (item.symbol == that.symbol) {
+              that.nowPairs = item;
+            }
+            item.star = that.localList.indexOf(item.symbol) == -1?false:true;
+            item.number = Number(item.number).toFixed(8);
+            for(let i = 0;i<that.allMarkets.length;i++){
+              if(that.allMarkets[i].length === 0){
+                that.allMarkets[i].push(item);
+                break;
+              }else{
+                if(that.allMarkets[i][0].market_name ===  item.market_name){
+                  that.allMarkets[i].push(item);
+                  break;
+                }else{
+                  that.allMarkets.push([item]);
+                  break;
+                }
+              }
+            }
+          })
+          that.handSearchDate();
+//          交易数据
+           that.newmarket = tradesData;
+           var length = tradesData.length;
+           if(length){
+             that.nowPrice = tradesData[length-1];
+           }
+//           深度数据
+           that.asksList = depthDatares.asks;
+           that.bidsList = depthDatares.bids;
+            sessionStorage.setItem('depths',JSON.stringify(depthDatares))
+           that.drawLine();
+        }
+      }
+    },
+    websocketclose(e){
+      this.websock.close();
+    },
+    websocketopen(){
+    },
+//    onReady() {
+//      let that = this;
+//      return;
+//      let c = 0;
+//      console.log("建立长连接！");
+//      var url = process.env.NODE_API;
+//      const socket = io.connect(url);
+//    //   const socket = io.connect("http://ws.bjex.io:9006/");
+//    //   const socket = io.connect("http://192.168.133.190:9006/");
+//      socket.emit("join", { userId: "linxi", symbol: this.symbol });
+//
+//      socket.on("tradesData", function(data) {
+//        let res = JSON.parse(JSON.parse(data).tradingList).data;
+//        c++;
+//        //console.log(res)
+//        that.newmarket = res;
+//        var length = res.length;
+//        if(length){
+//            that.nowPrice = res[length-1];
+//        }
+//      });
+//
+//
+//      // //模拟数据  tradesData
+//      // var tradesData = '{"tradingList":"{\\"code\\":0,\\"data\\":[[1,\\"BUY\\",\\"47339.00000000\\",\\"0.10000000\\",1528166227],[2,\\"BUY\\",\\"47339.00000000\\",\\"0.10000000\\",1528166749],[3,\\"SELL\\",\\"47339.00000000\\",\\"0.10000000\\",1528166827],[4,\\"SELL\\",\\"47339.00000000\\",\\"0.10000000\\",1528166839],[5,\\"SELL\\",\\"47389.00000000\\",\\"0.10000000\\",1528166902],[6,\\"SELL\\",\\"47389.00000000\\",\\"0.20000000\\",1528166947],[7,\\"BUY\\",\\"47396.00000000\\",\\"0.10000000\\",1528167226],[8,\\"BUY\\",\\"47396.00000000\\",\\"0.10000000\\",1528167238],[9,\\"BUY\\",\\"47389.00000000\\",\\"0.00000000\\",1528167334],[10,\\"SELL\\",\\"47340.00000000\\",\\"0.10000000\\",1528167334],[11,\\"BUY\\",\\"47342.00000000\\",\\"0.00000000\\",1528167337],[12,\\"SELL\\",\\"47342.00000000\\",\\"0.10000000\\",1528167343],[13,\\"BUY\\",\\"47343.00000000\\",\\"0.00000000\\",1528167343],[14,\\"BUY\\",\\"47340.00000000\\",\\"0.10000000\\",1528167373],[15,\\"SELL\\",\\"47343.00000000\\",\\"0.10000000\\",1528167385],[16,\\"BUY\\",\\"47343.00000000\\",\\"0.00000000\\",1528167647],[17,\\"BUY\\",\\"47343.00000000\\",\\"0.10000000\\",1528167647],[18,\\"SELL\\",\\"47344.00000000\\",\\"0.10000000\\",1528167671],[19,\\"BUY\\",\\"47345.00000000\\",\\"0.10000000\\",1528167674],[20,\\"BUY\\",\\"47346.00000000\\",\\"0.10000000\\",1528167680],[21,\\"BUY\\",\\"47343.00000000\\",\\"0.00000000\\",1528167689],[22,\\"BUY\\",\\"47339.00000000\\",\\"0.00000000\\",1528167689],[23,\\"BUY\\",\\"47337.00000000\\",\\"0.10000000\\",1528167689],[24,\\"BUY\\",\\"47340.00000000\\",\\"0.10000000\\",1528167695],[25,\\"BUY\\",\\"47349.00000000\\",\\"0.10000000\\",1528167701],[26,\\"BUY\\",\\"47351.00000000\\",\\"0.10000000\\",1528167710],[27,\\"BUY\\",\\"47355.00000000\\",\\"0.10000000\\",1528167716],[28,\\"SELL\\",\\"47352.00000000\\",\\"0.10000000\\",1528167725],[29,\\"BUY\\",\\"47347.00000000\\",\\"0.10000000\\",1528167731],[30,\\"SELL\\",\\"47338.00000000\\",\\"0.01000000\\",1528168748],[31,\\"BUY\\",\\"47337.00000000\\",\\"0.00000000\\",1528168760],[32,\\"BUY\\",\\"47337.00000000\\",\\"0.10000000\\",1528168760],[33,\\"BUY\\",\\"47338.00000000\\",\\"0.10000000\\",1528168815],[34,\\"BUY\\",\\"47338.00000000\\",\\"0.10000000\\",1528168827],[35,\\"BUY\\",\\"47348.00000000\\",\\"0.20000000\\",1528168845],[36,\\"SELL\\",\\"47353.00000000\\",\\"0.10000000\\",1528168947],[37,\\"SELL\\",\\"47353.00000000\\",\\"0.10000000\\",1528168947],[38,\\"SELL\\",\\"47353.00000000\\",\\"0.10000000\\",1528168968],[39,\\"SELL\\",\\"47355.00000000\\",\\"0.20000000\\",1528168986],[40,\\"BUY\\",\\"47337.00000000\\",\\"0.00000000\\",1528169010],[41,\\"BUY\\",\\"47335.00000000\\",\\"0.10000000\\",1528169010],[42,\\"SELL\\",\\"47350.00000000\\",\\"0.10000000\\",1528169031],[43,\\"SELL\\",\\"47350.00000000\\",\\"0.10000000\\",1528169046],[44,\\"SELL\\",\\"47357.00000000\\",\\"0.10000000\\",1528169305],[45,\\"SELL\\",\\"47357.00000000\\",\\"0.10000000\\",1528169308],[46,\\"BUY\\",\\"47357.00000000\\",\\"0.10000000\\",1528169332],[47,\\"BUY\\",\\"47358.00000000\\",\\"0.10000000\\",1528169338],[48,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528169344],[49,\\"BUY\\",\\"47343.00000000\\",\\"0.10000000\\",1528169350],[50,\\"BUY\\",\\"47360.00000000\\",\\"0.20000000\\",1528169374],[51,\\"SELL\\",\\"47360.00000000\\",\\"0.10000000\\",1528169377],[52,\\"BUY\\",\\"47360.00000000\\",\\"0.00000000\\",1528169386],[53,\\"BUY\\",\\"47357.00000000\\",\\"0.10000000\\",1528169386],[54,\\"SELL\\",\\"47357.00000000\\",\\"0.20000000\\",1528169389],[55,\\"SELL\\",\\"47358.00000000\\",\\"0.10000000\\",1528170350],[56,\\"SELL\\",\\"47358.00000000\\",\\"0.10000000\\",1528170350],[57,\\"SELL\\",\\"47358.00000000\\",\\"0.10000000\\",1528170365],[58,\\"BUY\\",\\"47364.00000000\\",\\"0.10000000\\",1528170389],[59,\\"SELL\\",\\"47364.00000000\\",\\"0.10000000\\",1528170392],[60,\\"SELL\\",\\"47364.00000000\\",\\"0.10000000\\",1528170395],[61,\\"SELL\\",\\"47365.00000000\\",\\"0.10000000\\",1528170644],[62,\\"SELL\\",\\"47365.00000000\\",\\"0.10000000\\",1528170644],[63,\\"SELL\\",\\"47365.00000000\\",\\"0.10000000\\",1528170659],[64,\\"SELL\\",\\"47366.00000000\\",\\"0.10000000\\",1528170698],[65,\\"SELL\\",\\"47366.00000000\\",\\"0.10000000\\",1528170698],[66,\\"SELL\\",\\"47366.00000000\\",\\"0.10000000\\",1528170701],[67,\\"BUY\\",\\"47364.00000000\\",\\"0.00000000\\",1528170728],[68,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170731],[69,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170734],[70,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170734],[71,\\"SELL\\",\\"47359.00000000\\",\\"0.10000000\\",1528170746],[72,\\"BUY\\",\\"47357.00000000\\",\\"0.00000000\\",1528184622],[73,\\"BUY\\",\\"47353.00000000\\",\\"0.10000000\\",1528184622],[74,\\"BUY\\",\\"47360.00000000\\",\\"0.10000000\\",1528184655],[75,\\"BUY\\",\\"47361.00000000\\",\\"0.10000000\\",1528185636],[76,\\"BUY\\",\\"47360.00000000\\",\\"0.10000000\\",1528185660],[77,\\"SELL\\",\\"47361.00000000\\",\\"0.10000000\\",1528185666],[78,\\"BUY\\",\\"47359.00000000\\",\\"0.01000000\\",1528185966],[79,\\"BUY\\",\\"47359.00000000\\",\\"0.01000000\\",1528185987],[80,\\"SELL\\",\\"47358.00000000\\",\\"0.01000000\\",1528185999],[81,\\"BUY\\",\\"47364.00000000\\",\\"0.01000000\\",1528187134],[82,\\"BUY\\",\\"47363.00000000\\",\\"0.01000000\\",1528187134],[83,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[84,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[85,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[86,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[87,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[88,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[89,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[90,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[91,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[92,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[93,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[94,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[95,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[96,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[97,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[98,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[99,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154],[100,\\"SELL\\",\\"47365.00000000\\",\\"0.00000010\\",1528190154]]}"}'
+//      // var tradesDatares = JSON.parse(JSON.parse(tradesData).tradingList).data;
+//      // c++;
+//      // //console.log(c)
+//      // //console.log('tradesData')
+//      // //console.log(res)
+//      // that.newmarket = tradesDatares;
+//      // var length = tradesDatares.length;
+//      // if(length){
+//      //   that.nowPrice = tradesDatares[length-1];
+//      // }
+//
+//
+//      socket.on("depthData", function(data) {
+//        let res = JSON.parse(JSON.parse(data).tradingList).data;
+//        console.log(res)
+//        c++;
+//        that.asksList = res.asks;
+//        that.bidsList = res.bids;
+//        that.drawLine();
+//      });
+//
+//
+//      //模拟数据depthData
+//      // var depthData = '{\"tradingList\":\"{\\\"code\\\":0,\\\"data\\\":{\\\"asks\\\":[[\\\"47327.00000000\\\",\\\"0.00099000\\\"],[\\\"47323.00000000\\\",\\\"0.12312300\\\"],[\\\"47165.00000000\\\",\\\"0.00100000\\\"],[\\\"0.00000000\\\",\\\"0.00000000\\\"]],\\\"bids\\\":[]}}\"}'
+//      // console.log(JSON.parse(depthData))
+//      // var depthDatares = JSON.parse(JSON.parse(depthData).tradingList).data;
+//      // console.log(depthDatares)
+//      // // c++;
+//      // that.asksList = depthDatares.asks;
+//      // that.bidsList = depthDatares.bids;
+//      // that.drawLine();
+//
+//
+//
+//      socket.on("pairsData", function(data) {
+//        let res = JSON.parse(JSON.parse(data).tradingList).data;
+//        c++;
+//        // console.log(c);
+//        console.log(res);
+//        var symbol = that.symbol;
+//        that.BTCList = [];
+//        that.CCCList = [];
+//        that.ETHList = [];
+//        that.OMGList = [];
+//        that.DOGEList = [];
+//        that.WWWList = [];
+//        that.RNGList = [];
+//        that.allList = res;
+//    //   that.collectList = [];
+//        res.forEach(item => {
+//            if (item.symbol == symbol) {
+//                that.nowPairs = item;
+//            }
+//            item.star = false;
+//            item.number = item.number.toFixed(8);
+//            if(item.market_name == "BTC"){
+//                that.BTCList.push(item);
+//            }else if(item.market_name == "ETH"){
+//                that.ETHList.push(item);
+//            }else if(item.market_name == "CCC"){
+//                that.CCCList.push(item);
+//            }else if(item.market_name == "OMG"){
+//                that.OMGList.push(item);
+//            }else if(item.market_name == "DOGE"){
+//                that.DOGEList.push(item);
+//            }else if(item.market_name == "WWW"){
+//                that.WWWList.push(item);
+//            }else if(item.market_name == "RNG"){
+//                that.RNGList.push(item);
+//            }
+//            // if(that.localList.indexOf(item.symbol)>-1){
+//            //     that.collectList.push(item);
+//            // }
+//        })
+//      });
+//
+//
+//// //模拟数据
+////       var data = "{\"tradingList\":\"{\\\"code\\\":0,\\\"data\\\":[{\\\"symbol\\\":\\\"ETH\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"ETH\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"47324.00000000\\\",\\\"close\\\":\\\"47324.00000000\\\",\\\"high\\\":\\\"47324.00000000\\\",\\\"low\\\":\\\"47324.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"QTUM\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"QTUM\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"COC\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"COC\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"CPT\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"CPT\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"EOS\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"EOS\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TBL\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TBL\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"FTV\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"FTV\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TCO\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TCO\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"CCC\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"CCC\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"CCC\\\",\\\"coin_decimals\\\":0,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"QTUM\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"QTUM\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"COC\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"COC\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"CPT\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"CPT\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"EOS\\\\/CCC\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"EOS\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TBL\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TBL\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"FTV\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"FTV\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0},{\\\"symbol\\\":\\\"TCO\\\\/ETH\\\",\\\"status\\\":1,\\\"coin_name\\\":\\\"TCO\\\",\\\"coin_decimals\\\":18,\\\"market_name\\\":\\\"ETH\\\",\\\"price_step\\\":\\\"0.00000000\\\",\\\"number_min\\\":\\\"0.00000000\\\",\\\"number_step\\\":\\\"0.00000000\\\",\\\"total_min\\\":\\\"0.00000000\\\",\\\"open\\\":\\\"0.00000000\\\",\\\"close\\\":\\\"0.00000000\\\",\\\"high\\\":\\\"0.00000000\\\",\\\"low\\\":\\\"0.00000000\\\",\\\"number\\\":0,\\\"total\\\":0}]}\"}"
+////       let res = JSON.parse(JSON.parse(data).tradingList).data;
+////       c++;
+////       // console.log(c);
+////       // console.log(res);
+////       var symbol = that.symbol;
+////       that.BTCList = [];
+////       that.CCCList = [];
+////       that.ETHList = [];
+////       that.OMGList = [];
+////       that.DOGEList = [];
+////       that.WWWList = [];
+////       that.RNGList = [];
+////       that.allList = res;
+////       //   that.collectList = [];
+////       res.forEach(item => {
+////         if (item.symbol == symbol) {
+////           that.nowPairs = item;
+////         }
+////         item.star = false;
+////         item.number = item.number.toFixed(8);
+////         if(item.market_name == "BTC"){
+////           that.BTCList.push(item);
+////         }else if(item.market_name == "ETH"){
+////           that.ETHList.push(item);
+////         }else if(item.market_name == "CCC"){
+////           that.CCCList.push(item);
+////         }else if(item.market_name == "OMG"){
+////           that.OMGList.push(item);
+////         }else if(item.market_name == "DOGE"){
+////           that.DOGEList.push(item);
+////         }else if(item.market_name == "WWW"){
+////           that.WWWList.push(item);
+////         }else if(item.market_name == "RNG"){
+////           that.RNGList.push(item);
+////         }
+////         // if(that.localList.indexOf(item.symbol)>-1){
+////         //     that.collectList.push(item);
+////         // }
+////       })
+//    },
     drawLine() {
         //渲染echarts
         this.echartsOption.series[0].data = this.asksList;
@@ -1396,12 +1426,11 @@ export default {
         // console.log(this.myChart)
         this.myChart.setOption(this.echartsOption);
     },
-    // getEchartsSize() {
-    //     this.echartsHeight = this.$refs.kline_container.offsetHeight;
-    //     this.echartsWidth = this.$refs.kline_container.offsetWidth;
-    //     this.myChart.resize(this.echartsWidth,this.echartsHeight);
-    //     console.log(this.echartsHeight,this.echartsWidth)
-    // },
+     getEchartsSize() {
+         this.echartsHeight = this.$refs.kline_container.offsetHeight;
+         this.echartsWidth = this.$refs.kline_container.offsetWidth;
+         this.myChart.resize(this.echartsWidth,this.echartsHeight);
+     },
     getTime(time,type) {
       //获取当前时间
       var date = new Date();
@@ -1455,7 +1484,6 @@ export default {
           _this.openOrder = res.data;
         })
         .catch(function(res) {
-          console.log(res);
         });
     },
     getHistoryOrder(postData) {
@@ -1466,7 +1494,6 @@ export default {
           _this.historyOrder = res.data;
         })
         .catch(function(res) {
-          console.log(res);
         });
     },
     getHistorytrading(postData) {
@@ -1480,7 +1507,6 @@ export default {
           _this.historytrading = res.data;
         })
         .catch(function(res) {
-          console.log(res);
         });
     },
     searchHistoryOrder() {
@@ -1536,13 +1562,11 @@ export default {
           _this.sum = sum;
         })
         .catch(function(res) {
-          console.log(res);
         });
     },
     aveLine(arr,num) {             //柱状线
       this.$nextTick(()=>{
         var width = this.$refs.markefive.offsetWidth;
-        //console.log(width)
         let max = arr[0][1];
         arr = arr.slice(0,this.aveNum);
         for (let i = 0; i < arr.length - 1; i++) {
@@ -1570,11 +1594,37 @@ export default {
             number: this.sellNumber
           };
         }
-
+        if(!postData.price || postData.price == 0){
+          _this.$message({
+            message: _this.$t('tradingCenter.exchangeTipPrice'),
+            type: "error"
+          });
+          return
+        }
+        if(!postData.number || postData.number == 0){
+          _this.$message({
+            message: _this.$t('tradingCenter.exchangeTipNum'),
+            type: "error"
+          });
+          return;
+        }
+        if(postData.price < 0.00000001){
+          _this.$message({
+            message: _this.$t('tradingCenter.exchangeTipPrice1'),
+            type: "error"
+          });
+          return
+        }
+        if(postData.number< 0.00000001){
+          _this.$message({
+            message: _this.$t('tradingCenter.exchangeTipNum1'),
+            type: "error"
+          });
+          return
+        }
         axios
           .post("/api/orders", postData)
           .then(function(res) {
-            console.log(res);
             _this.initDealBox();
             if (res.code == 0) {
               _this.$message({
@@ -1586,10 +1636,6 @@ export default {
               }else if(this.orderSelect === 3){
                 _this.getHistorytrading();
               }
-                // _this.getOpenOrder();
-                // _this.getHistoryOrder();
-                // _this.getHistorytrading();
-                // _this.getAccounts();
             } else {
               _this.$message({
                 message: res,
@@ -1597,9 +1643,7 @@ export default {
               });
             }
           })
-          .catch(function(res) {
-            console.log(res);
-          });
+          .catch(function(res){});
       } else {
         this.loginFlag = true;
       }
@@ -1629,11 +1673,9 @@ export default {
           }
         })
         .catch(function(res) {
-          console.log(res);
         });
     },
     delAllClick(type) {
-        console.log(this.userInfo.two_factor_auth_type)
         var two_factor = this.userInfo.two_factor_auth_type;
       // this.doubleDialog   = true;
         if(two_factor == "GOOGLE"){
@@ -1669,7 +1711,6 @@ export default {
           }
         })
         .catch(function(res) {
-          console.log(res);
         });
     },
     //退出登录
@@ -1728,7 +1769,6 @@ export default {
         case 'zh':var langKline = 'zh-cn';break;
         case 'tw':var langKline = 'zh-tw';break;
       }
-      console.log(langKline)
       this.kline.setLanguage(langKline);
     },
     addOnce(num,name) {
@@ -1774,7 +1814,6 @@ export default {
     buyNumClick(num,name) {
         if(name == 'buy'){
             var num2 = parseInt(this.buyMax*num*Math.pow(10,8));
-            console.log(num2)
             this.buyNumber = num2/(Math.pow(10,8));
         }else if(name == 'sell'){
             var num2 = parseInt(this.sellMax*num*Math.pow(10,8));
@@ -1791,6 +1830,9 @@ export default {
     mul: ([value1, value2, fixed]) => {
       return calc.mul(value1, value2).toFixed(fixed);
     },
+    toFix:(value)=>{
+      return (value * 100).toFixed(2)+ '%';
+    }
   },
   components: {
       loginBox
@@ -1842,156 +1884,13 @@ export default {
         var arr = this.newmarket;
         return arr.reverse();
     },
-    CCCitems: function() {
-        var _search = this.search.toLocaleLowerCase();
-        var starList = this.localList;
-        var _this = this;
-        this.CCCList.map((it,idx) => {
-          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
-          if(_this.localList.indexOf(it.symbol) != -1){
-            _this.$set(_this.$data.CCCList[idx], 'star', true);
-          }else{
-            _this.$set(_this.$data.CCCList[idx], 'star', false);
-          }
-        })
-        if (_search) {
-          return this.CCCList.filter(function(product) {
-            return Object.keys(product).some(function(key) {
-              return String(product.symbol).toLowerCase().indexOf(_search) > -1
-            })
-          })
-        }
-        return this.CCCList;
-    },
-    BTCitems: function() {
-        var _search = this.search.toLocaleLowerCase();
-        var starList = this.localList;
-        var _this = this;
-        this.BTCList.map((it,idx) => {
-          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
-          if(_this.localList.indexOf(it.symbol) != -1){
-            _this.$set(_this.$data.BTCList[idx], 'star', true);
-          }else{
-            _this.$set(_this.$data.BTCList[idx], 'star', false);
-          }
-        })
-        if (_search) {
-          return this.BTCList.filter(function(product) {
-            return Object.keys(product).some(function(key) {
-              return String(product.symbol).toLowerCase().indexOf(_search) > -1
-            })
-          })
-        }
-        return this.BTCList;
-    },
-    ETHitems: function() {
-        var _search = this.search.toLocaleLowerCase();
-        var _this = this;
-        this.ETHList.map(it => {
-          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
-          if(_this.localList.indexOf(it.symbol) != -1){
-            it.star = true;
-          }else{
-            it.star = false
-          }
-        })
-        if (_search) {
-          return this.ETHList.filter(function(product) {
-            return Object.keys(product).some(function(key) {
-              return String(product.symbol).toLowerCase().indexOf(_search) > -1
-            })
-          })
-        }
-        return this.ETHList;
-    },
-    OMGitems: function() {
-        var _search = this.search.toLocaleLowerCase();
-        var _this = this;
-        this.OMGList.map(it => {
-          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
-          if(_this.localList.indexOf(it.symbol) != -1){
-            it.star = true;
-          }else{
-            it.star = false
-          }
-        })
-        if (_search) {
-          return this.OMGList.filter(function(product) {
-            return Object.keys(product).some(function(key) {
-              return String(product.symbol).toLowerCase().indexOf(_search) > -1
-            })
-          })
-        }
-        return this.OMGList;
-    },
-    DOGEitems: function() {
-        var _search = this.search.toLocaleLowerCase();
-        var _this = this;
-        this.DOGEList.map(it => {
-          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
-          if(_this.localList.indexOf(it.symbol) != -1){
-            it.star = true;
-          }else{
-            it.star = false
-          }
-        })
-        if (_search) {
-          return this.DOGEList.filter(function(product) {
-            return Object.keys(product).some(function(key) {
-              return String(product.symbol).toLowerCase().indexOf(_search) > -1
-            })
-          })
-        }
-        return this.DOGEList;
-    },
-    WWWitems: function() {
-        var _search = this.search.toLocaleLowerCase();
-        var _this = this;
-        this.WWWList.map(it => {
-          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
-          if(_this.localList.indexOf(it.symbol) != -1){
-            it.star = true;
-          }else{
-            it.star = false
-          }
-        })
-        if (_search) {
-          return this.WWWList.filter(function(product) {
-            return Object.keys(product).some(function(key) {
-              return String(product.symbol).toLowerCase().indexOf(_search) > -1
-            })
-          })
-        }
-        return this.WWWList;
-    },
-    RNGitems: function() {
-        var _search = this.search.toLocaleLowerCase();
-        var _this = this;
-        this.RNGList.map(it => {
-          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
-          if(_this.localList.indexOf(it.symbol) != -1){
-            it.star = true;
-          }else{
-            it.star = false
-          }
-        })
-        if (_search) {
-          return this.RNGList.filter(function(product) {
-            return Object.keys(product).some(function(key) {
-              return String(product.symbol).toLowerCase().indexOf(_search) > -1
-            })
-          })
-        }
-        return this.RNGList;
-    },
     collectitems: function() {
         var _search = this.search.toLocaleLowerCase();
         var _this = this;
         var collectList = [];
         this.allList.map(it => {
-          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+//          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
           if(_this.localList.indexOf(it.symbol) != -1){
-            it.star = true;
             collectList.push(it)
           }
         })
@@ -2004,6 +1903,148 @@ export default {
         }
         return collectList;
     },
+    //    CCCitems: function() {
+//        var _search = this.search.toLocaleLowerCase();
+//        var starList = this.localList;
+//        var _this = this;
+//        this.CCCList.map((it,idx) => {
+//          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+//          if(_this.localList.indexOf(it.symbol) != -1){
+//            _this.$set(_this.$data.CCCList[idx], 'star', true);
+//          }else{
+//            _this.$set(_this.$data.CCCList[idx], 'star', false);
+//          }
+//        })
+//        if (_search) {
+//          return this.CCCList.filter(function(product) {
+//            return Object.keys(product).some(function(key) {
+//              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+//            })
+//          })
+//        }
+//        return this.CCCList;
+//    },
+//    BTCitems: function() {
+//        var _search = this.search.toLocaleLowerCase();
+//        var starList = this.localList;
+//        var _this = this;
+//        this.BTCList.map((it,idx) => {
+//          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+//          if(_this.localList.indexOf(it.symbol) != -1){
+//            _this.$set(_this.$data.BTCList[idx], 'star', true);
+//          }else{
+//            _this.$set(_this.$data.BTCList[idx], 'star', false);
+//          }
+//        })
+//        if (_search) {
+//          return this.BTCList.filter(function(product) {
+//            return Object.keys(product).some(function(key) {
+//              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+//            })
+//          })
+//        }
+//        return this.BTCList;
+//    },
+//    ETHitems: function() {
+//        var _search = this.search.toLocaleLowerCase();
+//        var _this = this;
+//        this.ETHList.map(it => {
+//          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+//          if(_this.localList.indexOf(it.symbol) != -1){
+//            it.star = true;
+//          }else{
+//            it.star = false
+//          }
+//        })
+//        if (_search) {
+//          return this.ETHList.filter(function(product) {
+//            return Object.keys(product).some(function(key) {
+//              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+//            })
+//          })
+//        }
+//        return this.ETHList;
+//    },
+//    OMGitems: function() {
+//        var _search = this.search.toLocaleLowerCase();
+//        var _this = this;
+//        this.OMGList.map(it => {
+//          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+//          if(_this.localList.indexOf(it.symbol) != -1){
+//            it.star = true;
+//          }else{
+//            it.star = false
+//          }
+//        })
+//        if (_search) {
+//          return this.OMGList.filter(function(product) {
+//            return Object.keys(product).some(function(key) {
+//              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+//            })
+//          })
+//        }
+//        return this.OMGList;
+//    },
+//    DOGEitems: function() {
+//        var _search = this.search.toLocaleLowerCase();
+//        var _this = this;
+//        this.DOGEList.map(it => {
+//          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+//          if(_this.localList.indexOf(it.symbol) != -1){
+//            it.star = true;
+//          }else{
+//            it.star = false
+//          }
+//        })
+//        if (_search) {
+//          return this.DOGEList.filter(function(product) {
+//            return Object.keys(product).some(function(key) {
+//              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+//            })
+//          })
+//        }
+//        return this.DOGEList;
+//    },
+//    WWWitems: function() {
+//        var _search = this.search.toLocaleLowerCase();
+//        var _this = this;
+//        this.WWWList.map(it => {
+//          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+//          if(_this.localList.indexOf(it.symbol) != -1){
+//            it.star = true;
+//          }else{
+//            it.star = false
+//          }
+//        })
+//        if (_search) {
+//          return this.WWWList.filter(function(product) {
+//            return Object.keys(product).some(function(key) {
+//              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+//            })
+//          })
+//        }
+//        return this.WWWList;
+//    },
+//    RNGitems: function() {
+//        var _search = this.search.toLocaleLowerCase();
+//        var _this = this;
+//        this.RNGList.map(it => {
+//          it.change = _this.div(_this.sub(it.close,it.open,8),it.open,8);
+//          if(_this.localList.indexOf(it.symbol) != -1){
+//            it.star = true;
+//          }else{
+//            it.star = false
+//          }
+//        })
+//        if (_search) {
+//          return this.RNGList.filter(function(product) {
+//            return Object.keys(product).some(function(key) {
+//              return String(product.symbol).toLowerCase().indexOf(_search) > -1
+//            })
+//          })
+//        }
+//        return this.RNGList;
+//    },
   }
 };
 </script>

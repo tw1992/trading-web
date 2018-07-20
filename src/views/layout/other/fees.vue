@@ -1,27 +1,27 @@
 <template>
 <div class="feesBox">
-    <p class="feesTitle">币加网服务费说明</p>
+    <p class="feesTitle">{{$t('fee.title')}}</p>
     <div class="exchangerate">
-        <p class="tipsTitle"><i class="el-icon-caret-right"></i><span>交易费率</span></p>
+        <p class="tipsTitle"><i class="el-icon-caret-right"></i><span>{{$t('fee.changeFee')}}</span></p>
         <ul class="tipsList">
-            <li>0.1% 交易手续费。（扣除收取到的资产）</li>
+            <li>{{$t('fee.changeFeeInstruct')}}</li>
         </ul>
     </div>
     <div class="chargerate">
-        <p class="tipsTitle"><i class="el-icon-caret-right"></i><span>充值费率</span></p>
-        <p class="tips">免费</p>
+        <p class="tipsTitle"><i class="el-icon-caret-right"></i><span>{{$t('fee.rechangeFee')}}</span></p>
+        <p class="tips">{{$t('fee.rechangeFeeInstruce')}}</p>
     </div>
     <div class="withdrawrate">
-        <p class="tipsTitle"><i class="el-icon-caret-right"></i><span>提现费率</span></p>
-        <p class="tips">提现手续费将会根据区块实际情况定期调整</p>
+        <p class="tipsTitle"><i class="el-icon-caret-right"></i><span>{{$t('fee.withdrawalFee')}}</span></p>
+        <p class="tips">{{$t('fee.withdrawalFeeInstruce')}}</p>
         <div class="withBox">
             <table class="withtable">
                 <tbody>
                     <tr>
-                        <td>币种</td>
-                        <td>币种全称</td>
-                        <td>最小提币数量</td>
-                        <td>提币手续费</td>
+                        <td>{{$t('tradingCenter.coin')}}</td>
+                        <td>{{$t('fee.coinName')}}</td>
+                        <td>{{$t('fee.withdrawalMin')}}</td>
+                        <td>{{$t('fee.withdrawalHandFee')}}</td>
                     </tr>
                     <tr>
                         <td>
@@ -70,16 +70,16 @@
                 <colgroup style="width:25%;"></colgroup>
             </table>
         </div>
-        
+
     </div>
-    
+
 
 </div>
 </template>
 
 <script>
 export default {
-  
+
 }
 </script>
 
@@ -167,6 +167,6 @@ export default {
             }
         }
     }
-    
+
 }
 </style>

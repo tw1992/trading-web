@@ -22,38 +22,38 @@
         <el-table
           :data="recharge"
           style="width: 100%">
-          
+
           <el-table-column
             class-name="firstCol"
-            label="状态"
+            :label="$t('fundsManagement.status')"
             width="120">
             <template slot-scope="scope">
-              <span class="success" v-if="scope.row.status == 1">成功</span>
+              <span class="success" v-if="scope.row.status == 1">{{$t('fundsManagement.success')}}</span>
               <!-- <span class="defeat" v-if="scope.row.status == 0">失败</span> -->
-              <span class="processed" v-if="scope.row.status == 0">确认中</span>
+              <span class="processed" v-if="scope.row.status == 0">{{$t('fundsManagement.fail')}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="币种"
+            :label="$t('tradingCenter.coin')"
             width="120">
             <template slot-scope="scope">
               <span>{{findName(scope.row.coin_id)}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="数量"
+            :label="$t('tradingCenter.amount')"
             width="180"
             prop="number">
           </el-table-column>
           <el-table-column
-            label="时间"
+            :label="$t('tradingCenter.time')"
             width="240"
             prop="created_at">
           </el-table-column>
           <el-table-column
-            label="信息">
+            :label="$t('funds.information')">
             <template slot-scope="scope">
-              <div style="margin-bottom:4px;" class="tdItem"><p class="tdname">地址</p><p class="tdmain"><a :title="scope.row.address">{{scope.row.address | tooLong}}</a></p></div>
+              <div style="margin-bottom:4px;" class="tdItem"><p class="tdname">{{$t('fundsManagement.address')}}</p><p class="tdmain"><a :title="scope.row.address">{{scope.row.address | tooLong}}</a></p></div>
               <div v-if="scope.row.coin_id == 1" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://blockchain.info/zh-cn/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
               <div v-if="scope.row.coin_id == 2" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://etherscan.io/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
             </template>
@@ -76,15 +76,15 @@
         <el-table
           :data="withdraw"
           style="width: 100%">
-          
+
           <el-table-column
             class-name="firstCol"
             :label="$t('tradingCenter.status')"
             width="120">
             <template slot-scope="scope">
-              <span class="success" v-if="scope.row.status == 1">成功</span>
+              <span class="success" v-if="scope.row.status == 1">{{$t('fundsManagement.success')}}</span>
               <!-- <span class="defeat" v-if="scope.row.status == 0">失败</span> -->
-              <span class="processed" v-if="scope.row.status == 0">确认中</span>
+              <span class="processed" v-if="scope.row.status == 0">{{$t('fundsManagement.fail')}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -107,7 +107,7 @@
           <el-table-column
             :label="$t('funds.information')">
             <template slot-scope="scope">
-              <div class="tdItem"><p class="tdname">地址</p><p class="tdmain"><a :title="scope.row.address">{{scope.row.address | tooLong}}</a></p></div>
+              <div class="tdItem"><p class="tdname">{{$t('fundsManagement.address')}}</p><p class="tdmain"><a :title="scope.row.address">{{scope.row.address | tooLong}}</a></p></div>
               <div v-if="scope.row.coin_id == 1" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://blockchain.info/zh-cn/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
               <div v-if="scope.row.coin_id == 2" class="tdItem"><p class="tdname">Txid</p><a target="_block" :href="'https://etherscan.io/tx/'+scope.row.txid" class="tdmain txLink">{{scope.row.txid}}</a></div>
             </template>
@@ -123,10 +123,10 @@
             :total="pagination2.total">
         </el-pagination>
       </div>
-      
+
     </div>
 
-    
+
   </div>
 </template>
 
@@ -138,43 +138,8 @@ export default {
       return {
         activeIdx: 0,
         pagination: {},
-        recharge: [{
-          status: 0,
-          coin_id: 'BTC',
-          number: '3,374.74628467',
-          created_at: '2018-04-11 18:08:11',
-          address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
-          txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-        },{
-          status: 1,
-          coin_id: 'BTC',
-          number: '3,374.74628467',
-          created_at: '2018-04-11 18:08:11',
-          address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
-          txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-        },{
-          status: 2,
-          coin_id: 'BTC',
-          number: '3,374.74628467',
-          created_at: '2018-04-11 18:08:11',
-          address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
-          txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-        },],
-        withdraw: [{
-          status: 1,
-          coin_id: 'BTC',
-          number: '3,374.74628467',
-          created_at: '2018-04-11 18:08:11',
-          address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
-          txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-        },{
-          status: 2,
-          coin_id: 'BTC',
-          number: '3,374.74628467',
-          created_at: '2018-04-11 18:08:11',
-          address: 'NoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479',
-          txid: 'DdzFFzCqrhse3znvdFkhHVjNoLEfhWgZt29BfEBC1hphg3mxmGiPzYQvP4ZxcVo2zdAsgn9w479BeiCWk9Z956DsWE1StRxVb6uH6TaN'
-        },],
+        withdraw:[],
+        recharge: [],
         pagination1: {
             total: 0,
             links: [],
@@ -200,21 +165,20 @@ export default {
       },
       getRecharge(url){
         var _this = this;
-        axios.get(url).then(function(res){  
-            console.log(res);
+        axios.get(url).then(function(res){
             _this.recharge = res.data;
             _this.pagination1 = res.meta.pagination;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
         });
       },
       getWithdraw(url){
         var _this = this;
-        axios.get(url).then(function(res){  
+        axios.get(url).then(function(res){
             console.log(res);
             _this.withdraw = res.data;
             _this.pagination2 = res.meta.pagination;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
         });
       },

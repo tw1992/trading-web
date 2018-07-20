@@ -30,14 +30,14 @@ export default {
     methods: {
       submitForm(formName) {
         var _this = this;
-        this.$refs[formName].validate((valid) => {
+        this.$refs[formName].validate((valid)=> {
           if (valid) {
-            axios.post('/api/auth/password_reset',{email:this.retrieveForm.email}).then(function(res){  
+            axios.post('/api/auth/password_reset',{email:this.retrieveForm.email}).then(function(res){
                 console.log(res);
                 _this.sendFlag = true;
-            }).catch(function (res){  
+            }).catch(function (res){
                 console.log(res);
-            }); 
+            });
           } else {
             console.log('error submit!!');
             return false;
@@ -46,15 +46,14 @@ export default {
       },
       resetEmail() {
           var _this = this;
-          axios.post('/api/auth/send_register_email',{email:this.email}).then(function(res){  
-                console.log(res);
+          axios.post('/api/auth/send_register_email',{email:this.emailActive}).then(function(res){
                 _this.$message({
                     message: '发送成功，请注意查收',
                     type: 'success'
                 });
-            }).catch(function (res){  
+            }).catch(function (res){
                 console.log(res);
-            }); 
+            });
       }
     },
     created() {
@@ -113,7 +112,7 @@ export default {
             font-size:16px;
             padding:0 20px;
             background: #ffffff;
-        }  
+        }
     }
     .tipBox{
         text-align:center;

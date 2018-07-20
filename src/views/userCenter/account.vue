@@ -11,10 +11,10 @@
                 <p class="UID">UID: {{userInfo.id}}</p>
             </div>
             <div class="attest">
-                <router-link class="toattest" to="/autonym">{{$t('user.unverified')}}&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
-                <!-- <a v-if="userInfo.is_human_validated == 1" class="toattest" style="color:#3ABC56">已实名认证</a>
+                <router-link class="toattest" to="/autonym" v-if="userInfo.is_human_validated == 0">{{$t('user.unverified')}}&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
+                <a v-if="userInfo.is_human_validated == 1" class="toattest" style="color:#3ABC56">已实名认证</a>
                 <a v-if="userInfo.is_human_validated == 2" class="toattest">实名认证审核中</a>
-                <router-link v-if="userInfo.is_human_validated == 3" class="toattest" to="/autonym">实名认证失败，请重新实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link> -->
+                <router-link v-if="userInfo.is_human_validated == 3" class="toattest" to="/autonym">实名认证失败，请重新实名认证&nbsp;&nbsp;&nbsp;<i class="el-icon-d-arrow-right"></i></router-link>
             </div>
         </div>
         <div class="otherBox">
@@ -32,7 +32,7 @@
                     <div class="boxR">
                         <el-button type="primary" @click="changePwdDialog = true">{{$t('user.change')}}</el-button>
                     </div>
-                    
+
                 </div>
                 <div class="phoneBox itemBox">
                     <div class="boxL">
@@ -88,9 +88,24 @@
                             active-color="#3ABC56"
                             inactive-color="#CCCCCC">
                             </el-switch>
-                            <!-- <el-button type="primary" @click="switchClick('googleFlag')">{{googleFlag?$t('user.close'):$t('user.enable')}}</el-button> -->
                         </div>
                 </div>
+            </div>
+            <div class="otherB">
+              <div class="APIBox itemBox">
+                <div class="boxL">
+                  <p class="titles">
+                    <i class="iconfont icon-card"></i>
+                    <span class="title">{{$t('account.card')}}</span>
+                  </p>
+                  <p class="tips">
+                    {{$t('account.cardTip1')}}
+                  </p>
+                </div>
+                <div class="boxR">
+                  <el-button type="primary" @click="bindCard">{{$t('account.bind')}}</el-button>
+                </div>
+              </div>
             </div>
         </div>
 
@@ -155,15 +170,15 @@
             width="30%"
             custom-class="baseDialog changePwd"
             center>
-            <el-form :model="changePwdForm" status-icon :rules="changePwdForm.rules" ref="changePwdForm">
+            <el-form :model="changePwdForm" status-icon :rules="changePwdFormRules" ref="changePwdForm">
                 <el-form-item :label="$t('Dialog.oldPassword')" prop="pwd1">
-                    <el-input class="inputBase" type="password" placeholder="请输入原密码" v-model="changePwdForm.pwd1" auto-complete="off"></el-input>
+                    <el-input class="inputBase" type="password" :placeholder="$t('account.oldPwd')" v-model="changePwdForm.pwd1" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item :label="$t('Dialog.newPassword')" prop="newpwd1">
-                    <el-input class="inputBase" type="password" placeholder="(至少8个字符,必须包含大小写字母和数字)" v-model="changePwdForm.newpwd1" auto-complete="off"></el-input>
+                    <el-input class="inputBase" type="password" :placeholder="$t('account.pwdTip')" v-model="changePwdForm.newpwd1" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item :label="$t('Dialog.confirmPassword')" prop="newpwd2">
-                    <el-input class="inputBase" type="password" placeholder="请再次输入新密码" v-model="changePwdForm.newpwd2" auto-complete="off"></el-input>
+                    <el-input class="inputBase" type="password" :placeholder="$t('account.newPwdRe')" v-model="changePwdForm.newpwd2" auto-complete="off"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -178,12 +193,12 @@
             width="30%"
             custom-class="baseDialog changePwd"
             center>
-            <el-form :model="phoneForm" status-icon :rules="phoneForm.rules" ref="phoneForm">
+            <el-form :model="phoneForm" status-icon :rules="phoneFormRules" ref="phoneForm">
                 <el-form-item :label="$t('Dialog.loginPassword')" prop="pwd">
-                    <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="phoneForm.pwd" auto-complete="off"></el-input>
+                    <el-input class="inputBase" type="password" :placeholder="$t('account.loginPwd')" v-model="phoneForm.pwd" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item v-if="!phoneFlag" :label="$t('Dialog.phoneNumber')" prop="phone">
-                    <el-input placeholder="(仅限中国大陆)" v-model="phoneForm.phone" type="tel" auto-complete="off" class="inputBase input-with-select">
+                    <el-input :placeholder="$t('account.limitCountry')" v-model="phoneForm.phone" type="tel" auto-complete="off" class="inputBase input-with-select">
                         <el-select :disabled="true" v-model="phoneForm.select" slot="prepend" placeholder="请选择">
                         <el-option label="+86" value="+86"></el-option>
                         <!-- <el-option label="+88" value="+88"></el-option>
@@ -192,7 +207,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="$t('Dialog.SMSAuthenticationCode')" class="verCode" prop="verCode">
-                    <el-input class="inputBase" placeholder="请输入短信验证码" v-model="phoneForm.verCode" auto-complete="off"></el-input>
+                    <el-input class="inputBase" :placeholder="$t('Dialog.SMSCode')" v-model="phoneForm.verCode" auto-complete="off"></el-input>
                     <a class="verBtn" v-show="VerCodeFlag&&!phoneFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
                     <a class="verBtn" v-show="VerCodeFlag&&phoneFlag" href="javascript:;" @click="getTheVerificationCode()">{{$t('Dialog.sendSMS')}}</a>
                     <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
@@ -213,8 +228,8 @@
             center>
             <div class="flexBox">
                 <a href="javascript:;"><img src="../../assets/img/google.png"></a>
-                <p class="tips">在开始绑定之前,请确保您的手机畅通</p>
-                <p class="tips">并可以访问苹果商店或谷歌商店</p>
+                <p class="tips">{{$t('account.googleTip1')}}</p>
+                <p class="tips">{{$t('account.googleTip2')}}</p>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="mini" @click="googleStart()">{{$t('Dialog.begin')}}</el-button>
@@ -223,21 +238,21 @@
 
         <!-- 解除谷歌验证 -->
         <el-dialog
-            title="解除谷歌验证"
+            :title="$t('account.comfirmGoole')"
             :visible.sync="googleDelDialog"
             width="30%"
             custom-class="baseDialog"
             center>
-            <el-form :model="googleDelForm" status-icon :rules="googleDelForm.rules" ref="googleDelForm" class="googleDelForm">
-                <el-form-item label="登录密码" prop="pwd">
-                    <el-input class="inputBase" type="password" placeholder="请输入登录密码" v-model="googleDelForm.pwd" auto-complete="off"></el-input>
+            <el-form :model="googleDelForm" status-icon :rules="googleDelFormRules" ref="googleDelForm" class="googleDelForm">
+                <el-form-item :label="$t('user.loginPassword')" prop="pwd">
+                    <el-input class="inputBase" type="password" :placeholder="$t('account.loginPwd')" v-model="googleDelForm.pwd" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="谷歌验证码" prop="verCode">
-                    <el-input class="inputBase" placeholder="6位动态数字" v-model="googleDelForm.verCode"></el-input>
+                <el-form-item :label="$t('Dialog.googleAuthenticationCode')" prop="verCode">
+                    <el-input class="inputBase" placeholder="$t('Dialog.dynamicPwd')" v-model="googleDelForm.verCode"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button class="btnBase" type="primary" size="mini" @click="disableGoogle()">确认</el-button>
+                <el-button class="btnBase" type="primary" size="mini" @click="disableGoogle()">{{$t('Dialog.confirm')}}</el-button>
             </span>
         </el-dialog>
 
@@ -273,34 +288,6 @@ import axios from '../../api/axios'
 import { isPoneAvailable,isPassword } from '../../utils/common'
 export default {
   data() {
-      var validatePass = (rule, value, callback) => {
-        if (!isPassword(value)) {
-          callback(new Error('请输入正确的密码'));
-        } else {
-          if (this.changePwdForm.newpwd2 !== '') {
-            this.$refs.changePwdForm.validateField('newpwd2');
-          }
-          callback();
-        }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.changePwdForm.newpwd1) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };
-      var valiVer = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入验证码'));
-        } else if (value.length != 6) {
-          callback(new Error('请输入正确的验证码!'));
-        } else {
-          callback();
-        }
-      };
     return {
       phoneFlag: false,
       googleFlag: false,
@@ -311,23 +298,15 @@ export default {
       riskDialog: false,        //风险提示
       VerCodeFlag: true,
       verCodeTime: 60,
+      bindList:[],
       googleDelForm: {      //解除谷歌验证
           pwd: "",
           verCode: "",
-          rules: {
-            pwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
-            verCode:[{ validator: valiVer, trigger: 'blur' }],
-        }
       },
-      changePwdForm: {      //修改密码
+      changePwdForm: {  //修改密码
           pwd1: "",
           newpwd1: "",
           newpwd2: "",
-          rules: {
-            pwd1:[{ required: true, message: '请输入密码', trigger: 'blur' }],
-            newpwd1:[{ validator: validatePass, trigger: 'blur' }],
-            newpwd2:[{ validator: validatePass2, trigger: 'blur' }],
-        }
       },
       phoneForm: {      // 开启/解除 手机验证
           pwd: "",
@@ -335,17 +314,19 @@ export default {
           verCode: "",
           select: "+86",
           smsId: "",
-          rules: {
-            pwd:[{ required: true, message: '请输入密码', trigger: 'blur' }],
-            phone:[{ required: true, message: '请输入手机号', trigger: 'blur' }],
-            verCode:[{ validator: valiVer, trigger: 'blur' }],
-        }
       },
       tableData: [],            //登录历史
-        
+
     };
   },
   methods: {
+      bindCard(){
+        if(this.bindList.length == 0){
+          this.$router.push({path:'/bindCardList'})
+        }else{
+          this.$router.push({path:'/bindCardForm'})
+        }
+      },
       googleClick(eve) {
           console.log(eve);
           if(eve){
@@ -353,7 +334,7 @@ export default {
           }
           return false;
         // if(this.googleFlag == true){
-        //     
+        //
         // }
 
       },
@@ -361,10 +342,9 @@ export default {
         this.$router.push("/attestation")
       },
       switchClick(target) {     //判断swich显示对应弹窗
-        console.log(this[target],target);
         var flag = this[target];
         if(target == 'phoneFlag'){
-            if(flag){  
+            if(flag){
                 this.phoneDialog = true;
             }else{
                 this.phoneDialog = true;
@@ -380,15 +360,15 @@ export default {
       getVerificationCode(mobile) {     //获取验证码
             var _this = this;
             if(isPoneAvailable(mobile)){
-                axios.get(`/api/sms/to_mobile/${mobile}`).then(function(res){  
+                axios.get(`/api/sms/to_mobile/${mobile}`).then(function(res){
                     console.log(res);
                     _this.VerCodeFlag = false;
                     _this.verCodeTime = 60;
                     _this.verCodeTimeStart ();
                     _this.phoneForm.smsId = res.data.smsId;
-                }).catch(function (res){  
+                }).catch(function (res){
                     console.log(res);
-                });  
+                });
             }else{
                 this.$message({
                     message: '请填写正确的手机号码',
@@ -398,15 +378,15 @@ export default {
       },
       getTheVerificationCode() {     //获取指定手机验证码
             var _this = this;
-            axios.get(`/api/sms/to_user`).then(function(res){  
+            axios.get(`/api/sms/to_user`).then(function(res){
                 console.log(res);
                 _this.VerCodeFlag = false;
                 _this.verCodeTime = 60;
                 _this.verCodeTimeStart ();
                 _this.phoneForm.smsId = res.data.smsId;
-            }).catch(function (res){  
+            }).catch(function (res){
                 console.log(res);
-            });  
+            });
       },
       verCodeTimeStart (){              //验证码计时器
           var _this = this;
@@ -420,23 +400,23 @@ export default {
           },1000)
       },
       openSMS() {                       //开启手机验证
-        var _this = this; 
+        var _this = this;
         this.$refs['phoneForm'].validate((valid) => {
           if (valid) {
             axios.post('/api/user/mobile',{
                 password: this.phoneForm.pwd,
                 smsId: this.phoneForm.smsId,
                 smsCode: this.phoneForm.verCode
-            }).then(function(res){  
+            }).then(function(res){
                 console.log(res)
                 _this.initInput();
                 _this.$store.dispatch('getUserInfo');
                 _this.phoneDialog = false;
                 _this.phoneFlag = true;
-            }).catch(function (res){  
+            }).catch(function (res){
                 _this.initInput();
                 console.log(res);
-            }); 
+            });
           } else {
             console.log('error submit!!');
             return false;
@@ -444,23 +424,23 @@ export default {
         });
       },
       disableSMS() {                    //解除手机验证
-        var _this = this; 
+        var _this = this;
         this.$refs['phoneForm'].validate((valid) => {
           if (valid) {
             axios.del('/api/user/mobile',{
                 password: this.phoneForm.pwd,
                 smsId: this.phoneForm.smsId,
                 smsCode: this.phoneForm.verCode
-            }).then(function(res){  
+            }).then(function(res){
                 _this.initInput();
                 console.log(res)
                 _this.$store.dispatch('getUserInfo');
                 _this.phoneDialog = false;
                 _this.phoneFlag = false;
-            }).catch(function (res){  
+            }).catch(function (res){
                 _this.initInput();
                 console.log(res);
-            }); 
+            });
           } else {
             console.log('error submit!!');
             return false;
@@ -468,22 +448,21 @@ export default {
         });
       },
       disableGoogle() {                 //解除谷歌验证
-        var _this = this; 
+        var _this = this;
         this.$refs['googleDelForm'].validate((valid) => {
           if (valid) {
             axios.del('/api/user/google_authenticator',{
                 password: this.googleDelForm.pwd,
                 googleCode: this.googleDelForm.verCode
-            }).then(function(res){  
-                console.log(res)
+            }).then(function(res){
                 _this.initInput();
                 _this.$store.dispatch('getUserInfo');
                 _this.googleDelDialog = false;
                 _this.googleFlag = false;
-            }).catch(function (res){  
+            }).catch(function (res){
                 _this.initInput();
                 console.log(res);
-            }); 
+            });
           } else {
             console.log('error submit!!');
             return false;
@@ -491,13 +470,13 @@ export default {
         });
       },
       changePwd() {                     //修改密码
-        var _this = this; 
+        var _this = this;
         this.$refs['changePwdForm'].validate((valid) => {
           if (valid) {
             axios.post('/api/user/password_update',{
                 password: this.changePwdForm.pwd1,
                 newPassword: this.changePwdForm.newpwd1,
-            }).then(function(res){  
+            }).then(function(res){
                 _this.initInput();
                 console.log(res)
                 _this.changePwdDialog = false;
@@ -506,10 +485,10 @@ export default {
                     message: '修改成功',
                     type: 'success'
                     });
-            }).catch(function (res){  
+            }).catch(function (res){
                 _this.initInput();
                 console.log(res);
-            }); 
+            });
           } else {
             console.log('error submit!!');
             return false;
@@ -532,7 +511,64 @@ export default {
             'email',
             'token',
             'userInfo',
-        ])
+        ]),
+      googleDelFormRules(){
+        var valiVer = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error(this.$t('login.code')));
+          } else if (value.length != 6) {
+            callback(new Error(this.$t('login.codeTip')));
+          } else {
+            callback();
+          }
+        };
+          return {
+            pwd:[{ required: true, message: this.$t('login.pwd'), trigger: 'blur' }],
+            verCode:[{ validator: valiVer, trigger: 'blur' }],
+          }
+      },
+      changePwdFormRules(){
+        var validatePass = (rule, value, callback) => {
+          if (!isPassword(value)) {
+            callback(new Error(this.$t('account.newPwdTip')));
+          } else {
+            if (this.changePwdForm.newpwd2 !== '') {
+              this.$refs.changePwdForm.validateField('newpwd2');
+            }
+            callback();
+          }
+        };
+        var validatePass2 = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error(this.$t('login.inputPwd')));
+          } else if (value !== this.changePwdForm.newpwd1) {
+            callback(new Error(this.$t('login.marchPwd')));
+          } else {
+            callback();
+          }
+        };
+          return {
+            pwd1:[{ required: true, message: this.$t('login.pwd'), trigger: 'blur' }],
+            newpwd1:[{ validator: validatePass, trigger: 'blur' }],
+            newpwd2:[{ validator: validatePass2, trigger: 'blur' }],
+          }
+      },
+      phoneFormRules(){
+          var valiVer = (rule, value, callback) => {
+            if (value === '') {
+              callback(new Error(this.$t('login.code')));
+            } else if (value.length != 6) {
+              callback(new Error(this.$t('login.codeTip')));
+            } else {
+              callback();
+            }
+          };
+          return {
+            pwd:[{ required: true, message: this.$t('login.pwd'), trigger: 'blur' }],
+            phone:[{ required: true, message: this.$t('account.inputPhone'), trigger: 'blur' }],
+            verCode:[{ validator: valiVer, trigger: 'blur' }],
+          }
+      }
     },
     created() {
         var _this = this;
@@ -557,14 +593,14 @@ export default {
         }else{
             this.riskDialog = true;
         }
-        
 
-        axios.get('/api/user/login_log').then(function(res){  
+
+        axios.get('/api/user/login_log').then(function(res){
             console.log(res);
             _this.tableData = res.data;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
-        }); 
+        });
     }
 };
 </script>
@@ -598,7 +634,7 @@ export default {
     box-sizing: border-box;
     padding: 16px 30px;
     display: flex;
-    
+
     justify-content: space-between;
     margin-bottom: 20px;
     .email {
@@ -613,7 +649,7 @@ export default {
             font-size: 12px;
             margin-bottom: 20px;
         }
-      
+
     }
     .attest{
         .toattest {
@@ -624,16 +660,6 @@ export default {
             font-weight: 600;
         }
     }
-    // .loginTime {
-    //   // margin: 32px 0;
-    //   font-size: 12px;
-    //   span {
-    //     margin-right: 20px;
-    //   }
-    // }
-    // .UID {
-    //   font-size: 12px;
-    // }
   }
   .itemBox {
     width: 580px;
@@ -697,7 +723,7 @@ export default {
     }
   }
   .otherBox {
-    height: 300px;
+    height: 450px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -717,7 +743,7 @@ export default {
         .latelyTab{
             margin: 20px 0;
             border: 1px solid #ccc;
-            
+
         }
         .el-table th, .el-table td{
             padding: 0;
@@ -738,14 +764,13 @@ export default {
             padding-left: 50px !important;
         }
   }
-  
+
   .right.el-dialog__wrapper .el-dialog__footer{
         text-align: right;
         .el-button{
           margin-right: 20px;
         }
     }
-    
   //带选项的input
   .el-form-item.is-error .el-input-group__prepend{
       border-color: #f56c6c;
@@ -768,9 +793,6 @@ export default {
           display: none;
       }
   }
-  
-  
-  
 }
 </style>
 

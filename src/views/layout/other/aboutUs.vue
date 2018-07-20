@@ -1,32 +1,32 @@
 <template>
 <div class="aboutBox">
     <div class="aboutItem">
-        <p class="aboutTitle">关于我们</p>
-        <p class="aboutTips">币加是一个数字资产交易平台，为数字货币交易商和全球流动性提供商提供最先进的服务。除了先进的交易功能和一套图表工具之外，币加还提供对等融资，OTC交易市场以及多种数字资产的保证金交易服务。币加的战略重点是为世界各地的专业交易商和流动性提供商提供支持，工具和创新服务。</p>
+        <p class="aboutTitle">{{$t('home.about')}}</p>
+        <p class="aboutTips">{{$t('about.about')}}</p>
     </div>
     <div class="aboutItem">
-        <p class="aboutTitle">我们的优势</p>
+        <p class="aboutTitle">{{$t('about.advantages')}}</p>
         <ul class="advantageList">
             <li class="advantageItem">
-                <img src="../../../assets/img/about/banner1.png" alt="产品成熟">
-                <p class="advantageName">产品成熟</p>
-                <p class="advantageTips">底层系统开发源自深交所、纽交所技术专家提供支持，支持全客户端多语种，用户体验度高。</p>
+                <img src="../../../assets/img/about/banner1.png" :alt="$t('about.product')">
+                <p class="advantageName">{{$t('about.product')}}</p>
+                <p class="advantageTips">{{$t('about.productDetail')}}</p>
             </li>
             <li class="advantageItem">
-                <img src="../../../assets/img/about/banner2.png" alt="安全稳定">
-                <p class="advantageName">安全稳定</p>
-                <p class="advantageTips">多机热备的系统架构，基于深度学习的智能权重控单引擎。</p>
+                <img src="../../../assets/img/about/banner2.png" :alt="$t('about.safe')">
+                <p class="advantageName">{{$t('about.safe')}}</p>
+                <p class="advantageTips">{{$t('about.safeDetail')}}</p>
             </li>
             <li class="advantageItem">
-                <img src="../../../assets/img/about/banner3.png" alt="品质服务">
-                <p class="advantageName">品质服务</p>
-                <p class="advantageTips">严格的上币审核流程，全网公布，设立投资者保护基金，24小时在线客服支持。</p>
+                <img src="../../../assets/img/about/banner3.png" :alt="$t('about.service')">
+                <p class="advantageName">{{$t('about.service')}}</p>
+                <p class="advantageTips">{{$t('about.serviceDetail')}}</p>
             </li>
         </ul>
     </div>
     <div class="aboutItem">
-        <p class="aboutTitle">资源下载</p>
-        <p class="aboutTips">此系列图片为币安品牌形象片，适用于发布在与币安相关的文章中，欢迎下载使用，如果您希望币安logo用于其他途径，请发邮件至sevice@bjex.io联系我们。</p>
+        <p class="aboutTitle">{{$t('about.resourceDownLoad')}}</p>
+        <p class="aboutTips">{{$t('about.resourceDownLoadDetail')}}</p>
         <div class="imgBox">
             <div class="imgItem">
                 <img src="../../../assets/img/about/down/down6.png" alt="down1.png">
@@ -53,7 +53,7 @@
                 </a>
             </div>
         </div>
-        <router-link to="/brand" class="downMore">下载更多</router-link>
+        <router-link to="/brand" class="downMore">{{$t('about.downLoadMore')}}</router-link>
     </div>
 
 </div>
@@ -61,7 +61,7 @@
 
 <script>
 export default {
-  
+
 }
 </script>
 
@@ -156,6 +156,6 @@ export default {
         color: #FFFFFF;
         background: #FC9217;
     }
-    
+
 }
 </style>

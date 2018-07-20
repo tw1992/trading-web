@@ -42,14 +42,8 @@
           <li>
             <span class="name">24h&nbsp;{{$t('home.volume')}}</span>
           </li>
-          <!-- <li>
-            <span class="name">BNB&nbsp;/&nbsp;</span><span class="num">277,050.93</span>
-          </li> -->
-          <li>
-            <span class="name">CCC&nbsp;/&nbsp;</span><span class="num">{{$store.state.home['24volumeCCC']}}</span>
-          </li>
-          <li>
-            <span class="name">ETH&nbsp;/&nbsp;</span><span class="num">{{$store.state.home['24volumeETH']}}</span>
+          <li v-for="item,key in $store.state.home['24volume']">
+            <span class="name">{{key}}&nbsp;/&nbsp;</span><span class="num">{{item}}</span>
           </li>
         </ul>
       </div>

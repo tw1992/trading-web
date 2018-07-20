@@ -178,7 +178,7 @@ let routes = [{
         redirect: {
             path: '/openOrders'
         }
-      
+
   },
   {
       path: '/userCenter',
@@ -220,6 +220,26 @@ let routes = [{
       },
     name: '实名认证'
   },
+    {
+      path: '/bindCardList',
+      component: function (resolve) {
+        require(['./views/userCenter/bindCardList.vue'], resolve)
+      },
+      meta: {
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
+      name: '绑定银行卡列表'
+    },
+    {
+      path: '/bindCardForm',
+      component: function (resolve) {
+        require(['./views/userCenter/bindCardForm.vue'], resolve)
+      },
+      meta: {
+        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+      },
+      name: '绑定银行卡表单'
+    },
   {
     path: '/terms',
     component: function (resolve) {

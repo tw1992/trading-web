@@ -11,14 +11,14 @@
           size="mini"
           type="datetimerange"
           value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期">
+          :range-separator="$t('mandatory.to')"
+          :start-placeholder="$t('mandatory.startTime')"
+          :end-placeholder="$t('mandatory.endTime')">
         </el-date-picker>
       </div>
       <div class="searchItem">
         <span class="searchLabel">{{$t('funds.pair')}}：</span>
-        <el-select size="mini" v-model="trade" placeholder="请选择">
+        <el-select size="mini" v-model="trade" :placeholder="$t('button.select')">
           <el-option
             v-for="(item,idx) in tradeList"
             :key="idx"
@@ -29,7 +29,7 @@
       </div>
       <div class="searchItem">
         <span class="searchLabel">{{$t('tradingCenter.coin')}}：</span>
-        <el-select size="mini" filterable v-model="currency" placeholder="请选择">
+        <el-select size="mini" filterable v-model="currency" :placeholder="$t('button.select')">
           <el-option
             v-for="(item,idx) in currencyList"
             :key="idx"
@@ -40,7 +40,7 @@
       </div>
       <div class="searchItem">
         <span class="searchLabel">{{$t('tradingCenter.side')}}：</span>
-        <el-select size="mini" v-model="direction" placeholder="请选择">
+        <el-select size="mini" v-model="direction" :placeholder="$t('button.select')">
           <el-option
             v-for="item in directionList"
             :key="item.value"
@@ -62,7 +62,7 @@
       <el-table
         :data="openOrder"
         style="width: 100%">
-        
+
         <el-table-column
           class-name="firstCol"
           :label="$t('tradingCenter.date')"
@@ -76,7 +76,7 @@
         <el-table-column
           :label="$t('tradingCenter.side')">
             <template slot-scope="scope">
-                <span :class="scope.row.side=='SELL'?'red':'green'">{{scope.row.side=='SELL'?'卖出':'买入'}}</span>
+                <span :class="scope.row.side=='SELL'?'red':'green'">{{scope.row.side=='SELL'?$t('tradingCenter.sell'):$t('tradingCenter.buy')}}</span>
             </template>
         </el-table-column>
         <el-table-column
@@ -151,7 +151,7 @@ export default {
         if(postData){
           postData.status = 1;
         }
-        axios.get(url,postData?postData:{status:1}).then(function(res){  
+        axios.get(url,postData?postData:{status:1}).then(function(res){
             console.log(res);
             _this.openOrder = res.data;
             _this.openOrder.map(function(item){
@@ -162,9 +162,9 @@ export default {
             });
             _this.pagination = res.meta.pagination;
             _this.pagination.oldTotal = _this.pagination.total;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
-        }); 
+        });
       },
       searchClick() {
           var postData = {};
@@ -202,6 +202,7 @@ export default {
         this.currency = "";
         this.direction = "";
         this.getCoinList(this.coinList);
+        this.searchClick();
       }
     },
     computed: {
@@ -212,7 +213,6 @@ export default {
     },
     created (){
       this.getRecord('/api/orders/trades');
-      // console.log(this.marketList)
       this.getMarketList(this.marketList);
       this.getCoinList(this.coinList);
     }

@@ -11,14 +11,14 @@
           size="mini"
           type="datetimerange"
           value-format="yyyy-MM-dd HH:mm:ss"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期">
+          :range-separator="$t('mandatory.to')"
+          :start-placeholder="$t('mandatory.startTime')"
+          :end-placeholder="$t('mandatory.endTime')">
         </el-date-picker>
       </div>
       <div class="searchItem">
         <span class="searchLabel">{{$t('funds.pair')}}：</span>
-        <el-select size="mini" @change="marketChange" v-model="trade" placeholder="请选择">
+        <el-select size="mini" @change="marketChange" v-model="trade" :placeholder="$t('button.select')">
           <el-option
             v-for="(item,idx) in tradeList"
             :key="idx"
@@ -29,7 +29,7 @@
       </div>
       <div class="searchItem">
         <span class="searchLabel">{{$t('tradingCenter.coin')}}：</span>
-        <el-select size="mini" filterable v-model="currency" placeholder="请选择">
+        <el-select size="mini" filterable v-model="currency" :placeholder="$t('button.select')">
           <el-option
             v-for="(item,idx) in currencyList"
             :key="idx"
@@ -40,7 +40,7 @@
       </div>
       <div class="searchItem">
         <span class="searchLabel">{{$t('tradingCenter.side')}}：</span>
-        <el-select size="mini" v-model="direction" placeholder="请选择">
+        <el-select size="mini" v-model="direction" :placeholder="$t('button.select')">
           <el-option
             v-for="item in directionList"
             :key="item.value"
@@ -57,7 +57,7 @@
         <el-checkbox size="mini" v-model="conceal">{{$t('funds.hideallcanceled')}}</el-checkbox>
       </div>
       <div class="searchItem export">
-        <a href="javascript:;">{{$t('funds.exportC')}}<i class="iconfont icon-excel"></i></a>
+        <a href="javascript:;" @click="exportW()">{{$t('funds.exportC')}}<i class="iconfont icon-excel"></i></a>
       </div>
     </div>
 
@@ -65,7 +65,7 @@
       <!-- <el-table
         :data="openOrder"
         style="width: 100%">
-        
+
         <el-table-column
           class-name="firstCol"
           :label="$t('tradingCenter.date')"
@@ -169,27 +169,27 @@
             <th>{{$t('tradingCenter.filled')+'%'}}</th>
             <th>{{$t('tradingCenter.sum')}}</th>
             <th>{{$t('tradingCenter.trigger')}}</th>
-            <th>操作</th>
+            <th>{{$t('mandatory.operate')}}</th>
           </tr>
-          
+
           <template v-for="(item,idx) in orderItems">
             <tr :key="idx+'a'">
               <td class="firstCol">{{item.created_at}}</td>
               <td>{{item.symbol}}</td>
               <td>{{item.type}}</td>
-              <td><span :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?'卖出':'买入'}}</span></td>
+              <td><span :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?$t('tradingCenter.sell'):$t('tradingCenter.buy')}}</span></td>
               <td>{{item.price}}</td>
               <td>{{item.number}}</td>
               <td>{{[item.probability,2] | toPercent}}</td>
               <td>{{item.total}}</td>
               <td>{{item.condition}}</td>
-              <td><span @click="item.show = !item.show;getDetail(item.id,item.show)" class="baseColor">成交详情</span></td>
-              
+              <td><span @click="item.show = !item.show;getDetail(item.id,item.show)" class="baseColor">{{$t('mandatory.details')}}</span></td>
+
             </tr>
             <tr v-show="item.show" :key="idx+'b'">
               <td colspan="10">
                 <div class="detail">
-                  <p class="title">成交总额<span class="sum">{{item.detailAll + " BTC"}}</span></p>
+                  <p class="title">{{$t('mandatory.amount')}}<span class="sum">{{item.detailAll + " BTC"}}</span></p>
                 <el-table
                   class="detailTable"
                   :data="item.detail"
@@ -197,39 +197,36 @@
                     <el-table-column
                       class-name="firstCol"
                       prop="created_at"
-                      label="成交时间">
+                      :label="$t('tradingCenter.finishTime')">
                     </el-table-column>
                     <el-table-column
                       prop="price"
-                      label="成交价格">
+                      :label="$t('mandatory.price')">
                     </el-table-column>
                     <el-table-column
                       prop="number"
-                      label="成交数量">
+                      :label="$t('mandatory.num')">
                     </el-table-column>
                     <el-table-column
                       prop="fee"
-                      label="手续费">
+                      :label="$t('tradingCenter.fee')">
                     </el-table-column>
                     <el-table-column
-                      label="成交金额">
+                      :label="$t('tradingCenter.totalVal')">
                        <template slot-scope="scope">
                            <span>{{[scope.row.price,scope.row.number,8] | mul}}</span>
                        </template>
                     </el-table-column>
                   </el-table>
                 </div>
-                
+
               </td>
             </tr>
           </template>
           <tr v-if="openOrder.length ==0">
-            <td colspan="10"><div class="nodate"><span class="empty-text">暂无数据</span></div></td>
+            <td colspan="10"><div class="nodate"><span class="empty-text">{{$t('home.noData')}}</span></div></td>
           </tr>
-          
-          
         </tbody>
-
       </table>
       <el-pagination
         layout="prev, pager, next"
@@ -283,7 +280,7 @@ export default {
       getEntrusted(url,postData){
         var _this = this;
         console.log(postData)
-        axios.get(url,postData?postData:{}).then(function(res){  
+        axios.get(url,postData?postData:{}).then(function(res){
             console.log(res);
             res.data.map(function(item){
               item.show = false;
@@ -303,9 +300,9 @@ export default {
             _this.pagination.oldTotal = _this.pagination.total;
             // _this.googleQR = res.data.googleAuthenticatorSecret;
             // _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
-        }); 
+        });
       },
       pageChange(page) {
             this.getEntrusted(`/api/orders?page=${page}`,this.postData);
@@ -313,8 +310,8 @@ export default {
       getDetail(id,show) {
           if(show){
                 var _this = this;
-                axios.get(`/api/orders/detail/${id}`).then(function(res){  
-                    // console.log(res);
+                axios.get(`/api/orders/detail/${id}`).then(function(res){
+                     console.log(res);
                     var sum = toFixed(0,8);
                     res.data.map(it => {
                         sum = add(sum,mul(it.price,it.number,8),8)
@@ -332,7 +329,7 @@ export default {
                     // })
                     // _this.openOrder = res.data;
                     // _this.pagination = res.meta.pagination;
-                }).catch(function (res){  
+                }).catch(function (res){
                     console.log(res);
                 });
             }
@@ -370,7 +367,24 @@ export default {
         this.currency = "";
         this.direction = "";
         this.getCoinList(this.coinList);
-      }
+        this.searchClick();
+      },
+      exportW() {
+        require.ensure([], () => {
+          const { export_json_to_excel } = require('@/vendor/Export2Excel')
+          const tHeader = ['时间', '市场', '类型', '方向', '价格', '数量','	成交率%','金额','触发条件']
+          const filterVal = ['created_at', 'symbol', 'type', 'side', 'price', 'number','probability','total','condition'];
+          this.orderItems.map(it =>{
+            it.statu = it.status == 0?'失败':it.status == 1?'成功':'处理中';
+          })
+          const list = this.orderItems
+          const data = this.formatJson(filterVal, list)
+          export_json_to_excel(tHeader, data, '历史委托记录')
+        })
+      },
+      formatJson(filterVal, jsonData) {
+        return jsonData.map(v => filterVal.map(j => v[j]))
+      },
     },
     computed: {
       ...mapGetters([
@@ -394,20 +408,15 @@ export default {
             }else{
                 this.pagination.total = this.pagination.oldTotal;
             }
-            
+
         }
     },
     created (){
       this.getEntrusted('/api/orders');
-      console.log(this.marketList)
       this.getMarketList(this.marketList);
       this.getCoinList(this.coinList);
     }
 }
 </script>
-
-<style lang="scss">
-// @import "../../styles/mandatory.scss";
-</style>
 
 

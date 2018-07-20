@@ -1,17 +1,14 @@
 <template>
 <div class="maxBox">
-
-
   <div class="wrapper">
       <v-head></v-head>
-      
       <div class="content">
         <transition name="fade"
 		            mode="out-in">
           <router-view class="contentMain"></router-view>
         </transition>
       </div>
-      
+
   </div>
   <v-foot></v-foot>
 </div>

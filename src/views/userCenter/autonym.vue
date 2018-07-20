@@ -14,25 +14,25 @@
                 <el-option :label="$t('autonym.passport')" value="1"></el-option>
                 </el-select>
             </div>
-            
+
             <!-- 身份证form -->
-            <el-form v-show="type=='0'" label-position="left" :model="IDForm" :rules="IDForm.rules" ref="IDForm" label-width="100px" class="IDForm">
+            <el-form v-show="type=='0'" label-position="left" :model="IDForm" :rules="IDFormRules" ref="IDForm" label-width="100px" class="IDForm">
                 <el-form-item class="tipList">
-                    <p class="tips">目前支持的证件类型如下：</p>
-                    <p class="tips">1. 国内用户可提供：国内居民二代身份证</p>
-                    <p class="tips">2. 海外用户可提供：护照（不含中国公民）</p>
+                    <p class="tips">{{$t('autonym.suppertType')}}</p>
+                    <p class="tips">{{$t('autonym.suppertType1')}}</p>
+                    <p class="tips">{{$t('autonym.suppertType2')}}</p>
                 </el-form-item>
                 <el-form-item :label="$t('autonym.name')" prop="name">
-                    <el-input placeholder="请填写姓名" v-model="IDForm.name"></el-input>
+                    <el-input :placeholder="$t('autonym.namePlaceholder')" v-model="IDForm.name"></el-input>
                 </el-form-item>
-                
+
                 <el-form-item :label="$t('autonym.idCard')" class="mb76" prop="cardNum">
-                    <el-input  placeholder="请填写证件号码" v-model="IDForm.cardNum"></el-input>
+                    <el-input  :placeholder="$t('autonym.idNumber')" v-model="IDForm.cardNum"></el-input>
                 </el-form-item>
                 <el-form-item :label="$t('autonym.cardPicture')" class="labelInit mb46">
-                    <p class="tips">照片形式请参考示例进行拍摄，图片横拍，脸部光线均匀不要有阴影，背景简单，头顶拍全。</p>
-                    <p class="tips">身份证信息清晰可见，照片大小不要超过5M</p>
-                    <p class="tips">(认证的身份证信息不可修改，请谨慎填写)</p>
+                    <p class="tips">{{$t('autonym.photoRequire1')}}</p>
+                    <p class="tips">{{$t('autonym.photoRequire2')}}</p>
+                    <p class="tips">{{$t('autonym.photoRequire3')}}</p>
                 </el-form-item>
                 <el-form-item class="upBox">
                     <div class="itemL">
@@ -49,7 +49,7 @@
                         <p class="Ltips">{{$t('autonym.IDFrontSide')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p>
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/ID  POSITIVE.png" alt="">
@@ -70,7 +70,7 @@
                         <p class="Ltips">{{$t('autonym.IDBackSide')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p>
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/ID  left.png" alt="">
@@ -91,24 +91,24 @@
                         <p class="Ltips textl">{{$t('autonym.idphotoTip')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p>
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/ID  hand.png" alt="">
                     </div>
                 </el-form-item>
-                
+
                 <el-form-item>
                     <el-button class="btnBase" type="primary" @click="IDFormSubmit()">{{$t('button.submit')}}</el-button>
                 </el-form-item>
             </el-form>
 
             <!-- 护照form -->
-            <el-form v-show="type=='1'" label-position="left" :model="passportForm" :rules="passportForm.rules" ref="passportForm" label-width="100px" class="IDForm">
+            <el-form v-show="type=='1'" label-position="left" :model="passportForm" :rules="passportFormRules" ref="passportForm" label-width="100px" class="IDForm">
                 <el-form-item class="tipList">
-                    <p class="tips">目前支持的证件类型如下：</p>
-                    <p class="tips">1. 国内用户可提供：国内居民二代身份证</p>
-                    <p class="tips">2. 海外用户可提供：护照（不含中国公民）</p>
+                    <p class="tips">{{$t('autonym.suppertType')}}</p>
+                    <p class="tips">{{$t('autonym.suppertType1')}}</p>
+                    <p class="tips">{{$t('autonym.suppertType2')}}</p>
                 </el-form-item>
                 <el-form-item :label="$t('autonym.country')" prop="country">
                     <el-select v-model="country" filterable :placeholder="$t('button.select')">
@@ -122,16 +122,15 @@
                 </el-form-item>
 
                 <el-form-item :label="$t('autonym.name')" prop="name">
-                    <el-input placeholder="请填写姓名" v-model="passportForm.name"></el-input>
+                    <el-input :placeholder="$t('autonym.namePlaceholder')" v-model="passportForm.name"></el-input>
                 </el-form-item>
-                
                 <el-form-item :label="$t('autonym.passportNum')" class="mb76" prop="cardNum">
-                    <el-input placeholder="请填写护照号码" v-model="passportForm.cardNum"></el-input>
+                    <el-input :placeholder="$t('autonym.passportNumber')" v-model="passportForm.cardNum"></el-input>
                 </el-form-item>
                 <el-form-item :label="$t('autonym.cardPicture')" class="labelInit mb46">
-                    <p class="tips">照片形式请参考示例进行拍摄，图片横拍，脸部光线均匀不要有阴影，背景简单，头顶拍全。</p>
-                    <p class="tips">身份证信息清晰可见，照片大小不要超过5M</p>
-                    <p class="tips">(认证的身份证信息不可修改，请谨慎填写)</p>
+                    <p class="tips">{{$t('autonym.photoRequire1')}}</p>
+                    <p class="tips">{{$t('autonym.photoRequire2')}}</p>
+                    <p class="tips">{{$t('autonym.photoRequire3')}}</p>
                 </el-form-item>
                 <el-form-item class="upBox">
                     <div class="itemL">
@@ -148,7 +147,7 @@
                         <p class="Ltips">{{$t('autonym.passportcover')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p>
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/password.png" alt="">
@@ -169,7 +168,7 @@
                         <p class="Ltips">{{$t('autonym.passportdatapage')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p>
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/ID passport.png" alt="">
@@ -190,13 +189,13 @@
                         <p class="Ltips textl">{{$t('autonym.passportphotoTip')}}</p>
                     </div>
                     <div class="itemC">
-                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p> 
+                        <p class="exampletip">{{$t('autonym.example')}}<i class="el-icon-caret-right"></i></p>
                     </div>
                     <div class="itemR">
                         <img src="../../assets/img/passport  hand.png" alt="">
                     </div>
                 </el-form-item>
-                
+
                 <el-form-item>
                     <el-button class="btnBase" type="primary" @click="passportSubmit()">{{$t('button.submit')}}</el-button>
                 </el-form-item>
@@ -208,22 +207,23 @@
 <script>
 import { mapGetters } from 'vuex'
 import axios from '../../api/axios'
+
 export default {
   data() {
-      var validateEmail = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入邮箱'));
-        } else {
-          var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
-          if (!reg.test(value)) {
-            callback(new Error('请输入正确的邮箱'));
-          }
-        }
-      };
+      // var validateEmail = (rule, value, callback) => {
+      //   if (value === '') {
+      //     callback(new Error(this.$t('login.retrieveTip')));
+      //   } else {
+      //     var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
+      //     if (!reg.test(value)) {
+      //       callback(new Error(this.$t('login.retrieveTip1')));
+      //     }
+      //   }
+      // };
     return {
         supportWebp: false,   // 是否支持webp
         bucketHost: '',   // 上传图片的外链域名
-        countryUrl:"http://192.168.133.190:8080/static/country",
+        countryUrl:"/static/country",
         countryList:[],
         country: '',
         type: '0',
@@ -233,29 +233,29 @@ export default {
         IDForm: {
             name: '',
             cardNum: '',
-            rules :{
-                name:[{ required: true, message: '请输入姓名', trigger: 'blur' }],
-                cardNum:[{ required: true, message: '请输入证件号码', trigger: 'blur' },]
-            },
+            // rules :{
+            //     name:[{ required: true, message: '请输入姓名', trigger: 'blur' }],
+            //     cardNum:[{ required: true, message: '请输入证件号码', trigger: 'blur' },]
+            // },
         },
         passportForm: {
             name: '',
             cardNum: '',
-            rules :{
-                country:[{ required: true, message: '请选择国籍', trigger: 'blur' }],
-                name:[{ required: true, message: '请输入姓名', trigger: 'blur' }],
-                cardNum:[{ required: true, message: '请输入证件号码', trigger: 'blur' },]
-            },
+            // rules :{
+            //     country:[{ required: true, message: '请选择国籍', trigger: 'blur' }],
+            //     name:[{ required: true, message: '请输入姓名', trigger: 'blur' }],
+            //     cardNum:[{ required: true, message: '请输入证件号码', trigger: 'blur' },]
+            // },
         },
         googleForm:{
           email:"",
           pass:"",
           verification:"",
         },
-        rules:{
-          email:[{ validator: validateEmail, trigger: 'blur' }],
-          pass:[{  message: '请输入密码', trigger: 'blur' },]
-        },
+        // rules:{
+        //   email:[{ validator: validateEmail, trigger: 'blur' }],
+        //   pass:[{  message: '请输入密码', trigger: 'blur' },]
+        // },
         finishFlag: false,
         postData: {
             token: ''
@@ -328,7 +328,7 @@ export default {
                     passportBack: this.back,
                     passportImage: this.image,
                 }
-                axios.post('/api/user/kyc',IDdata).then(function(res){  
+                axios.post('/api/user/kyc',IDdata).then(function(res){
                     console.log(res);
                     _this.bucketHost = res.data.domain;
                     _this.postData.token = res.data.token;
@@ -339,7 +339,7 @@ export default {
                     setTimeout(()=>{
                         _this.$router.push('/userCenter/account');
                     },2000)
-                }).catch(function (res){  
+                }).catch(function (res){
                     console.log(res);
                 });
               }else{
@@ -348,14 +348,14 @@ export default {
                       type: 'warning'
                   })
               }
-            
+
           } else {
             console.log('error submit!!');
             return false;
           }
         });
-        
-        
+
+
       },
       passportSubmit() {
           var _this = this;
@@ -371,7 +371,7 @@ export default {
                     passportBack: this.back,
                     passportImage: this.image,
                 }
-                axios.post('/api/user/kyc',passportdata).then(function(res){  
+                axios.post('/api/user/kyc',passportdata).then(function(res){
                     console.log(res);
                     _this.bucketHost = res.data.domain;
                     _this.postData.token = res.data.token;
@@ -382,7 +382,7 @@ export default {
                     setTimeout(()=>{
                         _this.$router.push('/userCenter/account');
                     },2000)
-                }).catch(function (res){  
+                }).catch(function (res){
                     console.log(res);
                 });
               }else{
@@ -391,7 +391,7 @@ export default {
                       type: 'warning'
                   })
               }
-            
+
           } else {
             console.log('error submit!!');
             return false;
@@ -400,7 +400,6 @@ export default {
       },
       getCountry() {
         var _this = this;
-        console.log(this.language)
         if(this.language == "zh"){
             var url = this.countryUrl+"/zh.json"
         }else if(this.language == "zh-TW"){
@@ -408,7 +407,7 @@ export default {
         }else if(this.language == "en"){
             var url = this.countryUrl+"/en.json"
         }
-        axios.get(url).then(function(res){  
+        axios.get(url).then(function(res){
             console.log(res);
             var country = res;
             var list = [];
@@ -422,7 +421,7 @@ export default {
             _this.countryList = list;
             // _this.domain = res.data.domain;
             // _this.postData.token = res.data.token;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
         });
       }
@@ -432,26 +431,54 @@ export default {
             'language',
         ]),
         language() {
-        return this.$store.getters.language
+          return this.$store.getters.language
+        },
+        rules(){
+            var validateEmail = (rule, value, callback) => {
+              if (value === '') {
+                callback(new Error(this.$t('login.retrieveTip')));
+              } else {
+                var reg=new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/);
+                if (!reg.test(value)) {
+                  callback(new Error(this.$t('login.retrieveTip1')));
+                }
+              }
+            };
+            return {
+              email:[{ validator: validateEmail, trigger: 'blur' }],
+              pass:[{  message: this.$t('login.pwd'), trigger: 'blur' },]
+          }
+        },
+        passportFormRules(){
+          return {
+            country:[{ required: true, message:this.$t('login.selectCountry') , trigger: 'blur' }],
+            name:[{ required: true, message: this.$t('autonym.inputName'), trigger: 'blur' }],
+            cardNum:[{ required: true, message: this.$t('autonym.inputIdNum'), trigger: 'blur' },]
+          }
+        },
+        IDFormRules(){
+          return {
+            name:[{ required: true, message: this.$t('autonym.inputName'), trigger: 'blur' }],
+            cardNum:[{ required: true, message: this.$t('autonym.inputIdNum'), trigger: 'blur' },]
+          }
         }
     },
     watch: {
         language: function() {
-            console.log(123)
             this.getCountry();
         }
     },
     created() {
         var _this = this;
-        axios.get('/api/qiniu_upload_token').then(function(res){  
+        axios.get('/api/qiniu_upload_token').then(function(res){
             console.log(res);
             _this.bucketHost = res.data.domain;
             _this.postData.token = res.data.token;
-        }).catch(function (res){  
+        }).catch(function (res){
             console.log(res);
         });
         this.getCountry();
-    } 
+    }
 };
 </script>
 
@@ -468,7 +495,7 @@ export default {
         box-sizing: border-box;
         padding: 0 30px;
         margin: 20px 0;
-        
+
     }
     .autTop{
         display: flex;
@@ -491,7 +518,7 @@ export default {
     }
     .formBox{
         padding: 30px 0;
-        
+
         .tips{
             font-size: 14px;
             color: #999999;

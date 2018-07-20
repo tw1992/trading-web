@@ -7,7 +7,7 @@
     <!-- <el-table
       :data="openOrder"
       style="width: 100%">
-      
+
       <el-table-column
         class-name="firstCol"
         :label="$t('tradingCenter.date')"
@@ -56,7 +56,7 @@
       </el-table-column>
       <el-table-column label="查看详情" width="100" type="expand">
         <template slot-scope="props">
-          
+
         </template>
       </el-table-column>
     </el-table> -->
@@ -83,27 +83,26 @@
           <th>{{$t('tradingCenter.filled')+'%'}}</th>
           <th>{{$t('tradingCenter.sum')}}</th>
           <th>{{$t('tradingCenter.trigger')}}</th>
-          <th>操作</th>
+          <th>{{$t('mandatory.operate')}}</th>
         </tr>
-        
+
         <template v-for="(item,idx) in openOrder">
           <tr :key="idx+'a'">
             <td class="firstCol">{{item.created_at}}</td>
             <td>{{item.symbol}}</td>
             <td>限价</td>
-            <td><span :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?'卖出':'买入'}}</span></td>
+            <td><span :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?$t('tradingCenter.sell'):$t('tradingCenter.buy')}}</span></td>
             <td>{{item.price}}</td>
             <td>{{item.number}}</td>
             <td>{{[item.bargain , 2] | toPercent}}</td>
             <td>{{item.total}}</td>
             <td>—— ——</td>
-            <td><span @click="item.show = !item.show;getDetail(item.id,item.show)" class="baseColor">成交详情</span></td>
-            
+            <td><span @click="item.show = !item.show;getDetail(item.id,item.show)" class="baseColor">{{$t('mandatory.details')}}</span></td>
           </tr>
           <tr v-show="item.show" :key="idx+'b'">
             <td colspan="10">
               <div class="detail">
-                  <p class="title">成交总额<span class="sum">{{item.detailAll + " BTC"}}</span></p>
+                  <p class="title">{{$t('mandatory.amount')}}<span class="sum">{{item.detailAll + " BTC"}}</span></p>
                 <el-table
                   class="detailTable"
                   :data="item.detail"
@@ -111,35 +110,35 @@
                     <el-table-column
                       class-name="firstCol"
                       prop="created_at"
-                      label="成交时间">
+                      :label="$t('tradingCenter.finishTime')">
                     </el-table-column>
                     <el-table-column
                       prop="price"
-                      label="成交价格">
+                      :label="$t('mandatory.price')">
                     </el-table-column>
                     <el-table-column
                       prop="number"
-                      label="成交数量">
+                      :label="$t('mandatory.num')">
                     </el-table-column>
                     <el-table-column
                       prop="fee"
-                      label="手续费">
+                      :label="$t('tradingCenter.fee')">
                     </el-table-column>
                     <el-table-column
-                      label="成交金额">
+                      :label="$t('tradingCenter.totalVal')">
                        <template slot-scope="scope">
                            <span>{{[scope.row.price,scope.row.number,8] | mul}}</span>
                        </template>
                     </el-table-column>
                   </el-table>
                 </div>
-              
+
             </td>
           </tr>
         </template>
-        
+
         <tr v-if="openOrder.length ==0">
-          <td colspan="10"><div class="nodate"><span class="empty-text">暂无数据</span></div></td>
+          <td colspan="10"><div class="nodate"><span class="empty-text">{{$t('home.noData')}}</span></div></td>
         </tr>
       </tbody>
 
@@ -156,7 +155,7 @@
   </div>
 </div>
 
-  
+
 </template>
 
 <style>
@@ -192,48 +191,49 @@ import calc from 'calculatorjs'
         },
         getOpenOrders(url){
             var _this = this;
-            axios.get(url,{status:0}).then(function(res){  
+            axios.get(url,{status:0}).then(function(res){
                 console.log(res);
-                res.data.map(item => {
+                res.data.map((item)=> {
                     item.show = false;
                     item.bargain = _this.div(item.deal_number,item.number,4);
+                    item.detail = [{
+                      "created_at": "",
+                      "price": "",
+                      "number": "",
+                      "fee": ""
+                    }]
+                    item.detailAll = "";
                 })
                 _this.openOrder = res.data;
                 _this.pagination = res.meta.pagination;
-                item.detail = [{
-                  "created_at": "",
-                  "price": "",
-                  "number": "",
-                  "fee": ""
-              }]
-              item.detailAll = ""
-            }).catch(function (res){  
+
+            }).catch(function (res){
                 console.log(res);
             });
         },
         getDetail(id,show) {
           if(show){
                 var _this = this;
-                axios.get(`/api/orders/detail/${id}`).then(function(res){  
+                axios.get(`/api/orders/detail/${id}`).then(function(res){
                     // console.log(res);
                     var sum = toFixed(0,8);
                     res.data.map(it => {
                         sum = add(sum,mul(it.price,it.number,8),8)
                     })
-
                     _this.openOrder.map(it => {
                         if(it.id == id){
                             it.detail = res.data;
                             it.detailAll = sum;
                         }
                     })
+                  console.log( _this.openOrder)
                     // res.data.map(item => {
                     //     item.show = false;
                     //     item.bargain = _this.div(item.deal_number,item.number,4);
                     // })
                     // _this.openOrder = res.data;
                     // _this.pagination = res.meta.pagination;
-                }).catch(function (res){  
+                }).catch(function (res){
                     console.log(res);
                 });
             }
