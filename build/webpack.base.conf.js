@@ -14,7 +14,7 @@ function resolve (dir) {
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.js'
+    app: ["babel-polyfill", "./src/main.js"]
   },
   output: {
     path: config.build.assetsRoot,
@@ -37,7 +37,7 @@ module.exports = {
       {
         // 得到jquery模块的绝对路径
         test: require.resolve("jquery"),
-        // 将jquery绑定为window.jQuery 和 window.$       
+        // 将jquery绑定为window.jQuery 和 window.$
         loader: "expose-loader?jQuery!expose-loader?$"
       },
       {

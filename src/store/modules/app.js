@@ -42,35 +42,36 @@ const app = {
       commit('SET_LANGUAGE', language)
     },
     getMarket({ commit }) {
-      return new Promise((resolve, reject) => {  
-        axios.get("/api/market/markets_and_pairs").then(response => {  
+      return new Promise((resolve, reject) => {
+        axios.get("/api/market/markets_and_pairs").then(response => {
             commit('SET_MARKET', response.data)
-            console.log(response.data)
-            resolve(response); 
-        }).catch(error => { 
-            reject(error) 
-        }) 
-      }) 
+          console.log(response.data);
+
+            resolve(response);
+        }).catch(error => {
+            reject(error)
+        })
+      })
     },
     getPairs({ commit }) {
-      return new Promise((resolve, reject) => {  
-        axios.get("/api/market/pairs").then(response => {  
+      return new Promise((resolve, reject) => {
+        axios.get("/api/market/pairs").then(response => {
             commit('SET_PAIRS', response.data)
-            resolve(response); 
-        }).catch(error => { 
-            reject(error) 
-        }) 
-      }) 
+            resolve(response);
+        }).catch(error => {
+            reject(error)
+        })
+      })
     },
     getCoin({ commit }) {
-      return new Promise((resolve, reject) => {  
-        axios.get("/api/market/assets").then(response => {  
+      return new Promise((resolve, reject) => {
+        axios.get("/api/market/assets").then(response => {
             commit('SET_COIN', response.data)
-            resolve(response); 
-        }).catch(error => { 
-            reject(error) 
-        }) 
-      }) 
+            resolve(response);
+        }).catch(error => {
+            reject(error)
+        })
+      })
     }
   }
 }

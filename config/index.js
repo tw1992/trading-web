@@ -13,23 +13,25 @@ module.exports = {
     proxyTable: {
       // '/api':'http://192.168.22.208/',
       '/api': {
-        target:'http://192.168.22.208/api',
-        changeOrigin:true, 
-        pathRewrite:{ 
-          '^/api': ''  
+        // target:'http://192.168.22.208/api',
+        // target:'http://192.168.2.96/api',
+        target:'http://192.168.2.96/api',
+        changeOrigin:true,
+        pathRewrite:{
+          '^/api': ''
         }
       }
     },
 
     // Various Dev Server settings
-    host: '192.168.133.190', // can be overwritten by process.env.HOST 192.168.133.190
+    host: '192.168.30.156', // can be overwritten by process.env.HOST 192.168.133.190
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */

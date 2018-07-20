@@ -8,7 +8,7 @@ import home from './modules/home'
 
 Vue.use(Vuex)
 
-vuexAlong.watchSession(['user','app'],true);
+vuexAlong.watchSession(['home'],false);
 
 const store = new Vuex.Store({
   modules: {

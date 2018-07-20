@@ -25,7 +25,7 @@ var loading;
 axios.interceptors.request.use(
     config => {
         //添加loading  对于轮询的接口不需要加Loading
-        if((config.url.indexOf('api/orders') > -1 && config.method==="get" && config.params.status === 0) || (config.url.indexOf('/api/accounts') > -1 && config.method==="get" && config.params === undefined) ){
+        if((config.url.indexOf('api/orders') > -1 && config.method==="get" && config.params && config.params.status === 0) || (config.url.indexOf('/api/accounts') > -1 && config.method==="get" && config.params === undefined) ){
         }else{
           loading = Loading.service({
             fullscreen: true
@@ -58,13 +58,10 @@ axios.interceptors.request.use(
 //请求响应拦截器
 axios.interceptors.response.use(
     res => {
-      if((res.config.url.indexOf('api/orders') > -1 && res.config.method==="get" && res.config.params.status === 0) || (res.config.url.indexOf('/api/accounts') > -1 && res.config.method==="get" && res.config.params === undefined)){
+      if((res.config.url.indexOf('api/orders') > -1 && res.config.method==="get" && res.config.params && res.config.params.status === 0) || (res.config.url.indexOf('/api/accounts') > -1 && res.config.method==="get" && res.config.params === undefined)){
       }else{
         loading.close();
       }
-      // if(config.url.indexOf('api/orders') != -1 && config.method==="get" && config.params.status !== 0){
-      //   loading.close();
-      // }
         return {
             status: 0,
             data: res.data
@@ -144,9 +141,39 @@ axios.interceptors.response.use(
                     case 10412:
                         Message.error("Not enough money");          //没有足够的钱
                         break;
+                    case 10413:
+                        Message.error("The mobile number is registered"); // 手机号已存在
+                      break;
+                    case 10414:
+                      Message.error("The KYC is reviewing"); // 实名认证审核中，禁止提交实名认证
+                      break;
+                    case 10415:
+                      Message.error("the SMS code is invalid");          //短信验证码错误
+                      break;
+                    case 10416:
+                      Message.error("The Man-machine verification is required");// 需人机验证
+                      break;
                     case 10417:
                         Message.error("没有通过人机验证");          //没有通过人机验证
                         break;
+                    case 10418:
+                        Message.error("The symbol is not found");            // 交易对不存在
+                      break;
+                    case 10419:
+                        Message.error("The symbol is suspended");          /// 该交易对当前不可交易
+                      break;
+                    case 10420:
+                      Message.error("未实名认证");          //未实名认证
+                      break;
+                    case 10421:
+                      Message.error("The KYC is passed");          //实名认证已通过，禁止提交实名认证
+                      break;
+                    case 10422:
+                      Message.error("Need two factor auth");         // 需双重验证
+                      break;
+                    case 10423:
+                      Message.error("Bank card verification failed");         //银行卡验证失败
+                      break;
                     case 10500:
                         Message.error("Failed to authenticate because of bad credentials or an invalid authorization header");      //由于糟糕的凭据或无效的授权标题而无法进行身份验证。
                         store.dispatch('FedLogOut');
@@ -163,8 +190,6 @@ axios.interceptors.response.use(
 
                     case 9:
                         errorObj.msg = res.data.subErrors[0].message;
-
-                        console.log(errorObj);
                         return errorObj;
                         break;
                     default:
