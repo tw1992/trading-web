@@ -32,27 +32,24 @@
                     <div class="boxR">
                         <el-button type="primary" @click="changePwdDialog = true">{{$t('user.change')}}</el-button>
                     </div>
-
                 </div>
-                <div class="phoneBox itemBox">
-                    <div class="boxL">
-                        <p class="titles">
-                            <i class="iconfont icon-shouji"></i>
-                            <span class="title">{{$t('user.SMSAuthentication')}}</span>
-                        </p>
-                        <p class="tips">
-                        {{$t('user.SMStips')}}
-                        </p>
-                    </div>
-                    <div class="boxR" style="padding-right:40px;">
-                        <div class="switchBtn" @click="switchClick('phoneFlag')"></div>
-                        <el-switch
-                        v-model="phoneFlag"
-                        active-color="#3ABC56"
-                        inactive-color="#CCCCCC">
-                        </el-switch>
-                        <!-- <el-button type="primary" @click="switchClick('phoneFlag')">{{phoneFlag?$t('user.close'):$t('user.enable')}}</el-button> -->
-                    </div>
+
+
+
+                <div class="passBox itemBox">
+                  <div class="boxL">
+                    <p class="titles">
+                      <i class="iconfont icon-suozi"></i>
+                      <span class="title" v-if="exchangePwd == 0">{{$t('user.editExchangePwd')}}</span>
+                      <span class="title" v-if="exchangePwd == 1">{{$t('user.setExchangePwd')}}</span>
+                    </p>
+                    <p class="tips" style="font-size:16px;">
+                      * * * * * *
+                    </p>
+                  </div>
+                  <div class="boxR">
+                    <el-button type="primary" @click="changePwdDialogExchange = true">{{$t('user.change')}}</el-button>
+                  </div>
                 </div>
             </div>
             <div class="otherB">
@@ -70,75 +67,55 @@
                             <el-button disabled type="primary">{{$t('user.enable')}}</el-button>
                         </div>
                 </div>
-                <div class="GoogleBox itemBox">
-                        <div class="boxL">
-                            <p class="titles">
-                                <i class="googleLogo"></i>
-                                <span class="title">{{$t('user.GoogleAuthentication')}}</span>
-                            </p>
-                            <p class="tips">
-                                {{$t('user.Googletips')}}
-                            </p>
-                        </div>
-                        <div class="boxR" style="padding-right:40px;">
-                            <div class="switchBtn" @click="switchClick('googleFlag')"></div>
-                            <el-switch
-                            @change="googleClick"
-                            v-model="googleFlag"
-                            active-color="#3ABC56"
-                            inactive-color="#CCCCCC">
-                            </el-switch>
-                        </div>
-                </div>
-            </div>
-            <div class="otherB">
-              <div class="APIBox itemBox">
-                <div class="boxL">
-                  <p class="titles">
-                    <i class="iconfont icon-card"></i>
-                    <span class="title">{{$t('account.card')}}</span>
-                  </p>
-                  <p class="tips">
-                    {{$t('account.cardTip1')}}
-                  </p>
-                </div>
-                <div class="boxR">
-                  <el-button type="primary" @click="bindCard">{{$t('account.bind')}}</el-button>
-                </div>
+                <div class="otherB">
+                  <div class="APIBox itemBox">
+                    <div class="boxL">
+                      <p class="titles">
+                        <i class="iconfont icon-card"></i>
+                        <span class="title">{{$t('account.card')}}</span>
+                      </p>
+                      <p class="tips">
+                        {{$t('account.cardTip1')}}
+                      </p>
+                    </div>
+                    <div class="boxR">
+                      <el-button type="primary" @click="bindCard">{{$t('account.bind')}}</el-button>
+                    </div>
+                  </div>
               </div>
             </div>
         </div>
 
-        <div class="tableBox">
-                <p class="tabTip">{{$t('user.distribution')}}</p>
-                <el-table
-                :data="tableData"
-                class="latelyTab"
-                style="width: 100%">
-                <span slot="empty">{{$t('home.noData')}}</span>
-                <el-table-column
-                prop="time"
-                :label="$t('user.date')"
-                class-name="firstCol">
-                </el-table-column>
-                <el-table-column
-                prop="ip"
-                :label="$t('tradingCenter.type')">
-                </el-table-column>
-                <el-table-column
-                prop="time"
-                :label="$t('tradingCenter.coin')">
-                </el-table-column>
-                <el-table-column
-                prop="address"
-                :label="$t('tradingCenter.amount')">
-                </el-table-column>
-                <el-table-column
-                prop="address"
-                :label="$t('user.note')">
-                </el-table-column>
-            </el-table>
-        </div>
+        <!--<div class="tableBox">-->
+                <!--<p class="tabTip">{{$t('user.distribution')}}</p>-->
+                <!--<el-table-->
+                <!--:data="tableData"-->
+                <!--class="latelyTab"-->
+                <!--style="width: 100%">-->
+                <!--<span slot="empty">{{$t('home.noData')}}</span>-->
+                <!--<el-table-column-->
+                <!--prop="time"-->
+                <!--:label="$t('user.date')"-->
+                <!--class-name="firstCol">-->
+                <!--</el-table-column>-->
+                <!--<el-table-column-->
+                <!--prop="ip"-->
+                <!--:label="$t('tradingCenter.type')">-->
+                <!--</el-table-column>-->
+                <!--<el-table-column-->
+                <!--prop="time"-->
+                <!--:label="$t('tradingCenter.coin')">-->
+                <!--</el-table-column>-->
+                <!--<el-table-column-->
+                <!--prop="address"-->
+                <!--:label="$t('tradingCenter.amount')">-->
+                <!--</el-table-column>-->
+                <!--<el-table-column-->
+                <!--prop="address"-->
+                <!--:label="$t('user.note')">-->
+                <!--</el-table-column>-->
+            <!--</el-table>-->
+        <!--</div>-->
 
         <div class="tableBox">
                 <p class="tabTip">{{$t('user.lastlogin')}}</p>
@@ -163,129 +140,176 @@
             </el-table>
         </div>
 
-        <!-- 修改密码 -->
-        <el-dialog
-            :title="$t('Dialog.modifyPassword')"
-            :visible.sync="changePwdDialog"
-            width="30%"
-            custom-class="baseDialog changePwd"
-            center>
-            <el-form :model="changePwdForm" status-icon :rules="changePwdFormRules" ref="changePwdForm">
-                <el-form-item :label="$t('Dialog.oldPassword')" prop="pwd1">
-                    <el-input class="inputBase" type="password" :placeholder="$t('account.oldPwd')" v-model="changePwdForm.pwd1" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('Dialog.newPassword')" prop="newpwd1">
-                    <el-input class="inputBase" type="password" :placeholder="$t('account.pwdTip')" v-model="changePwdForm.newpwd1" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('Dialog.confirmPassword')" prop="newpwd2">
-                    <el-input class="inputBase" type="password" :placeholder="$t('account.newPwdRe')" v-model="changePwdForm.newpwd2" auto-complete="off"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
+      <!-- 修改登陆密码 -->
+      <el-dialog
+        :title="$t('Dialog.modifyPassword')"
+        :visible.sync="changePwdDialog"
+        width="30%"
+        custom-class="baseDialog changePwd"
+        center>
+        <el-form :model="changePwdForm" status-icon :rules="changePwdFormRules" ref="changePwdForm">
+          <el-form-item :label="$t('Dialog.oldPassword')" prop="pwd1">
+            <el-input class="inputBase" type="password" :placeholder="$t('account.oldPwd')" v-model="changePwdForm.pwd1" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('Dialog.newPassword')" prop="newpwd1">
+            <el-input class="inputBase" type="password" :placeholder="$t('account.pwdTip')" v-model="changePwdForm.newpwd1" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('Dialog.confirmPassword')" prop="newpwd2">
+            <el-input class="inputBase" type="password" :placeholder="$t('account.newPwdRe')" v-model="changePwdForm.newpwd2" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
                 <el-button type="primary" size="mini" @click="changePwd()">{{$t('Dialog.confirm')}}</el-button>
             </span>
-        </el-dialog>
+      </el-dialog>
 
-        <!-- 开启/解除 手机验证 -->
-        <el-dialog
-            :title="(phoneFlag?$t('Dialog.disable'):$t('Dialog.open')) + $t('Dialog.SMSAuthentication')"
-            :visible.sync="phoneDialog"
-            width="30%"
-            custom-class="baseDialog changePwd"
-            center>
-            <el-form :model="phoneForm" status-icon :rules="phoneFormRules" ref="phoneForm">
-                <el-form-item :label="$t('Dialog.loginPassword')" prop="pwd">
-                    <el-input class="inputBase" type="password" :placeholder="$t('account.loginPwd')" v-model="phoneForm.pwd" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item v-if="!phoneFlag" :label="$t('Dialog.phoneNumber')" prop="phone">
-                    <el-input :placeholder="$t('account.limitCountry')" v-model="phoneForm.phone" type="tel" auto-complete="off" class="inputBase input-with-select">
-                        <el-select :disabled="true" v-model="phoneForm.select" slot="prepend" placeholder="请选择">
-                        <el-option label="+86" value="+86"></el-option>
-                        <!-- <el-option label="+88" value="+88"></el-option>
-                        <el-option label="+89" value="+89"></el-option> -->
-                        </el-select>
-                    </el-input>
-                </el-form-item>
-                <el-form-item :label="$t('Dialog.SMSAuthenticationCode')" class="verCode" prop="verCode">
-                    <el-input class="inputBase" :placeholder="$t('Dialog.SMSCode')" v-model="phoneForm.verCode" auto-complete="off"></el-input>
-                    <a class="verBtn" v-show="VerCodeFlag&&!phoneFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>
-                    <a class="verBtn" v-show="VerCodeFlag&&phoneFlag" href="javascript:;" @click="getTheVerificationCode()">{{$t('Dialog.sendSMS')}}</a>
-                    <span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button v-if="!phoneFlag" type="primary" size="mini" @click="openSMS()">{{$t('Dialog.confirm')}}</el-button>
-                <el-button v-if="phoneFlag" type="primary" size="mini" @click="disableSMS()">{{$t('Dialog.confirm')}}</el-button>
+      <!--修改交易密码-->
+      <el-dialog
+        :title="$t('Dialog.setPasswordExchange')"
+        :visible.sync="changePwdDialogExchange"
+        width="30%"
+        custom-class="baseDialog changePwd"
+        center>
+        <el-form :model="exchangePwdForm" status-icon :rules="exchangePwdFormRules" ref="exchangePwdForm">
+          <el-form-item :label="$t('Dialog.oldPassword')" prop="pwd1" v-if="exchangePwd == 1">
+            <el-input class="inputBase" type="password" :placeholder="$t('account.oldPwd')" v-model="exchangePwdForm.pwd1" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('Dialog.newPassword')" prop="newpwd1">
+            <el-input class="inputBase" type="password" :placeholder="$t('account.setExchangePwd')" v-model="exchangePwdForm.newpwd1" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('Dialog.confirmPassword')" prop="newpwd2" style="margin-bottom: 0">
+            <el-input class="inputBase" type="password" :placeholder="$t('account.newPwdRe')" v-model="exchangePwdForm.newpwd2" auto-complete="off"></el-input>
+          </el-form-item>
+          <div style="cursor: pointer;text-align: right" @click="forChangePwdDialogExchange=true;changePwdDialogExchange=false;">{{$t('Dialog.forgetExchangePwd')}}</div>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+                <el-button type="primary" size="mini" @click="changeExchangePwd()">{{$t('Dialog.confirm')}}</el-button>
             </span>
-        </el-dialog>
+      </el-dialog>
+      <!--忘记交易密码-->
+      <el-dialog
+        :title="$t('Dialog.editPasswordExchange')"
+        :visible.sync="forChangePwdDialogExchange"
+        width="30%"
+        custom-class="baseDialog changePwd"
+        center>
+        <el-form :model="forChangePwdDialog" status-icon :rules="forExchangePwdFormRules" ref="forChangePwdDialog">
+          <el-form-item :label="$t('Dialog.newPassword')" prop="newpwd1">
+            <el-input class="inputBase" type="password" :placeholder="$t('account.setExchangePwd')" v-model="forChangePwdDialog.newpwd1" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('Dialog.confirmPassword')" prop="newpwd2">
+            <el-input class="inputBase" type="password" :placeholder="$t('account.newPwdRe')" v-model="forChangePwdDialog.newpwd2" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('Dialog.emailCode')" prop="pwd1" style="position: relative">
+            <el-input class="inputBase" :placeholder="$t('Dialog.emailCode')" v-model="forChangePwdDialog.code" auto-complete="off"></el-input>
+            <el-button type="primary" size="mini" style="font-size: 12px;position: absolute;right: 0;bottom: 5px;" @click="getEmailCode">{{$t('Dialog.getEmailCode')}}</el-button>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+                <el-button type="primary" size="mini" @click="forChangePwdClick()">{{$t('Dialog.confirm')}}</el-button>
+            </span>
+      </el-dialog>
+        <!--&lt;!&ndash; 开启/解除 手机验证 &ndash;&gt;-->
+        <!--<el-dialog-->
+            <!--:title="(phoneFlag?$t('Dialog.disable'):$t('Dialog.open')) + $t('Dialog.SMSAuthentication')"-->
+            <!--:visible.sync="phoneDialog"-->
+            <!--width="30%"-->
+            <!--custom-class="baseDialog changePwd"-->
+            <!--center>-->
+            <!--<el-form :model="phoneForm" status-icon :rules="phoneFormRules" ref="phoneForm">-->
+                <!--<el-form-item :label="$t('Dialog.loginPassword')" prop="pwd">-->
+                    <!--<el-input class="inputBase" type="password" :placeholder="$t('account.loginPwd')" v-model="phoneForm.pwd" auto-complete="off"></el-input>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item v-if="!phoneFlag" :label="$t('Dialog.phoneNumber')" prop="phone">-->
+                    <!--<el-input :placeholder="$t('account.limitCountry')" v-model="phoneForm.phone" type="tel" auto-complete="off" class="inputBase input-with-select">-->
+                        <!--<el-select :disabled="true" v-model="phoneForm.select" slot="prepend" placeholder="请选择">-->
+                        <!--<el-option label="+86" value="+86"></el-option>-->
+                        <!--&lt;!&ndash; <el-option label="+88" value="+88"></el-option>-->
+                        <!--<el-option label="+89" value="+89"></el-option> &ndash;&gt;-->
+                        <!--</el-select>-->
+                    <!--</el-input>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item :label="$t('Dialog.SMSAuthenticationCode')" class="verCode" prop="verCode">-->
+                    <!--<el-input class="inputBase" :placeholder="$t('Dialog.SMSCode')" v-model="phoneForm.verCode" auto-complete="off"></el-input>-->
+                    <!--<a class="verBtn" v-show="VerCodeFlag&&!phoneFlag" href="javascript:;" @click="getVerificationCode(phoneForm.phone)">{{$t('Dialog.sendSMS')}}</a>-->
+                    <!--<a class="verBtn" v-show="VerCodeFlag&&phoneFlag" href="javascript:;" @click="getTheVerificationCode()">{{$t('Dialog.sendSMS')}}</a>-->
+                    <!--<span class="verBtn" v-show="!VerCodeFlag">{{verCodeTime}} S</span>-->
+                <!--</el-form-item>-->
+            <!--</el-form>-->
+            <!--<span slot="footer" class="dialog-footer">-->
+                <!--<el-button v-if="!phoneFlag" type="primary" size="mini" @click="openSMS()">{{$t('Dialog.confirm')}}</el-button>-->
+                <!--<el-button v-if="phoneFlag" type="primary" size="mini" @click="disableSMS()">{{$t('Dialog.confirm')}}</el-button>-->
+            <!--</span>-->
+        <!--</el-dialog>-->
 
-        <!-- 开启谷歌验证 -->
-        <el-dialog
-            :title="$t('Dialog.enableGoogleAuthentication')"
-            :visible.sync="googleAddDialog"
-            width="30%"
-            custom-class="baseDialog"
-            center>
-            <div class="flexBox">
-                <a href="javascript:;"><img src="../../assets/img/google.png"></a>
-                <p class="tips">{{$t('account.googleTip1')}}</p>
-                <p class="tips">{{$t('account.googleTip2')}}</p>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" size="mini" @click="googleStart()">{{$t('Dialog.begin')}}</el-button>
-            </span>
-        </el-dialog>
+        <!--&lt;!&ndash; 开启谷歌验证 &ndash;&gt;-->
+        <!--<el-dialog-->
+            <!--:title="$t('Dialog.enableGoogleAuthentication')"-->
+            <!--:visible.sync="googleAddDialog"-->
+            <!--width="30%"-->
+            <!--custom-class="baseDialog"-->
+            <!--center>-->
+            <!--<div class="flexBox">-->
+                <!--<a href="javascript:;"><img src="../../assets/img/google.png"></a>-->
+                <!--<p class="tips">{{$t('account.googleTip1')}}</p>-->
+                <!--<p class="tips">{{$t('account.googleTip2')}}</p>-->
+            <!--</div>-->
+            <!--<span slot="footer" class="dialog-footer">-->
+                <!--<el-button type="primary" size="mini" @click="googleStart()">{{$t('Dialog.begin')}}</el-button>-->
+            <!--</span>-->
+        <!--</el-dialog>-->
 
-        <!-- 解除谷歌验证 -->
-        <el-dialog
-            :title="$t('account.comfirmGoole')"
-            :visible.sync="googleDelDialog"
-            width="30%"
-            custom-class="baseDialog"
-            center>
-            <el-form :model="googleDelForm" status-icon :rules="googleDelFormRules" ref="googleDelForm" class="googleDelForm">
-                <el-form-item :label="$t('user.loginPassword')" prop="pwd">
-                    <el-input class="inputBase" type="password" :placeholder="$t('account.loginPwd')" v-model="googleDelForm.pwd" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('Dialog.googleAuthenticationCode')" prop="verCode">
-                    <el-input class="inputBase" placeholder="$t('Dialog.dynamicPwd')" v-model="googleDelForm.verCode"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button class="btnBase" type="primary" size="mini" @click="disableGoogle()">{{$t('Dialog.confirm')}}</el-button>
-            </span>
-        </el-dialog>
+        <!--&lt;!&ndash; 解除谷歌验证 &ndash;&gt;-->
+        <!--<el-dialog-->
+            <!--:title="$t('account.comfirmGoole')"-->
+            <!--:visible.sync="googleDelDialog"-->
+            <!--width="30%"-->
+            <!--custom-class="baseDialog"-->
+            <!--center>-->
+            <!--<el-form :model="googleDelForm" status-icon :rules="googleDelFormRules" ref="googleDelForm" class="googleDelForm">-->
+                <!--<el-form-item :label="$t('user.loginPassword')" prop="pwd">-->
+                    <!--<el-input class="inputBase" type="password" :placeholder="$t('account.loginPwd')" v-model="googleDelForm.pwd" auto-complete="off"></el-input>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item :label="$t('Dialog.googleAuthenticationCode')" prop="verCode">-->
+                    <!--<el-input class="inputBase" placeholder="$t('Dialog.dynamicPwd')" v-model="googleDelForm.verCode"></el-input>-->
+                <!--</el-form-item>-->
+            <!--</el-form>-->
+            <!--<span slot="footer" class="dialog-footer">-->
+                <!--<el-button class="btnBase" type="primary" size="mini" @click="disableGoogle()">{{$t('Dialog.confirm')}}</el-button>-->
+            <!--</span>-->
+        <!--</el-dialog>-->
 
-        <!-- 风险提示 -->
-        <el-dialog
-            :title="$t('Dialog.riskwarning')"
-            :show-close = "false"
-            :visible.sync="riskDialog"
-            width="30%"
-            :close-on-click-modal="false"
-            custom-class="baseDialog riskwarning"
-            class="right"
-            center>
-            <div class="flexBox">
-                <p class="tips">{{$t('Dialog.riskwarningtip1')}}</p>
-                <p class="tips">{{$t('Dialog.riskwarningtip2')}}</p>
-                <div class="startBox">
-                    <a href="javascript:;" @click="riskDialog = false;googleAddDialog = true"><img src="../../assets/img/google.png"></a>
-                    <a href="javascript:;" @click="riskDialog = false;phoneDialog = true"><img src="../../assets/img/phone.png"></a>
-                </div>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <span class="tips">{{$t('Dialog.understand')}}</span>
-                <el-button :style="{fontSize:'12px'}" type="primary" size="mini" @click="riskDialog = false">{{$t('Dialog.skipfornow')}}</el-button>
-            </span>
-        </el-dialog>
+        <!--&lt;!&ndash; 风险提示 &ndash;&gt;-->
+        <!--<el-dialog-->
+            <!--:title="$t('Dialog.riskwarning')"-->
+            <!--:show-close = "false"-->
+            <!--:visible.sync="riskDialog"-->
+            <!--width="30%"-->
+            <!--:close-on-click-modal="false"-->
+            <!--custom-class="baseDialog riskwarning"-->
+            <!--class="right"-->
+            <!--center>-->
+            <!--<div class="flexBox">-->
+                <!--<p class="tips">{{$t('Dialog.riskwarningtip1')}}</p>-->
+                <!--<p class="tips">{{$t('Dialog.riskwarningtip2')}}</p>-->
+                <!--<div class="startBox">-->
+                    <!--<a href="javascript:;" @click="riskDialog = false;googleAddDialog = true"><img src="../../assets/img/google.png"></a>-->
+                    <!--<a href="javascript:;" @click="riskDialog = false;phoneDialog = true"><img src="../../assets/img/phone.png"></a>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<span slot="footer" class="dialog-footer">-->
+                <!--<span class="tips">{{$t('Dialog.understand')}}</span>-->
+                <!--<el-button :style="{fontSize:'12px'}" type="primary" size="mini" @click="riskDialog = false">{{$t('Dialog.skipfornow')}}</el-button>-->
+            <!--</span>-->
+        <!--</el-dialog>-->
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import axios from '../../api/axios'
-import { isPoneAvailable,isPassword } from '../../utils/common'
+import { isPoneAvailable,isPassword,exchangeIsPassword,exchangeIsCode } from '../../utils/common'
+import {Message} from 'element-ui'
 export default {
   data() {
     return {
@@ -294,6 +318,7 @@ export default {
       googleAddDialog: false,
       phoneDialog: false,
       changePwdDialog: false,
+      changePwdDialogExchange: false,
       googleDelDialog: false,
       riskDialog: false,        //风险提示
       VerCodeFlag: true,
@@ -315,11 +340,73 @@ export default {
           select: "+86",
           smsId: "",
       },
+      exchangePwdForm:{
+        pwd1: "",
+        newpwd1: "",
+        newpwd2: "",
+      },
+      forChangePwdDialog:{
+        code: "",
+        newpwd1: "",
+        newpwd2: "",
+      },
       tableData: [],            //登录历史
-
+      exchangePwd:0,
+      forChangePwdDialogExchange:false,//忘记交易密码
     };
   },
   methods: {
+      forChangePwdClick(){
+        this.$refs['forChangePwdDialog'].validate((valid) => {
+          if(valid){
+            axios.post('api/user/forget_phase',{
+              pay_password:this.forChangePwdDialog.newpwd1,
+              code:this.forChangePwdDialog.code,
+            }).then(res=>{
+              if(res.code == 0){
+                Message.success('密码重设成功');
+                this.forChangePwdDialogExchange = false;
+              }
+            })
+          }
+        })
+      },
+      getEmailCode(){
+        axios.get('api/user/email').then(res=>{
+          if(res.code == 0){
+            Message.success('邮箱获取成功')
+          }
+        })
+      },
+      changeExchangePwd(){
+        this.$refs['exchangePwdForm'].validate((valid) => {
+          if(valid){
+            if(this.exchangePwd == 0){
+              axios.post('api/user/phase',{
+                pay_password:this.exchangePwdForm.newpwd1
+              }).then(res=>{
+                if(res.code == 0){
+                  Message.success('设置成功');
+                  this.initInput();
+                  this.changePwdDialogExchange = false;
+                }
+              })
+            }else{
+              axios.post('api/user/update_phase',{
+                pay_password:this.exchangePwdForm.pwd1,
+                new_pay_password:this.exchangePwdForm.newpwd1,
+              }).then(res=>{
+                if(res.code == 0){
+                  Message.success('修改成功');
+                  this.initInput();
+                  this.changePwdDialogExchange = false;
+                }
+              })
+            }
+          }
+        })
+
+      },
       bindCard(){
         if(this.bindList.length == 0){
           this.$router.push({path:'/bindCardList'})
@@ -333,10 +420,6 @@ export default {
               this.googleAddDialog =true;
           }
           return false;
-        // if(this.googleFlag == true){
-        //
-        // }
-
       },
       googleStart() {
         this.$router.push("/attestation")
@@ -501,6 +584,9 @@ export default {
         this.changePwdForm.pwd1 = '';
         this.changePwdForm.newpwd1 = '';
         this.changePwdForm.newpwd2 = '';
+        this.exchangePwdForm.pwd1 = '';
+        this.exchangePwdForm.newpwd1 = '';
+        this.exchangePwdForm.newpwd2 = '';
         this.phoneForm.pwd = '';
         this.phoneForm.phone = '';
         this.phoneForm.verCode = '';
@@ -527,6 +613,22 @@ export default {
             verCode:[{ validator: valiVer, trigger: 'blur' }],
           }
       },
+      phoneFormRules(){
+        var valiVer = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error(this.$t('login.code')));
+          } else if (value.length != 6) {
+            callback(new Error(this.$t('login.codeTip')));
+          } else {
+            callback();
+          }
+        };
+        return {
+          pwd:[{ required: true, message: this.$t('login.pwd'), trigger: 'blur' }],
+          phone:[{ required: true, message: this.$t('account.inputPhone'), trigger: 'blur' }],
+          verCode:[{ validator: valiVer, trigger: 'blur' }],
+        }
+      },
       changePwdFormRules(){
         var validatePass = (rule, value, callback) => {
           if (!isPassword(value)) {
@@ -547,56 +649,77 @@ export default {
             callback();
           }
         };
-          return {
-            pwd1:[{ required: true, message: this.$t('login.pwd'), trigger: 'blur' }],
-            newpwd1:[{ validator: validatePass, trigger: 'blur' }],
-            newpwd2:[{ validator: validatePass2, trigger: 'blur' }],
-          }
+        return {
+          pwd1:[{ required: true, message: this.$t('login.pwd'), trigger: 'blur' }],
+          newpwd1:[{ validator: validatePass, trigger: 'blur' }],
+          newpwd2:[{ validator: validatePass2, trigger: 'blur' }],
+        }
       },
-      phoneFormRules(){
-          var valiVer = (rule, value, callback) => {
-            if (value === '') {
-              callback(new Error(this.$t('login.code')));
-            } else if (value.length != 6) {
-              callback(new Error(this.$t('login.codeTip')));
-            } else {
-              callback();
+      exchangePwdFormRules(){
+        var validatePass = (rule, value, callback) => {
+          if (!exchangeIsPassword(value)) {
+            callback(new Error(this.$t('account.newPwdTip')));
+          } else {
+            if (this.exchangePwdForm.newpwd2 !== '') {
+              this.$refs.exchangePwdForm.validateField('newpwd2');
             }
-          };
-          return {
-            pwd:[{ required: true, message: this.$t('login.pwd'), trigger: 'blur' }],
-            phone:[{ required: true, message: this.$t('account.inputPhone'), trigger: 'blur' }],
-            verCode:[{ validator: valiVer, trigger: 'blur' }],
+            callback();
           }
+        };
+        var validatePass2 = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error(this.$t('login.inputPwd')));
+          } else if (value !== this.exchangePwdForm.newpwd1) {
+            callback(new Error(this.$t('login.marchPwd')));
+          } else {
+            callback();
+          }
+        };
+        return {
+          pwd1:[{ validator: validatePass, trigger: 'blur' }],
+          newpwd1:[{ validator: validatePass, trigger: 'blur' }],
+          newpwd2:[{ validator: validatePass2, trigger: 'blur' }],
+        }
+      },
+      forExchangePwdFormRules(){
+        var validatePass = (rule, value, callback) => {
+          if (!exchangeIsPassword(value)) {
+            callback(new Error(this.$t('account.newPwdTip')));
+          } else {
+            if (this.forChangePwdDialog.newpwd2 !== '') {
+              this.$refs.exchangePwdForm.validateField('newpwd2');
+            }
+            callback();
+          }
+        };
+        var validateCodePass = (rule, value, callback)=>{
+          if (!exchangeIsCode(value)) {
+            callback(new Error(this.$t('account.newPwdTip')));
+          } else {
+            callback();
+          }
+        }
+        var validatePass2 = (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error(this.$t('login.inputPwd')));
+          } else if (value !== this.forChangePwdDialog.newpwd1) {
+            callback(new Error(this.$t('login.marchPwd')));
+          } else {
+            callback();
+          }
+        };
+        return {
+          code:[{ validator: validateCodePass, trigger: 'blur' }],
+          newpwd1:[{ validator: validatePass, trigger: 'blur' }],
+          newpwd2:[{ validator: validatePass2, trigger: 'blur' }],
+        }
       }
     },
     created() {
         var _this = this;
         this.$store.dispatch('getUserInfo');
-        console.log(this.userInfo,this.userInfo.two_factor_auth_type == "CLOSE");
-        if(this.userInfo.two_factor_auth_type == "CLOSE"){
-            this.riskDialog = true;
-            this.phoneFlag = false;
-            this.googleFlag = false;
-        }else if(this.userInfo.two_factor_auth_type == "MOBILE"){
-            this.riskDialog = false;
-            this.phoneFlag = true;
-            this.googleFlag = false;
-        }else if(this.userInfo.two_factor_auth_type == "GOOGLE"){
-            this.riskDialog = false;
-            this.phoneFlag = false;
-            this.googleFlag = true;
-        }else if(this.userInfo.two_factor_auth_type == "BOTH"){
-            this.riskDialog = false;
-            this.phoneFlag = true;
-            this.googleFlag = true;
-        }else{
-            this.riskDialog = true;
-        }
-
-
+        this.exchangePwd = this.userInfo.phase;
         axios.get('/api/user/login_log').then(function(res){
-            console.log(res);
             _this.tableData = res.data;
         }).catch(function (res){
             console.log(res);
@@ -723,7 +846,7 @@ export default {
     }
   }
   .otherBox {
-    height: 450px;
+    height: 300px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

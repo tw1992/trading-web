@@ -121,14 +121,14 @@ let routes = [{
             name: '我的资产'
         },
         {
-            path: '/fundsManagement/deposits/:coin_id',
+            path: '/fundsManagement/deposits/:coin_id/:type',//type 0充值 1充币
             component: function (resolve) {
                 require(['./views/fundsManagement/deposits.vue'], resolve)
             },
             name: '充值'
         },
         {
-            path: '/fundsManagement/withdrawals/:coin_id',
+            path: '/fundsManagement/withdrawals/:coin_id/:type',//type 0提现 1提币
             component: function (resolve) {
                 require(['./views/fundsManagement/withdrawals.vue'], resolve)
             },

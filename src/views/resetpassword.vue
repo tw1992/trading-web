@@ -75,19 +75,18 @@ export default {
       };
     },
     methods: {
-      resetPwd() {                     
-        var _this = this; 
+      resetPwd() {
+        var _this = this;
         this.$refs['resetForm'].validate((valid) => {
           if (valid) {
             axios.post(`/api/auth/password_reset/${this.uuid}`,{
                 password: this.resetForm.pass1,
-            }).then(function(res){  
-                
+            }).then(function(res){
                 console.log(res)
                 _this.$router.push('/login')
-            }).catch(function (res){  
+            }).catch(function (res){
                 console.log(res);
-            }); 
+            });
           } else {
             console.log('error submit!!');
             return false;
@@ -96,8 +95,7 @@ export default {
       }
     },
     created() {
-        this.uuid = this.$route.query.uuid
-        //console.log(this.$route.query.uuid)
+        this.uuid = this.$route.query.uuid;
     },
     components: {
       loginFooter

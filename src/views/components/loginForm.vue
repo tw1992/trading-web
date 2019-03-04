@@ -185,39 +185,29 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.$store.dispatch('Login', this.loginForm).then((res) => {
-                    if(res.code == 100){    //双重验证
-                        this.loginToken = res.data.loginToken;
-                        this.twoFactorAuthType = res.data.twoFactorAuthType;
-                        this.phoneForm.phone = res.data.mobile;
-                        if(this.twoFactorAuthType == "MOBILE"){
-                            this.phoneDialog = true;
-                        }else if(this.twoFactorAuthType == "GOOGLE"){
-                            this.googleDialog = true;
-                        }else if(this.twoFactorAuthType == "BOTH"){
-                            this.doubleDialog = true;
-                        }
-                    }else{
+                      if(res.code == 0){    //双重验证
+                        this.loginToken = res.data.token;
                         this.$message({
-                            message: '登录成功',
-                            type: 'success'
+                          message: '登录成功',
+                          type: 'success'
                         });
                         var _this = this;
-                      this.nc.reload();
-                      this.loginForm.email = '';
-                      this.loginForm.password = '';
-                      this.loginForm.sessionId = '';
-                      this.loginForm.token = '';
-                      this.loginForm.emsceneail = '';
-                      this.loginForm.sig = '';
-                      if(this.link){
-                        setTimeout(()=>{
-                          let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
-                            _this.$router.push({ path: redirect })
+                        this.nc.reload();
+                        this.loginForm.email = '';
+                        this.loginForm.password = '';
+                        this.loginForm.sessionId = '';
+                        this.loginForm.token = '';
+                        this.loginForm.emsceneail = '';
+                        this.loginForm.sig = '';
+                        if(this.link){
+                          setTimeout(()=>{
+                            let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
+                          _this.$router.push({ path: redirect })
                         },2000)
-                      }else{
-                        this.$emit('login','success')
+                        }else{
+                          this.$emit('login','success')
+                        }
                       }
-                    }
                     }).catch((e) => {
                     _this.loadRongJs()
                     })

@@ -1,22 +1,37 @@
 import calc from 'calculatorjs'
 export function isPoneAvailable(phone) {            //验证手机号
-    var myreg=/^[1][3,4,5,7,8][0-9]{9}$/;  
-    if (!myreg.test(phone)) {  
-        return false;  
-    } else {  
-        return true;  
-    } 
-  }  
+    var myreg=/^[1][3,4,5,7,8][0-9]{9}$/;
+    if (!myreg.test(phone)) {
+        return false;
+    } else {
+        return true;
+    }
+  }
 
-export function isPassword(pwd) {                   //验证密码 
-    var myreg=/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;  
-    if (!myreg.test(pwd)) {  
-        return false;  
-    } else {  
-        return true;  
-    } 
-  }  
-
+export function isPassword(pwd) {                   //验证密码
+    var myreg=/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!myreg.test(pwd)) {
+        return false;
+    } else {
+        return true;
+    }
+  }
+export function exchangeIsPassword(pwd) {                   //验证密码
+  var myreg=/^\d{6}$/;
+  if (!myreg.test(pwd)) {
+    return false;
+  } else {
+    return true;
+  }
+}
+export function exchangeIsCode(pwd) {                   //验证密码
+  var myreg=/^\d{4,6}$/;
+  if (!myreg.test(pwd)) {
+    return false;
+  } else {
+    return true;
+  }
+}
 export function toFixed(value,num) {              //保留小数
     if (value != 0 && !value) return ''
     value = (value*1).toFixed(num)

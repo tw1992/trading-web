@@ -7,13 +7,16 @@
     <div class="selectBox">
       <ul class="select">
         <li :class="activeIdx == '0'?'active':''" @click="changeActive(0)"><a href="javascript:;">{{$t('funds.deposit')}}</a></li>
-        <li class="line active"></li>
+        <li class="line" :class="activeIdx != '2'?'active':''"></li>
         <li :class="activeIdx == '1'?'active':''" @click="changeActive(1)"><a href="javascript:;">{{$t('funds.withdrawal')}}</a></li>
+        <li class="line" :class="activeIdx != '0'?'active':''"></li>
+        <li :class="activeIdx == '2'?'active':''" @click="changeActive(2)"><a href="javascript:;">{{$t('route.withdrawals')}}</a></li>
       </ul>
 
       <div class="export">
         <a v-show="activeIdx == 0" href="javascript:;" @click="exportD()">{{$t('funds.exportD')}}<i class="iconfont icon-excel"></i></a>
         <a v-show="activeIdx == 1" href="javascript:;" @click="exportW()">{{$t('funds.exportW')}}<i class="iconfont icon-excel"></i></a>
+        <a v-show="activeIdx == 2" href="javascript:;" @click="exportW()">{{$t('funds.exportW')}}<i class="iconfont icon-excel"></i></a>
       </div>
     </div>
 
@@ -22,7 +25,6 @@
         <el-table
           :data="recharge"
           style="width: 100%">
-
           <el-table-column
             class-name="firstCol"
             :label="$t('fundsManagement.status')"
@@ -71,7 +73,7 @@
       </div>
     </div>
 
-    <div class="page2" v-show="activeIdx == 1">
+    <div class="page2" v-show="activeIdx == 1 || activeIdx == 2">
       <div class="orderBox">
         <el-table
           :data="withdraw"
@@ -162,6 +164,7 @@ export default {
     methods: {
       changeActive(idx) {
         this.activeIdx = idx;
+        this.getWithdraw('/api/accounts/exports');
       },
       getRecharge(url){
         var _this = this;
@@ -174,8 +177,15 @@ export default {
       },
       getWithdraw(url){
         var _this = this;
-        axios.get(url).then(function(res){
-            console.log(res);
+        var type;
+        if(this.activeIdx == 2){
+          type = 0
+        }else if(this.activeIdx == 1){
+          type = 1
+        }
+        axios.get(url,{
+          type:type
+        }).then(function(res){
             _this.withdraw = res.data;
             _this.pagination2 = res.meta.pagination;
         }).catch(function (res){
@@ -244,7 +254,7 @@ export default {
     },
     created() {
       this.getRecharge('/api/accounts/imports');
-      this.getWithdraw('/api/accounts/exports');
+
     }
 }
 </script>
@@ -281,7 +291,6 @@ export default {
     display: flex;
     margin-bottom: 20px;
     li{
-      // width: 80px;
       padding: 0 12px;
       height: 30px;
       line-height: 30px;

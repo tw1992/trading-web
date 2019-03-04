@@ -18,8 +18,8 @@
         <el-submenu index="/fundsManagement" v-if="email">
             <template slot="title">{{$t('route.funds')}}</template>
             <el-menu-item index="/fundsManagement/balances">{{$t('route.balances')}}</el-menu-item>
-            <el-menu-item index="/fundsManagement/deposits/16">{{$t('route.deposits')}}</el-menu-item>
-            <el-menu-item index="/fundsManagement/withdrawals/16">{{$t('route.withdrawals')}}</el-menu-item>
+            <!--<el-menu-item index="/fundsManagement/deposits/16">{{$t('route.deposits')}}</el-menu-item>-->
+            <!--<el-menu-item index="/fundsManagement/withdrawals/16">{{$t('route.withdrawals')}}</el-menu-item>-->
             <el-menu-item index="/fundsManagement/transactionHistory">{{$t('route.transactionHistory')}}</el-menu-item>
         </el-submenu>
         <el-submenu index="/mandatory" v-if="email">
@@ -36,7 +36,7 @@
             <el-menu-item index="/userCenter/account">{{email}}</el-menu-item>
             <el-menu-item class="sum" index="">
               <p>{{$t('route.assessment')}}</p>
-              <p>{{sum}}  CCC</p>
+              <p>{{sum}} {{$store.state.app.area.name}}</p>
             </el-menu-item>
             <el-menu-item index="" @click="logout">{{$t('route.logout')}}</el-menu-item>
         </el-submenu>
@@ -75,18 +75,11 @@ export default {
     };
   },
   methods: {
-    open(index) {
-      console.log(index);
-    },
+    open(index) {},
     handleSelect(key, keyPath) {
-        console.log(key, keyPath);
-        if(!key){
-
-        }
+        if(!key){}
     },
-    openSelect() {
-      //console.log(123);
-    },
+    openSelect() {},
     //退出登录
     logout: function() {
       this.$store.dispatch('LogOut');
@@ -104,14 +97,7 @@ export default {
     getAccounts() {
       var _this = this;
       axios.get('/api/accounts').then(function(res){
-          var dataList = res.data;
-          var sum = 0;
-          dataList.forEach(it => {
-            var appraisement = 0;
-            appraisement = (it.available*1 + it.disabled*1) * it.price;
-            sum += appraisement;
-          });
-          _this.sum = sum;
+          _this.sum = res.data.cny;
       }).catch(function (res){
           console.log(res);
       });
@@ -129,13 +115,12 @@ export default {
   },
   beforeMount (){
     // this.$store.dispatch('initLogin');
-    console.log(this.email)
-    console.log(this.token)
     if(this.email){
       this.$store.dispatch('getUserInfo');    //获取用户信息
       this.$store.dispatch('getMarket');       //获取市场列表
       this.$store.dispatch('getCoin');        //获取币种列表
       this.$store.dispatch('getPairs');        //获取交易对列表
+      this.$store.dispatch('area');        //获取默认法币
       this.getAccounts();
 
     }

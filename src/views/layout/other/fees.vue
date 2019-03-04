@@ -1,12 +1,12 @@
 <template>
 <div class="feesBox">
     <p class="feesTitle">{{$t('fee.title')}}</p>
-    <div class="exchangerate">
-        <p class="tipsTitle"><i class="el-icon-caret-right"></i><span>{{$t('fee.changeFee')}}</span></p>
-        <ul class="tipsList">
-            <li>{{$t('fee.changeFeeInstruct')}}</li>
-        </ul>
-    </div>
+    <!--<div class="exchangerate">-->
+        <!--<p class="tipsTitle"><i class="el-icon-caret-right"></i><span>{{$t('fee.changeFee')}}</span></p>-->
+        <!--<ul class="tipsList">-->
+            <!--<li>{{$t('fee.changeFeeInstruct')}}</li>-->
+        <!--</ul>-->
+    <!--</div>-->
     <div class="chargerate">
         <p class="tipsTitle"><i class="el-icon-caret-right"></i><span>{{$t('fee.rechangeFee')}}</span></p>
         <p class="tips">{{$t('fee.rechangeFeeInstruce')}}</p>
@@ -19,49 +19,17 @@
                 <tbody>
                     <tr>
                         <td>{{$t('tradingCenter.coin')}}</td>
-                        <td>{{$t('fee.coinName')}}</td>
                         <td>{{$t('fee.withdrawalMin')}}</td>
+                        <td>{{$t('fee.withdrawalMax')}}</td>
                         <td>{{$t('fee.withdrawalHandFee')}}</td>
                     </tr>
-                    <tr>
-                        <td>
-                            <img src="../../../assets/img/coin/BTC.png" alt="BTC"><span>BTC</span>
-                        </td>
-                        <td><span>Bitcoin</span></td>
-                        <td><span>0.002</span></td>
-                        <td><span>0.0005 BTC</span></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <img src="../../../assets/img/coin/BTC.png" alt="BTC"><span>BTC</span>
-                        </td>
-                        <td><span>Bitcoin</span></td>
-                        <td><span>0.002</span></td>
-                        <td><span>0.0005 BTC</span></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <img src="../../../assets/img/coin/BTC.png" alt="BTC"><span>BTC</span>
-                        </td>
-                        <td><span>Bitcoin</span></td>
-                        <td><span>0.002</span></td>
-                        <td><span>0.0005 BTC</span></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <img src="../../../assets/img/coin/BTC.png" alt="BTC"><span>BTC</span>
-                        </td>
-                        <td><span>Bitcoin</span></td>
-                        <td><span>0.002</span></td>
-                        <td><span>0.0005 BTC</span></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <img src="../../../assets/img/coin/BTC.png" alt="BTC"><span>BTC</span>
-                        </td>
-                        <td><span>Bitcoin</span></td>
-                        <td><span>0.002</span></td>
-                        <td><span>0.0005 BTC</span></td>
+                    <tr v-for="item in feeList">
+                      <td>{{item.coin_name}}</td>
+                      <td>{{item.export_min}}</td>
+                      <td>{{item.export_max}}</td>
+                      <td v-if="item.export_type == 0">{{item.export_fee}}%</td>
+                      <td v-if="item.export_type == 1">{{item.export_feeb}}</td>
+                      <td v-if="item.export_type == 2">{{item.export_fee}}% + {{item.export_feeb}}</td>
                     </tr>
                 </tbody>
                 <colgroup style="width:25%;"></colgroup>
@@ -78,8 +46,30 @@
 </template>
 
 <script>
+import axios from "../../../api/axios";
 export default {
+  data(){
+    return{
+      feeList:[],
+    }
+  },
+  methods:{
+    feelist(){
+      axios
+        .get("/api/market/feelist")
+        .then((res)=>{
+          console.log(res);
+          this.feeList = res.data;
+        })
+        .catch(function(res) {
+          console.log(res);
+        });
+    }
 
+  },
+  created(){
+    this.feelist();
+  }
 }
 </script>
 

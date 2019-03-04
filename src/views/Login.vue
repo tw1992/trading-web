@@ -130,7 +130,7 @@ export default {
   data() {
       return {
         btnFlag: false,
-        redirectUrl: 'https://bjex.zendesk.com/access/jwt?jwt=',
+        redirectUrl: 'https://pacex.zendesk.com/access/jwt?jwt=',
         return_to: "",
         redirectFlag: false,
         nc: {},
@@ -168,6 +168,7 @@ export default {
     methods: {
       submitForm(formName) {
           var _this = this;
+        console.log(this.btnFlag)
           if(this.btnFlag){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
@@ -304,7 +305,7 @@ export default {
       },
       loadRongJs() {
         var _this = this;
-        _this.btnFlag = true;
+        _this.btnFlag = false;
         var nc_token = ["FFFF0N00000000005F77", (new Date()).getTime(), Math.random()].join(':');
         var NC_Opt =
             {
@@ -322,19 +323,8 @@ export default {
                 timeout: 3000,
                 times: 5,
                 apimap: {
-                    // 'analyze': '//a.com/nocaptcha/analyze.jsonp',
-                    // 'get_captcha': '//b.com/get_captcha/ver3',
-                    // 'get_captcha': '//pin3.aliyun.com/get_captcha/ver3'
-                    // 'get_img': '//c.com/get_img',
-                    // 'checkcode': '//d.com/captcha/checkcode.jsonp',
-                    // 'umid_Url': '//e.com/security/umscript/3.2.1/um.js',
-                    // 'uab_Url': '//aeu.alicdn.com/js/uac/909.js',
-                    // 'umid_serUrl': 'https://g.com/service/um.json'
                 },
                 callback: function (data) {
-                    // window.console && console.log(nc_token)
-                    // window.console && console.log(data.csessionid)
-                    // window.console && console.log(data.sig)
                     _this.btnFlag = true;
                     _this.loginForm.sessionId = data.csessionid;
                     _this.loginForm.token = nc_token;

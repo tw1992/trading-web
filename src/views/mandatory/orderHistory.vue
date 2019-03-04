@@ -159,73 +159,77 @@
         <colgroup style=""></colgroup>
         <colgroup style=""></colgroup>
         <tbody>
-          <tr>
-            <th class="firstCol">{{$t('tradingCenter.date')}}</th>
-            <th>{{$t('home.pair')}}</th>
-            <th>{{$t('tradingCenter.type')}}</th>
-            <th>{{$t('tradingCenter.side')}}</th>
-            <th>{{$t('tradingCenter.price')}}</th>
-            <th>{{$t('tradingCenter.amount')}}</th>
-            <th>{{$t('tradingCenter.filled')+'%'}}</th>
-            <th>{{$t('tradingCenter.sum')}}</th>
-            <th>{{$t('tradingCenter.trigger')}}</th>
-            <th>{{$t('mandatory.operate')}}</th>
+        <tr>
+          <th class="firstCol">{{$t('tradingCenter.date')}}</th>
+          <th>{{$t('home.pair')}}</th>
+          <th>{{$t('tradingCenter.type')}}</th>
+          <th>{{$t('tradingCenter.side')}}</th>
+          <th>{{$t('tradingCenter.price')}}</th>
+          <th>{{$t('tradingCenter.amount')}}</th>
+          <th>{{$t('tradingCenter.filled')+'%'}}</th>
+          <th>{{$t('tradingCenter.sum')}}</th>
+          <th>{{$t('tradingCenter.trigger')}}</th>
+          <th>{{$t('mandatory.operate')}}</th>
+        </tr>
+
+        <template v-for="(item,idx) in orderItems">
+          <tr :key="idx+'a'">
+            <td class="firstCol">{{item.created_at}}</td>
+            <td>{{item.symbol}}</td>
+            <td>{{item.type}}</td>
+            <td><span :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?$t('tradingCenter.sell'):$t('tradingCenter.buy')}}</span></td>
+            <td>{{item.price*1}}</td>
+            <td>{{item.number*1}}</td>
+            <td>{{[item.probability,2] | toPercent}}</td>
+            <td>{{item.total*1}}</td>
+            <td>{{item.condition}}</td>
+            <td><span @click="item.show = !item.show;getDetail(item.id,item.show)" class="baseColor">{{$t('mandatory.details')}}</span></td>
+
           </tr>
-
-          <template v-for="(item,idx) in orderItems">
-            <tr :key="idx+'a'">
-              <td class="firstCol">{{item.created_at}}</td>
-              <td>{{item.symbol}}</td>
-              <td>{{item.type}}</td>
-              <td><span :class="item.side=='SELL'?'red':'green'">{{item.side=='SELL'?$t('tradingCenter.sell'):$t('tradingCenter.buy')}}</span></td>
-              <td>{{item.price}}</td>
-              <td>{{item.number}}</td>
-              <td>{{[item.probability,2] | toPercent}}</td>
-              <td>{{item.total}}</td>
-              <td>{{item.condition}}</td>
-              <td><span @click="item.show = !item.show;getDetail(item.id,item.show)" class="baseColor">{{$t('mandatory.details')}}</span></td>
-
-            </tr>
-            <tr v-show="item.show" :key="idx+'b'">
-              <td colspan="10">
-                <div class="detail">
-                  <p class="title">{{$t('mandatory.amount')}}<span class="sum">{{item.detailAll + " BTC"}}</span></p>
+          <tr v-show="item.show" :key="idx+'b'">
+            <td colspan="10">
+              <div class="detail">
+                <p class="title">{{$t('mandatory.amount')}}<span class="sum">{{item.detailAll*1}}{{item.symbol | splitSymbol}}</span></p>
                 <el-table
                   class="detailTable"
                   :data="item.detail"
                   style="width: 100%">
-                    <el-table-column
-                      class-name="firstCol"
-                      prop="created_at"
-                      :label="$t('tradingCenter.finishTime')">
-                    </el-table-column>
-                    <el-table-column
-                      prop="price"
-                      :label="$t('mandatory.price')">
-                    </el-table-column>
-                    <el-table-column
-                      prop="number"
-                      :label="$t('mandatory.num')">
-                    </el-table-column>
-                    <el-table-column
-                      prop="fee"
-                      :label="$t('tradingCenter.fee')">
-                    </el-table-column>
-                    <el-table-column
-                      :label="$t('tradingCenter.totalVal')">
-                       <template slot-scope="scope">
-                           <span>{{[scope.row.price,scope.row.number,8] | mul}}</span>
-                       </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
+                  <el-table-column
+                    class-name="firstCol"
+                    prop="created_at"
+                    :label="$t('tradingCenter.finishTime')">
+                  </el-table-column>
+                  <el-table-column
+                    :label="$t('mandatory.price')">
+                    <template slot-scope="scope">
+                      <span>{{scope.row.price}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    :label="$t('mandatory.num')">
+                    <template slot-scope="scope">
+                      <span>{{scope.row.number}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="fee"
+                    :label="$t('tradingCenter.fee')">
+                  </el-table-column>
+                  <el-table-column
+                    :label="$t('tradingCenter.totalVal')">
+                    <template slot-scope="scope">
+                      <span>{{[scope.row.price,scope.row.number,8] | mul}}</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
 
-              </td>
-            </tr>
-          </template>
-          <tr v-if="openOrder.length ==0">
-            <td colspan="10"><div class="nodate"><span class="empty-text">{{$t('home.noData')}}</span></div></td>
+            </td>
           </tr>
+        </template>
+        <tr v-if="openOrder.length ==0">
+          <td colspan="10"><div class="nodate"><span class="empty-text">{{$t('home.noData')}}</span></div></td>
+        </tr>
         </tbody>
       </table>
       <el-pagination
@@ -242,11 +246,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { add, mul, toFixed } from '../../utils/common.js'
-import axios from '../../api/axios'
-export default {
-  data() {
+  import { mapGetters } from 'vuex'
+  import { add, mul, toFixed } from '../../utils/common.js'
+  import axios from '../../api/axios'
+  export default {
+    data() {
       return {
         time: '',
         trade: '',
@@ -258,20 +262,20 @@ export default {
           label: "买入",
           value: "BUY",
         },
-        {
-          label: "卖出",
-          value: "SELL",
-        }],
+          {
+            label: "卖出",
+            value: "SELL",
+          }],
         conceal: false,
         openOrder: [],
         pagination: {
-            oldTotal: 0,
-            total: 0,
-            links: [],
-            count: '',
-            current_page: 1,
-            per_page: '',
-            total_pages: ''
+          oldTotal: 0,
+          total: 0,
+          links: [],
+          count: '',
+          current_page: 1,
+          per_page: '',
+          total_pages: ''
         },
         postData: {}
       };
@@ -281,70 +285,70 @@ export default {
         var _this = this;
         console.log(postData)
         axios.get(url,postData?postData:{}).then(function(res){
-            console.log(res);
-            res.data.map(function(item){
-              item.show = false;
-              item.condition = '—— ——';
-              item.type = "限价";
-              item.probability = (item.deal_number/item.number).toFixed(2);
-              item.detail = [{
-                  "created_at": "",
-                  "price": "",
-                  "number": "",
-                  "fee": ""
-              }]
-              item.detailAll = ""
-            });
-            _this.openOrder = res.data;
-            _this.pagination = res.meta.pagination;
-            _this.pagination.oldTotal = _this.pagination.total;
-            // _this.googleQR = res.data.googleAuthenticatorSecret;
-            // _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
+          console.log(res);
+          res.data.map(function(item){
+            item.show = false;
+            item.condition = '—— ——';
+            item.type = "限价";
+            item.probability = (item.deal_number/item.number).toFixed(2);
+            item.detail = [{
+              "created_at": "",
+              "price": "",
+              "number": "",
+              "fee": ""
+            }]
+            item.detailAll = ""
+          });
+          _this.openOrder = res.data;
+          _this.pagination = res.meta.pagination;
+          _this.pagination.oldTotal = _this.pagination.total;
+          // _this.googleQR = res.data.googleAuthenticatorSecret;
+          // _this.googleForm.googleAuthenticatorSecret = res.data.googleAuthenticatorSecret;
         }).catch(function (res){
-            console.log(res);
+          console.log(res);
         });
       },
       pageChange(page) {
-            this.getEntrusted(`/api/orders?page=${page}`,this.postData);
+        this.getEntrusted(`/api/orders?page=${page}`,this.postData);
       },
       getDetail(id,show) {
-          if(show){
-                var _this = this;
-                axios.get(`/api/orders/detail/${id}`).then(function(res){
-                     console.log(res);
-                    var sum = toFixed(0,8);
-                    res.data.map(it => {
-                        sum = add(sum,mul(it.price,it.number,8),8)
-                    })
+        if(show){
+          var _this = this;
+          axios.get(`/api/orders/detail/${id}`).then(function(res){
+            console.log(res);
+            var sum = toFixed(0,8);
+            res.data.map(it => {
+              sum = add(sum,mul(it.price,it.number,8),8)
+            })
 
-                    _this.openOrder.map(it => {
-                        if(it.id == id){
-                            it.detail = res.data;
-                            it.detailAll = sum;
-                        }
-                    })
-                    // res.data.map(item => {
-                    //     item.show = false;
-                    //     item.bargain = _this.div(item.deal_number,item.number,4);
-                    // })
-                    // _this.openOrder = res.data;
-                    // _this.pagination = res.meta.pagination;
-                }).catch(function (res){
-                    console.log(res);
-                });
-            }
-        },
+            _this.openOrder.map(it => {
+              if(it.id == id){
+                it.detail = res.data;
+                it.detailAll = sum;
+              }
+            })
+            // res.data.map(item => {
+            //     item.show = false;
+            //     item.bargain = _this.div(item.deal_number,item.number,4);
+            // })
+            // _this.openOrder = res.data;
+            // _this.pagination = res.meta.pagination;
+          }).catch(function (res){
+            console.log(res);
+          });
+        }
+      },
       searchClick() {
-          var postData = {};
-          if(this.time.length>0){
-              postData.from = this.time[0];
-              postData.to = this.time[1];
-          }
-          postData.market = this.trade;
-          postData.coin = this.currency;
-          postData.side = this.direction;
-          this.postData = postData;
-          this.getEntrusted('/api/orders',postData)
+        var postData = {};
+        if(this.time.length>0){
+          postData.from = this.time[0];
+          postData.to = this.time[1];
+        }
+        postData.market = this.trade;
+        postData.coin = this.currency;
+        postData.side = this.direction;
+        this.postData = postData;
+        this.getEntrusted('/api/orders',postData)
       },
       getMarketList(marketList) {
         this.tradeList = marketList;
@@ -388,35 +392,38 @@ export default {
     },
     computed: {
       ...mapGetters([
-          'marketList',
-          'coinList',
+        'marketList',
+        'coinList',
       ]),
       orderItems: function() {
-          var showFlag = this.conceal;
-          if(showFlag){
-            return this.openOrder.filter(function(product) {
-                return product.status != 2;
-            })
-          }
-          return this.openOrder;
+        var showFlag = this.conceal;
+        if(showFlag){
+          return this.openOrder.filter(function(product) {
+            return product.status != 2;
+          })
+        }
+        return this.openOrder;
       }
     },
     watch: {
-        conceal: function(val) {
-            if(val){
-                this.pagination.total = this.orderItems.length;
-            }else{
-                this.pagination.total = this.pagination.oldTotal;
-            }
-
+      conceal: function(val) {
+        if(val){
+          this.pagination.total = this.orderItems.length;
+        }else{
+          this.pagination.total = this.pagination.oldTotal;
         }
+
+      }
     },
     created (){
       this.getEntrusted('/api/orders');
       this.getMarketList(this.marketList);
       this.getCoinList(this.coinList);
+    },
+    filters:{
+      splitSymbol:function (value) {
+        return value.split('/')[1]
+      }
     }
-}
+  }
 </script>
-
-

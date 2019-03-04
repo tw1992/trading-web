@@ -23,9 +23,7 @@ import loginFooter from '../components/loginFooter'
 import { mapGetters } from 'vuex'
 export default {
   data() {
-      return {
-
-      };
+      return {};
     },
     methods: {
       submitForm(formName) {

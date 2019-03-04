@@ -10,6 +10,7 @@ const app = {
     marketList: [],
     coinList: [],
     pairsList: [],
+    area:[],
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
@@ -33,6 +34,9 @@ const app = {
     SET_COIN: (state, coin) => {
       state.coinList = coin
     },
+    SET_AREA:(state, area)=>{
+      state.area = area
+    }
   },
   actions: {
     toggleSideBar({ commit }) {
@@ -44,35 +48,44 @@ const app = {
     getMarket({ commit }) {
       return new Promise((resolve, reject) => {
         axios.get("/api/market/markets_and_pairs").then(response => {
-            commit('SET_MARKET', response.data)
-          console.log(response.data);
-
-            resolve(response);
+          commit('SET_MARKET', response.data)
+          resolve(response);
         }).catch(error => {
-            reject(error)
+          reject(error)
         })
       })
     },
     getPairs({ commit }) {
       return new Promise((resolve, reject) => {
         axios.get("/api/market/pairs").then(response => {
-            commit('SET_PAIRS', response.data)
-            resolve(response);
+          commit('SET_PAIRS', response.data)
+          resolve(response);
         }).catch(error => {
-            reject(error)
+          reject(error)
         })
       })
     },
     getCoin({ commit }) {
       return new Promise((resolve, reject) => {
         axios.get("/api/market/assets").then(response => {
-            commit('SET_COIN', response.data)
-            resolve(response);
+          commit('SET_COIN', response.data)
+          resolve(response);
         }).catch(error => {
-            reject(error)
+          reject(error)
         })
       })
-    }
+    },
+    area({ commit }) {
+      return new Promise((resolve, reject) => {
+        axios.get("/api/area").then(response => {
+          commit('SET_AREA', response.data)
+          resolve(response);
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
   }
 }
 
